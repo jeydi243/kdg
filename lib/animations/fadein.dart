@@ -7,9 +7,8 @@ enum AniProps {
 	translatey
 }
 class FadeIn extends StatefulWidget {
-	final double delay;
 	final Widget child;
-	FadeIn(this.delay, this.child);
+	FadeIn(this.child);
 
 	@override
 	_FadeInState createState() => _FadeInState();
