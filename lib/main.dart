@@ -35,7 +35,7 @@ class Kdg extends StatelessWidget {
 							builder: (context, snap) {
 								return AnimatedSwitcher(
 									duration: 500.milliseconds,
-									child: snap.data == null ? LoginPage() : Home(),
+									child: snap.data == null ? Home() : Home(),
 								);
 							},
 						);

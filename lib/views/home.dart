@@ -44,7 +44,7 @@ class _HomeState extends State < Home > {
 							),
 							Expanded(
 								child: ListView(
-									physics: BouncingScrollPhysics(),
+									physics: PageScrollPhysics(),
 									children: < Widget > [
 										Padding(
 											padding: EdgeInsets.only(bottom: 15.0, left: 15.0, right: 15.0, top: 25.0),
