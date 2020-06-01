@@ -23,6 +23,7 @@ dependencies:
   firebase_analytics: ^5.0.2
   simple_animations: ^2.2.1
   loading: ^1.0.2
+  parallax_image: ^0.3.1+1
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kdg/XD_ConfigurationMain.dart';
 import 'package:kdg/services/auth.dart';
 import 'package:kdg/views/home.dart';
 import 'package:kdg/views/login.dart';
 import 'package:provider/provider.dart';
 import 'package:supercharged/supercharged.dart';
+import 'components/page.dart';
 
 void main() {
 	runApp(Kdg());
@@ -35,7 +35,7 @@ class Kdg extends StatelessWidget {
 							builder: (context, snap) {
 								return AnimatedSwitcher(
 									duration: 500.milliseconds,
-									child: snap.data == null ? Home() : Home(),
+									child: snap.data == null ? MyPage() : MyPage(),
 								);
 							},
 						);
