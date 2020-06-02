@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kdg/components/blur.dart';
 import 'package:kdg/views/cars.dart';
 
 
@@ -81,13 +80,11 @@ class _HomeState extends State < Home > {
 													Positioned(
 														bottom: 8.0,
 														left: 20.0,
-														child: BlurCard(
-															child: Text("Cars", style: GoogleFonts.dancingScript(
-																color: Colors.white,
-																fontSize: 30,
-																fontWeight: FontWeight.bold
-															), ),
-														),
+														child: Text("Cars", style: GoogleFonts.dancingScript(
+															color: Colors.white,
+															fontSize: 30,
+															fontWeight: FontWeight.bold
+														), ),
 													),
 
 												]

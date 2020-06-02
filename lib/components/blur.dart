@@ -1,43 +1,47 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class BlurCard extends StatefulWidget {
 	BlurCard({
 		Key key,
-		@required this.child
 	}): super(key: key);
-	final Widget child;
 
 	@override
 	_BlurCardState createState() => _BlurCardState();
 }
 
 class _BlurCardState extends State < BlurCard > {
-	PageController _controller;
-
 	@override
 	void initState() {
 		super.initState();
-		_controller = new PageController();
-
 	}
 	@override
 	Widget build(BuildContext context) {
 		return Stack(
 			children: [
 				SizedBox(
-				height: 100.0,
-				width: 400.0,
-				child: BackdropFilter(
-					filter: ImageFilter.blur(
-						sigmaX: 5,
-						sigmaY: 5
+					height: 50.0,
+					width: double.infinity,
+					child: ClipRRect(
+						child: BackdropFilter(
+							filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+							child: Container(
+								color: Colors.black.withOpacity(0.2),
+								child: Padding(
+									padding: EdgeInsets.only(left: 10.0),
+									child: Text("Vehicule", style: GoogleFonts.lobster(
+										color: Colors.white,
+										fontSize: 30,
+
+									), ),
+								),
+							),
+						),
 					),
-					child: widget.child
 				),
-			), 
 			]
 		);
 	}

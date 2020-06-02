@@ -1,7 +1,12 @@
-import 'dart:math';
-
+import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:parallax_image/parallax_image.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:kdg/animations/fadein.dart';
+import 'package:kdg/components/pageV.dart';
+import 'package:pigment/pigment.dart';
+
 
 
 class MyPage extends StatefulWidget {
@@ -14,71 +19,122 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State < MyPage > {
+	int _page = 1;
+	GlobalKey _bottomNavigationKey = GlobalKey();
 	@override
 	Widget build(BuildContext context) {
+		String _emailOrNomv = "";
 		return Scaffold(
+			backgroundColor: Colors.white,
+			bottomNavigationBar: CurvedNavigationBar(
+				key: _bottomNavigationKey,
+				backgroundColor: Colors.white, //Background color of selected
+				buttonBackgroundColor: Pigment.fromString("#FFBA02"),
+				animationCurve: Curves.easeInOutBack,
+				animationDuration: Duration(milliseconds: 600),
+				color: Colors.grey.withOpacity(0.2),
+				height: 55,
+				index: 1,
+				items: < Widget > [
+					Icon(Icons.add, size: 30, color: Pigment.fromString("200540")),
+					Icon(Icons.local_movies, size: 30, color: Pigment.fromString("200540")),
+					Icon(Icons.accessibility_new, size: 30, color: Pigment.fromString("200540")),
+				],
+				onTap: (index) {
+					setState(() {
+						_page = index;
+					});
+				},
+			),
 			body: Container(
-				child: Column(
-					mainAxisAlignment: MainAxisAlignment.start,
-					children: < Widget > [
-						Padding(padding: EdgeInsets.only(
-								top: MediaQuery.of(context).padding.top,
-								left: 40,
-
+				height: MediaQuery.of(context).size.height,
+				width: MediaQuery.of(context).size.width,
+				child: Padding(
+					padding: EdgeInsets.all(10.0),
+					child: Column(
+						mainAxisAlignment: MainAxisAlignment.start,
+						children: < Widget > [
+							Row(
+								children: < Widget > [
+									Padding(
+										padding: EdgeInsets.only(
+											top: MediaQuery.of(context).padding.top,
+											left: 20,
+										),
+										child: FadeIn(Text("Hi, \nChemo", style: GoogleFonts.lobster(
+											fontWeight: FontWeight.normal,
+											fontSize: 40
+										), ), ),
+									),
+								],
 							),
-							child: Text("Find you next Place", style: TextStyle(
-								fontWeight: FontWeight.bold
-							), ),
-						),
-						Expanded(
-							child: PageV()
-						)
+							Builder(
+								builder: (context) {
+									if (_page == 0) {
+										print("page egale a 1");
+										return Expanded(
+											child: PageV(),
+										);
+									} else if (_page == 1) {
+										print("page egale a 2");
+										return Expanded(
+											child: SizedBox(
+												height: double.infinity,
+												width: double.infinity,
+												child: Column(
+													children: < Widget > [
+														FlutterLogo(size: 15.0, ),
+														FlutterLogo(),
+														FlutterLogo(),
+														FlutterLogo(),
+														FlutterLogo()
+													],
+												),
+											),
+										);
+									} else {
+										print("page egale a 3");
+										return Expanded(
+											child: SizedBox(
+												height: double.infinity,
+												width: double.infinity,
+												child: StreamBuilder(
+													stream: Firestore.instance.collection("rapports").snapshots(),
+													builder: (context, snapshot) {
+														return ListView.builder(
+															physics: BouncingScrollPhysics(),
+															itemCount: snapshot.data.documents.length,
+															itemBuilder: (context, index) {
+																if (snapshot.hasData) {
+																	return ListTile(
+																		contentPadding: EdgeInsets.all(5.0),
+																		dense: true,
+																		leading: CircleAvatar(
+																			backgroundColor: Colors.amber,
+																		),
+																	);
+																}else{
+																	return Container(
+																		height: 50.0,
+																	);
+																}
+															},
 
-					],
+														);
+													},
+												),
+											),
+										);
+									}
+								},
+							),
+							// Expanded(
+							// 	child: PageV()
+							// )
+						],
+					),
 				),
 			),
-		);
-	}
-}
-
-class PageV extends StatefulWidget {
-	PageV({
-		Key key
-	}): super(key: key);
-
-	@override
-	_PageVState createState() => _PageVState();
-}
-
-class _PageVState extends State < PageV > {
-	PageController _controller;
-	double myFraction = 0.8;
-	double pageOffset = 0;
-
-	@override
-	void initState() {
-		super.initState();
-		_controller = new PageController(viewportFraction: myFraction)..addListener(() {
-			setState(() {
-				pageOffset = _controller.page;
-			});
-		});
-	}
-
-
-	@override
-	Widget build(BuildContext context) {
-		return PageView.builder(
-			physics: BouncingScrollPhysics(),
-			controller: _controller,
-			itemCount: 4,
-			itemBuilder: (context, index) {
-				double scale = max(myFraction, (1 - (pageOffset - index).abs()) + myFraction);
-				return Container(
-					padding: EdgeInsets.only(right: 20.0, top: 100 - scale * 25, bottom: 50),
-					child: ParallaxImage(extent: 90.0, image: AssetImage("assets/dix-sept.jpg")),
-				);
-			}
 		);
 	}
 }

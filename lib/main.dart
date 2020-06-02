@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kdg/services/auth.dart';
-import 'package:kdg/views/home.dart';
-import 'package:kdg/views/login.dart';
+import 'package:kdg/views/CarsHome.dart';
 import 'package:provider/provider.dart';
 import 'package:supercharged/supercharged.dart';
 import 'components/page.dart';
@@ -28,6 +27,9 @@ class Kdg extends StatelessWidget {
 					primarySwatch: Colors.blue,
 					visualDensity: VisualDensity.adaptivePlatformDensity,
 				),
+				routes: {
+					"/CarsHome": (context) => CarsHome()
+				},
 				home: Builder(
 					builder: (context) {
 						return FutureBuilder(

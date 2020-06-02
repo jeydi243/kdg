@@ -16,15 +16,14 @@ class FadeIn extends StatefulWidget {
 
 class _FadeInState extends State < FadeIn > {
 	final tween = MultiTween < AniProps > ()
-	..add(AniProps.opacity, Tween<double>(begin: 0,end: 1), 2000.milliseconds)
-	..add(AniProps.offset, Tween<Offset>(begin: Offset(150, 0), end: Offset(0, 0)), 1000.milliseconds,Curves.ease);
+	..add(AniProps.opacity, Tween < double > (begin: 0, end: 1), 600. milliseconds)
+	..add(AniProps.offset, Tween < Offset > (begin: Offset(50, 0), end: Offset(0, 0)), 600.milliseconds, Curves.easeInOutCubic);
 
 	@override
 	Widget build(BuildContext context) {
 		return PlayAnimation < MultiTweenValues < AniProps >> (
 			tween: tween,
 			duration: tween.duration,
-
 			builder: (context, childe, value) {
 				return Transform.translate(
 					offset: value.get(AniProps.offset),
