@@ -1,22 +1,22 @@
-class Product {
+class Rapport {
   String id;
-  String price;
-  String name;
-  String img;
+  String mois;
+  String heures;
+  String etudes;
 
-  Product({this.id, this.price, this.name,this.img});
+  Rapport({this.id, this.heures, this.mois,this.etudes});
 
-  Product.fromMap(Map snapshot,String id) :
+  Rapport.fromMap(Map snapshot,String id) :
         id = id ?? '',
-        price = snapshot['price'] ?? '',
-        name = snapshot['name'] ?? '',
-        img = snapshot['img'] ?? '';
+        mois = snapshot['mois'] ?? '',
+        heures = snapshot['heures'] ?? '',
+        etudes = snapshot['etudes'] ?? '';
 
   toJson() {
     return {
-      "price": price,
-      "name": name,
-      "img": img,
+      "etudes": etudes,
+      "heures": heures,
+      "mois": mois,
     };
   }
 }
