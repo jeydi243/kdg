@@ -27,6 +27,12 @@ class _MyPageState extends State < MyPage > {
 		String _emailOrNomv = "";
 		return Scaffold(
 			backgroundColor: Colors.white,
+			floatingActionButton: FloatingActionButton(
+				onPressed: () {
+
+				},
+				backgroundColor: Colors.blue,
+			),
 			bottomNavigationBar: CurvedNavigationBar(
 				key: _bottomNavigationKey,
 				backgroundColor: Colors.white, //Background color of selected
@@ -62,7 +68,7 @@ class _MyPageState extends State < MyPage > {
 											top: MediaQuery.of(context).padding.top,
 											left: 20,
 										),
-										child: FadeIn(Text("Hi, \nChemo", style: GoogleFonts.lobster(
+										child: FadeIn(Text("Hi, \nChémo",style: GoogleFonts.lobster(
 											fontWeight: FontWeight.normal,
 											fontSize: 40
 										), ), ),
@@ -96,40 +102,46 @@ class _MyPageState extends State < MyPage > {
 									} else {
 										print("page egale a 3");
 										return Expanded(
-											child: SizedBox(
-												height: double.infinity,
-												width: double.infinity,
-												child: StreamBuilder(
-													stream: Firestore.instance.collection("rapports").snapshots(),
-													builder: (context, snapshot) {
-														List < Rapport > _rapports = [];
-														for(DocumentSnapshot doc in snapshot.data.documents){
-															_rapports.add(Rapport.fromMap(doc.data, doc.documentID));
-														}
-														print(_rapports);
-														if (snapshot.hasData) {
-															return ListView.builder(
-																physics: BouncingScrollPhysics(),
-																itemCount: snapshot.data.documents.length,
-																itemBuilder: (context, index) {
-																	return ListTile(
+											child: StreamBuilder(
+
+												stream: Firestore.instance.collection("rapports").snapshots(),
+												builder: (context, snapshot) {
+													List < Rapport > _rapports = [];
+													for (DocumentSnapshot doc in snapshot.data.documents) {
+														_rapports.add(Rapport.fromMap(doc.data, doc.documentID));
+													}
+													if (snapshot.hasData) {
+														return ListView.builder(
+															physics: BouncingScrollPhysics(),
+															itemCount: snapshot.data.documents.length,
+															itemBuilder: (context, index) {
+																return Card(
+																	elevation: 7.0,
+																	child: ListTile(
+
 																		contentPadding: EdgeInsets.all(5.0),
 																		dense: true,
-																		leading: CircleAvatar(
-																			backgroundColor: Colors.amber,
+																		leading: Container(
+																			height: 50,
+																			width: 50,
+																			color: Colors.greenAccent,
 																		),
-																		title: Text("eee${_rapports[index].heures}") ,
-																	);
-																}
+																		title: Text("${_rapports[index].mois}", style: GoogleFonts.abhayaLibre(
+																			fontSize: 25
+																		), ),
+																	),
+																);
+															}
 
-															);
-														} else {
-															Container(
-																height: 50.0,
-															);
-														}
-													},
-												),
+														);
+													} else {
+														return ListView(
+															children: < Widget > [
+																CircularProgressIndicator()
+															],
+														);
+													}
+												},
 											),
 										);
 									}
