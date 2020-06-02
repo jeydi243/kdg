@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/components/pageV.dart';
+import 'package:kdg/models/rapport.dart';
 import 'package:pigment/pigment.dart';
 
 
@@ -101,26 +102,32 @@ class _MyPageState extends State < MyPage > {
 												child: StreamBuilder(
 													stream: Firestore.instance.collection("rapports").snapshots(),
 													builder: (context, snapshot) {
-														return ListView.builder(
-															physics: BouncingScrollPhysics(),
-															itemCount: snapshot.data.documents.length,
-															itemBuilder: (context, index) {
-																if (snapshot.hasData) {
+														List < Rapport > _rapports = [];
+														for(DocumentSnapshot doc in snapshot.data.documents){
+															_rapports.add(Rapport.fromMap(doc.data, doc.documentID));
+														}
+														print(_rapports);
+														if (snapshot.hasData) {
+															return ListView.builder(
+																physics: BouncingScrollPhysics(),
+																itemCount: snapshot.data.documents.length,
+																itemBuilder: (context, index) {
 																	return ListTile(
 																		contentPadding: EdgeInsets.all(5.0),
 																		dense: true,
 																		leading: CircleAvatar(
 																			backgroundColor: Colors.amber,
 																		),
-																	);
-																}else{
-																	return Container(
-																		height: 50.0,
+																		title: Text("eee${_rapports[index].heures}") ,
 																	);
 																}
-															},
 
-														);
+															);
+														} else {
+															Container(
+																height: 50.0,
+															);
+														}
 													},
 												),
 											),
@@ -128,9 +135,6 @@ class _MyPageState extends State < MyPage > {
 									}
 								},
 							),
-							// Expanded(
-							// 	child: PageV()
-							// )
 						],
 					),
 				),
