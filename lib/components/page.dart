@@ -1,12 +1,12 @@
 import 'dart:ui';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/components/pageV.dart';
-import 'package:kdg/models/rapport.dart';
+import 'package:kdg/components/perso.dart';
 import 'package:pigment/pigment.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 
@@ -27,12 +27,6 @@ class _MyPageState extends State < MyPage > {
 		String _emailOrNomv = "";
 		return Scaffold(
 			backgroundColor: Colors.white,
-			floatingActionButton: FloatingActionButton(
-				onPressed: () {
-
-				},
-				backgroundColor: Colors.blue,
-			),
 			bottomNavigationBar: CurvedNavigationBar(
 				key: _bottomNavigationKey,
 				backgroundColor: Colors.white, //Background color of selected
@@ -45,7 +39,7 @@ class _MyPageState extends State < MyPage > {
 				items: < Widget > [
 					Icon(Icons.add, size: 30, color: Pigment.fromString("200540")),
 					Icon(Icons.local_movies, size: 30, color: Pigment.fromString("200540")),
-					Icon(Icons.accessibility_new, size: 30, color: Pigment.fromString("200540")),
+					Icon(FontAwesomeIcons.shieldAlt, color: Pigment.fromString("200540"), )
 				],
 				onTap: (index) {
 					setState(() {
@@ -68,13 +62,14 @@ class _MyPageState extends State < MyPage > {
 											top: MediaQuery.of(context).padding.top,
 											left: 20,
 										),
-										child: FadeIn(Text("Hi, \nChémo",style: GoogleFonts.lobster(
+										child: FadeIn(Text("Hi, Chemo", style: GoogleFonts.lobster(
 											fontWeight: FontWeight.normal,
 											fontSize: 40
 										), ), ),
 									),
 								],
 							),
+
 							Builder(
 								builder: (context) {
 									if (_page == 0) {
@@ -102,47 +97,81 @@ class _MyPageState extends State < MyPage > {
 									} else {
 										print("page egale a 3");
 										return Expanded(
-											child: StreamBuilder(
-
-												stream: Firestore.instance.collection("rapports").snapshots(),
-												builder: (context, snapshot) {
-													List < Rapport > _rapports = [];
-													for (DocumentSnapshot doc in snapshot.data.documents) {
-														_rapports.add(Rapport.fromMap(doc.data, doc.documentID));
-													}
-													if (snapshot.hasData) {
-														return ListView.builder(
-															physics: BouncingScrollPhysics(),
-															itemCount: snapshot.data.documents.length,
-															itemBuilder: (context, index) {
-																return Card(
-																	elevation: 7.0,
-																	child: ListTile(
-
-																		contentPadding: EdgeInsets.all(5.0),
-																		dense: true,
-																		leading: Container(
-																			height: 50,
-																			width: 50,
-																			color: Colors.greenAccent,
-																		),
-																		title: Text("${_rapports[index].mois}", style: GoogleFonts.abhayaLibre(
-																			fontSize: 25
-																		), ),
+											child: Container(
+												child: DefaultTabController(
+													length: 3,
+													initialIndex: 0,
+													child: Column(
+														children: < Widget > [
+															Padding(
+																padding: EdgeInsets.only(bottom: 10.0),
+																child: Row(
+																	children: < Widget > [
+																		Expanded(
+																			child: Container(
+																				decoration: BoxDecoration(
+																					color: Colors.grey.withOpacity(0.2),
+																					borderRadius: BorderRadius.circular(20.0)
+																				),
+																				height: 40,
+																				padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+																				child: TextFormField(
+																					decoration: InputDecoration(
+																						border: InputBorder.none,
+																					),
+																				),
+																			),
+																		)
+																	],
+																),
+															),
+															SizedBox(
+																height: 30.0,
+																child: TabBar(
+																	indicatorColor: Pigment.fromString("200540"),
+																	indicator: BoxDecoration(
+																		color: Colors.amber
 																	),
-																);
-															}
+																	tabs: < Widget > [
+																		Tab(
+																			child: Text("Liste", style: GoogleFonts.lobster(
+																				color: Colors.black
+																			), ),
+																			// icon: Icon(FontAwesomeIcons.accusoft,color: Pigment.fromString("200540")),
+																		),
+																		Tab(
+																			child: Text("Etudes", style: GoogleFonts.lobster(
+																				color: Colors.black
+																			), ),
+																			//icon: Icon(FontAwesomeIcons.addressCard, color: Pigment.fromString("200540")),
+																		),
+																		Tab(
+																			child: Text("Notes", style: GoogleFonts.lobster(
+																				color: Colors.black
+																			), ),
+																			//icon: Icon(FontAwesomeIcons.arrowsAltV, color: Pigment.fromString("#200540"), ),
+																		),
+																	],
+																),
+															),
 
-														);
-													} else {
-														return ListView(
-															children: < Widget > [
-																CircularProgressIndicator()
-															],
-														);
-													}
-												},
-											),
+															Expanded(
+																child: TabBarView(
+																	children: < Widget > [
+																		Perso(),
+																		Container(
+																			color: Colors.white,
+																		),
+																		Container(
+																			color: Colors.white,
+																		),
+																	],
+																),
+															)
+														],
+													),
+												),
+											)
 										);
 									}
 								},
