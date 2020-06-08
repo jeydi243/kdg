@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:kdg/services/auth.dart';
-import 'package:kdg/views/home.dart';
+import 'package:kdg/views/page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -66,7 +66,7 @@ class _LoginState extends State < LoginPage > {
 	Route _createRoute() {
 		return PageRouteBuilder(
 			opaque: true,
-			pageBuilder: (context, animation, secondaryAnimation) => page(),
+			pageBuilder: (context, animation, secondaryAnimation) => MyPage(),
 			//le monde est beau
 			transitionsBuilder: (context, animation, secondaryAnimation, child) {
 				var begin = Offset(0.0, 1.0);
