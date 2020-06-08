@@ -23,20 +23,13 @@ class Kdg extends StatelessWidget {
 			child: MaterialApp(
 				title: 'Kdg',
 				debugShowCheckedModeBanner: false,
-				theme: ThemeData(
-					primarySwatch: Colors.blue,
-					visualDensity: VisualDensity.adaptivePlatformDensity,
-				),
-				routes: {
-					"/CarsHome": (context) => CarsHome()
-				},
 				home: Builder(
 					builder: (context) {
 						return FutureBuilder(
 							future: Provider.of < Auth > (context).currentUser(),
 							builder: (context, snap) {
 								return AnimatedSwitcher(
-									duration: 500.milliseconds,
+									duration: 500. milliseconds,
 									child: snap.data == null ? MyPage() : MyPage(),
 								);
 							},
