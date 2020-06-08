@@ -24,7 +24,7 @@ class LoginPage extends StatefulWidget {
 class _LoginState extends State < LoginPage > {
 	final _formKey = GlobalKey < FormState > ();
 	Auth auth;
-	bool _isTrue = true;
+	bool showIndicator = true;
 	bool _canObscure = false;
 	String fin = "#FAD961";
 	String _emailOrNom;
@@ -34,29 +34,26 @@ class _LoginState extends State < LoginPage > {
 		final form = _formKey.currentState;
 		if (form.validate()) {
 			form.save();
-			print("le formulaire est pret");
-			print('$_emailOrNom et $_password');
 			return true;
 		} else {
-			print("Erreur dans le formulaire");
 			return false;
 		}
 	}
 	void _submit() async {
 		if (_validateandSave()) {
 			setState(() {
-				_isTrue = false;
-
+				showIndicator = false;
 			});
 			try {
-				String uid = await auth.signIn(_emailOrNom, _password);
-				print("L'utilisateur s'est bien connecté $uid");
-				_formKey.currentState.reset();
-				Navigator.of(context).push(_createRoute());
+				await auth.signIn(_emailOrNom, _password).then((value) => {
+
+				});
 
 				setState(() {
-					_isTrue = true;
+					_formKey.currentState.reset();
+					showIndicator = true;
 				});
+				Navigator.of(context).push(_createRoute());
 			} catch (e) {
 				print(e);
 			}
@@ -67,7 +64,6 @@ class _LoginState extends State < LoginPage > {
 		return PageRouteBuilder(
 			opaque: true,
 			pageBuilder: (context, animation, secondaryAnimation) => MyPage(),
-			//le monde est beau
 			transitionsBuilder: (context, animation, secondaryAnimation, child) {
 				var begin = Offset(0.0, 1.0);
 				var end = Offset.zero;
@@ -94,7 +90,7 @@ class _LoginState extends State < LoginPage > {
 						SizedBox.expand(
 							child: FittedBox(
 								fit: BoxFit.cover,
-								child: Image.asset("assets/cinq.jpg"),
+								child: Image.asset("assets/sept.jpg"),
 							),
 						),
 						Container(
@@ -198,7 +194,7 @@ class _LoginState extends State < LoginPage > {
 											children: < Widget > [
 												FittedBox(
 													fit: BoxFit.fill,
-													child: _isTrue ? new RaisedButton(
+													child: showIndicator ? new RaisedButton(
 														elevation: 12.0,
 														textColor: Pigment.fromString("#124A2C"),
 														child: new Text("Connexion", style: TextStyle(fontSize: 17.0)),
