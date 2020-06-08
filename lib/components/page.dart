@@ -7,8 +7,7 @@ import 'package:kdg/components/pageV.dart';
 import 'package:kdg/components/perso.dart';
 import 'package:pigment/pigment.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-
+import 'package:slimy_card/slimy_card.dart';
 
 class MyPage extends StatefulWidget {
 	MyPage({
@@ -31,15 +30,15 @@ class _MyPageState extends State < MyPage > {
 				key: _bottomNavigationKey,
 				backgroundColor: Colors.white, //Background color of selected
 				buttonBackgroundColor: Pigment.fromString("#FFBA02"),
-				animationCurve: Curves.easeInOutBack,
+				animationCurve: Curves.ease,
 				animationDuration: Duration(milliseconds: 600),
 				color: Colors.grey.withOpacity(0.2),
 				height: 55,
 				index: 1,
 				items: < Widget > [
-					Icon(Icons.add, size: 30, color: Pigment.fromString("200540")),
+					Icon(Icons.supervised_user_circle, size: 30, color: Pigment.fromString("200540")),
 					Icon(Icons.local_movies, size: 30, color: Pigment.fromString("200540")),
-					Icon(FontAwesomeIcons.shieldAlt, color: Pigment.fromString("200540"), )
+					Icon(FontAwesomeIcons.shieldAlt, color: Pigment.fromString("200540"))
 				],
 				onTap: (index) {
 					setState(() {
@@ -60,42 +59,62 @@ class _MyPageState extends State < MyPage > {
 									Padding(
 										padding: EdgeInsets.only(
 											top: MediaQuery.of(context).padding.top,
-											left: 20,
+											left: 5,
+											bottom: 10
 										),
-										child: FadeIn(Text("Hi, Chemo", style: GoogleFonts.lobster(
-											fontWeight: FontWeight.normal,
-											fontSize: 40
-										), ), ),
+										child: FadeIn(IconButton(onPressed: () {
+
+										}, icon: Icon(FontAwesomeIcons.bars), color: Pigment.fromString("200540"))),
 									),
+									Spacer(),
+									Padding(
+										padding: EdgeInsets.only(
+											top: MediaQuery.of(context).padding.top,
+											right: 5,
+											bottom: 10
+										),
+										child: CircleAvatar(
+											backgroundColor: Colors.amber,
+											backgroundImage: NetworkImage("https://via.placeholder.com/150"),
+										),
+									)
 								],
 							),
-
 							Builder(
 								builder: (context) {
 									if (_page == 0) {
-										print("page egale a 1");
 										return Expanded(
-											child: PageV(),
+											child: FadeIn(PageV()),
 										);
 									} else if (_page == 1) {
-										print("page egale a 2");
 										return Expanded(
-											child: SizedBox(
+											child: FadeIn(SizedBox(
 												height: double.infinity,
 												width: double.infinity,
-												child: Column(
+												child: ListView(
+													physics: BouncingScrollPhysics(),
 													children: < Widget > [
-														FlutterLogo(size: 15.0, ),
-														FlutterLogo(),
-														FlutterLogo(),
-														FlutterLogo(),
-														FlutterLogo()
-													],
+														SlimyCard(
+															color: Colors.blueGrey,
+
+															width: 200,
+															topCardHeight: 400,
+															bottomCardHeight: 200,
+															borderRadius: 15,
+															topCardWidget: Container(
+																color: Colors.green
+															),
+															bottomCardWidget: Container(
+																height: 50,
+																color: Colors.red
+															),
+															slimeEnabled: true,
+														),
+													]
 												),
-											),
+											), ),
 										);
 									} else {
-										print("page egale a 3");
 										return Expanded(
 											child: Container(
 												child: DefaultTabController(
@@ -103,7 +122,7 @@ class _MyPageState extends State < MyPage > {
 													initialIndex: 0,
 													child: Column(
 														children: < Widget > [
-															Padding(
+															FadeIn(Padding(
 																padding: EdgeInsets.only(bottom: 10.0),
 																child: Row(
 																	children: < Widget > [
@@ -124,37 +143,44 @@ class _MyPageState extends State < MyPage > {
 																		)
 																	],
 																),
-															),
-															SizedBox(
-																height: 30.0,
-																child: TabBar(
-																	indicatorColor: Pigment.fromString("200540"),
-																	indicator: BoxDecoration(
-																		color: Colors.amber
+															), ),
+															FadeIn(
+																SizedBox(
+																	height: 30.0,
+																	child: Stack(
+																		fit: StackFit.loose,
+																		children: [
+																			Align(
+																				alignment: Alignment(0, 1),
+																				child: Container(
+																					color: Pigment.fromString("200540"),
+																					height: 0.5,
+																					width: double.infinity,
+																				),
+																			),
+																			TabBar(
+																				indicatorColor: Colors.amber,
+																				tabs: < Widget > [
+																					Tab(
+																						child: Text("Liste", style: GoogleFonts.lobster(
+																							color: Pigment.fromString("200540")
+																						), ),
+																					),
+																					Tab(
+																						child: Text("Etudes", style: GoogleFonts.lobster(
+																							color: Pigment.fromString("200540")
+																						), ),
+																					),
+																					Tab(
+																						child: Text("Notes", style: GoogleFonts.lobster(
+																							color: Colors.black
+																						), ),
+																					),
+																				],
+																			),
+																		]
 																	),
-																	tabs: < Widget > [
-																		Tab(
-																			child: Text("Liste", style: GoogleFonts.lobster(
-																				color: Colors.black
-																			), ),
-																			// icon: Icon(FontAwesomeIcons.accusoft,color: Pigment.fromString("200540")),
-																		),
-																		Tab(
-																			child: Text("Etudes", style: GoogleFonts.lobster(
-																				color: Colors.black
-																			), ),
-																			//icon: Icon(FontAwesomeIcons.addressCard, color: Pigment.fromString("200540")),
-																		),
-																		Tab(
-																			child: Text("Notes", style: GoogleFonts.lobster(
-																				color: Colors.black
-																			), ),
-																			//icon: Icon(FontAwesomeIcons.arrowsAltV, color: Pigment.fromString("#200540"), ),
-																		),
-																	],
-																),
-															),
-
+																), ),
 															Expanded(
 																child: TabBarView(
 																	children: < Widget > [

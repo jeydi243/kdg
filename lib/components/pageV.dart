@@ -16,10 +16,16 @@ class PageV extends StatefulWidget {
 
 class _PageVState extends State < PageV > {
 	PageController _controller;
-	String name;
+	String _name;
 	double myFraction = 0.8;
 	double pageOffset = 0;
-	List < String > _list = ["assets/deux.jpg", "assets/onze.jpg", "assets/six.jpg", "assets/quinze.jpg"];
+	String valeurBlur = "";
+	Map < String,String > _list = {
+		"Rexton": "assets/onze.jpg",
+		"Audi": "assets/treze.jpg",
+		"Nissan Bus": "assets/six.jpg",
+		"Nissan camionette": "assets/un.jpg"
+	};
 
 	@override
 	void initState() {
@@ -31,16 +37,16 @@ class _PageVState extends State < PageV > {
 		});
 	}
 
-
 	@override
 	Widget build(BuildContext context) {
-		return FadeIn(PageView.builder(
+		return PageView.builder(
+			
 			physics: BouncingScrollPhysics(),
 			controller: _controller,
 			itemCount: _list.length,
 			itemBuilder: (context, index) {
 				double scale = max(myFraction, (1 - (pageOffset - index).abs()) + myFraction);
-				name = _list[index];
+				_name = _list[index];
 				return Container(
 					height: 80.0,
 					padding: EdgeInsets.only(
@@ -56,25 +62,24 @@ class _PageVState extends State < PageV > {
 									height: double.infinity,
 									child: GestureDetector(
 										onTap: () {
-											Navigator.push(context, MaterialPageRoute(builder: (context) => CarsHome(name: _list[index])));
+											valeurBlur = _list.keys.elementAt(index);
+											Navigator.push(context, MaterialPageRoute(builder: (context) => CarsHome(name: _list[_list.keys.elementAt(index)], title: valeurBlur, )));
 										},
-										child: Hero(
-											tag: name,
-											child: Image.asset(_list[index], fit: BoxFit.cover, ),
-										),
+										child: Hero(tag: '${_list[_list.keys.elementAt(index)]}', child: Image.asset(_list[_list.keys.elementAt(index)], fit: BoxFit.cover)),
 									),
 								),
 								Align(
-									alignment: Alignment.bottomCenter,
-									child: Hero(tag: 'un${_list[index]}', child: BlurCard()),
-								)
+									alignment: Alignment(0, 1),
+									child: Hero(tag: "${_list[_list.keys.elementAt(index)]}2",
+										child: BlurCard(titre: _list.keys.elementAt(index), )
+									)
+								),
 							]
 						),
 					),
 					// child: Image.asset(_list[index]),
 				);
-
 			}
-		), );
+		);
 	}
 }

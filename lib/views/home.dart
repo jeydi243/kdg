@@ -64,7 +64,6 @@ class _HomeState extends State < Home > {
 														elevation: 15.0,
 														shadowColor: Colors.blueGrey,
 														child: Hero(
-
 															tag: "cars",
 															child: GestureDetector(
 																onTap: () {

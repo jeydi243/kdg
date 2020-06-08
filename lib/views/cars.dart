@@ -18,7 +18,6 @@ class _CarsState extends State < Cars > {
 		return Scaffold(
 			backgroundColor: Colors.amber,
 			body: Stack(
-
 				children: < Widget > [
 					Positioned(
 						top: 0.0,
@@ -49,101 +48,98 @@ class _CarsState extends State < Cars > {
 									physics: BouncingScrollPhysics(),
 									children: < Widget > [
 										Padding(padding: EdgeInsets.only(bottom: 10.0),
-											child: FadeIn( Container(
-												  	child: Padding(
-												  		padding: EdgeInsets.all(5.0),
-												  		child: Column(
-												  			mainAxisAlignment: MainAxisAlignment.spaceBetween,
-												  			children: < Widget > [
-												  				Row(
-												  					children: < Widget > [
-												  						Text("Audi Q5 Quattro", style: GoogleFonts.lora(
-												  							color: Colors.blue,
-												  							fontSize: 30,
-												  							fontWeight: FontWeight.bold,
+											child: FadeIn(Container(
+												child: Padding(
+													padding: EdgeInsets.all(5.0),
+													child: Column(
+														mainAxisAlignment: MainAxisAlignment.spaceBetween,
+														children: < Widget > [
+															Row(
+																children: < Widget > [
+																	Text("Audi Q5 Quattro", style: GoogleFonts.lora(
+																		color: Colors.blue,
+																		fontSize: 30,
+																		fontWeight: FontWeight.bold,
 
-												  						), )
-												  					],
-												  				),
-												  				Row(
-												  					children: < Widget > [
-												  						Text("Controle Technique")
-												  					],
-												  				),
-												  				Row(
-												  					children: < Widget > [
-												  						Text("Assurance")
-												  					],
-												  				),
-												  				Row(
-												  					children: < Widget > [
-												  						Text("Stationnement"),
-												  						Spacer(),
+																	), )
+																],
+															),
+															Row(
+																children: < Widget > [
+																	Text("Controle Technique")
+																],
+															),
+															Row(
+																children: < Widget > [
+																	Text("Assurance")
+																],
+															),
+															Row(
+																children: < Widget > [
+																	Text("Stationnement"),
+																	Spacer(),
 
-												  						MaterialButton(
-												  							height: 30,
-												  							minWidth: 50,
-												  							child: Text("Voir", style: TextStyle(
-												  								color: Colors.white
-												  							), ),
-												  							onPressed: () {
+																	MaterialButton(
+																		height: 30,
+																		minWidth: 50,
+																		child: Text("Voir", style: TextStyle(
+																			color: Colors.white
+																		), ),
+																		onPressed: () {
 
-												  							},
-												  							color: Colors.blue, )
-												  					],
-												  				)
-												  			],
-												  		),
-												  	),
-												  	height: 150,
-												  	width: 250.0,
-												  	decoration: BoxDecoration(
-												  		color: Colors.white,
-												  		border: Border(
-												  			left: BorderSide(
-												  				color: Colors.blue,
-												  				style: BorderStyle.solid,
-												  				width: 5.0
-												  			)
-												  		)
+																		},
+																		color: Colors.blue, )
+																],
+															)
+														],
+													),
+												),
+												height: 150,
+												width: 250.0,
+												decoration: BoxDecoration(
+													color: Colors.white,
+													border: Border(
+														left: BorderSide(
+															color: Colors.blue,
+															style: BorderStyle.solid,
+															width: 5.0
+														)
+													)
 
-												  	),
-												  ),
-												)),
+												),
+											), )),
 										Padding(padding: EdgeInsets.only(bottom: 10.0),
 											child: FadeIn(Container(
-											  	height: 150,
-											  	width: 250.0,
-											  	decoration: BoxDecoration(
-											  		color: Colors.white,
-											  		border: Border(
-											  			left: BorderSide(
-											  				color: Colors.teal,
-											  				style: BorderStyle.solid,
-											  				width: 3.0
-											  			)
-											  		)
+												height: 150,
+												width: 250.0,
+												decoration: BoxDecoration(
+													color: Colors.white,
+													border: Border(
+														left: BorderSide(
+															color: Colors.teal,
+															style: BorderStyle.solid,
+															width: 3.0
+														)
+													)
 
-											  	),
-											  ),
-											)),
+												),
+											), )),
 										Padding(padding: EdgeInsets.only(bottom: 10.0),
 											child: FadeIn(Container(
-											  	height: 150,
-											  	width: 250.0,
-											  	decoration: BoxDecoration(
-											  		color: Colors.white,
-											  		border: Border(
-											  			left: BorderSide(
-											  				color: Colors.red,
-											  				style: BorderStyle.solid,
-											  				width: 3.0
-											  			)
-											  		)
+												height: 150,
+												width: 250.0,
+												decoration: BoxDecoration(
+													color: Colors.white,
+													border: Border(
+														left: BorderSide(
+															color: Colors.red,
+															style: BorderStyle.solid,
+															width: 3.0
+														)
+													)
 
-											  	),
-											  ),
-											)),
+												),
+											), )),
 									],
 								),
 							),

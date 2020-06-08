@@ -7,8 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 class BlurCard extends StatefulWidget {
 	BlurCard({
 		Key key,
+		@required this.titre
 	}): super(key: key);
-
+	String titre;
 	@override
 	_BlurCardState createState() => _BlurCardState();
 }
@@ -24,7 +25,7 @@ class _BlurCardState extends State < BlurCard > {
 			children: [
 				SizedBox(
 					height: 50.0,
-					width: double.infinity,
+					width: double.maxFinite,
 					child: ClipRRect(
 						child: BackdropFilter(
 							filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -32,11 +33,13 @@ class _BlurCardState extends State < BlurCard > {
 								color: Colors.black.withOpacity(0.2),
 								child: Padding(
 									padding: EdgeInsets.only(left: 10.0),
-									child: Text("Vehicule", style: GoogleFonts.lobster(
-										color: Colors.white,
-										fontSize: 30,
-
-									), ),
+									child: Center(
+									  child: Text('${widget.titre}', style: GoogleFonts.lobster(
+									  	color: Colors.white,
+									  	fontSize: 30,
+									  	
+									  ), ),
+									),
 								),
 							),
 						),
