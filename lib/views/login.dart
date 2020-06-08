@@ -94,7 +94,7 @@ class _LoginState extends State < LoginPage > {
 						SizedBox.expand(
 							child: FittedBox(
 								fit: BoxFit.cover,
-								child: Image.asset("assets/sept.jpg"),
+								child: Image.asset("assets/deux.jpg"),
 							),
 						),
 						Container(

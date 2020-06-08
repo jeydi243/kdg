@@ -5,8 +5,11 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/components/pageV.dart';
 import 'package:kdg/components/perso.dart';
+import 'package:kdg/services/auth.dart';
+import 'package:kdg/views/login.dart';
 import 'package:pigment/pigment.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:slimy_card/slimy_card.dart';
 
 class MyPage extends StatefulWidget {
@@ -23,6 +26,7 @@ class _MyPageState extends State < MyPage > {
 	GlobalKey _bottomNavigationKey = GlobalKey();
 	@override
 	Widget build(BuildContext context) {
+		Auth auth = Provider.of < Auth > (context);
 		String _emailOrNomv = "";
 		return Scaffold(
 			backgroundColor: Colors.white,
@@ -73,9 +77,14 @@ class _MyPageState extends State < MyPage > {
 											right: 5,
 											bottom: 10
 										),
-										child: CircleAvatar(
-											backgroundColor: Colors.amber,
-											backgroundImage: NetworkImage("https://via.placeholder.com/150"),
+										child: GestureDetector(
+											onTap: () {
+												auth.signOut().then((d) => MaterialPageRoute(builder: (context) => LoginPage()));
+											},
+											child: CircleAvatar(
+												backgroundColor: Colors.amber,
+												backgroundImage: NetworkImage("https://via.placeholder.com/150"),
+											),
 										),
 									)
 								],
