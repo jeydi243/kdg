@@ -78,7 +78,7 @@ class _LoginState extends State < LoginPage > {
 	@override
 	void initState() {
 		super.initState();
-		showIndicator = false;
+		showIndicator = true;
 		_canObscure = false;
 	}
 	@override

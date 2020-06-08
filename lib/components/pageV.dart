@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/components/blur.dart';
 import 'package:kdg/views/CarsHome.dart';
 import 'dart:math';
@@ -36,11 +35,16 @@ class _PageVState extends State < PageV > {
 			});
 		});
 	}
+ @override
+  void dispose() {
+    super.dispose();
+	_controller.dispose();
+  }
 
 	@override
 	Widget build(BuildContext context) {
 		return PageView.builder(
-			
+
 			physics: BouncingScrollPhysics(),
 			controller: _controller,
 			itemCount: _list.length,
