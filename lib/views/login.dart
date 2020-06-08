@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 	});
 	final VoidCallback onSignedIn;
 	final VoidCallback move;
-	
+
 	@override
 	_LoginState createState() => _LoginState();
 }
@@ -66,7 +66,7 @@ class _LoginState extends State < LoginPage > {
 	Route _createRoute() {
 		return PageRouteBuilder(
 			opaque: true,
-			pageBuilder: (context, animation, secondaryAnimation) => Home(),
+			pageBuilder: (context, animation, secondaryAnimation) => page(),
 			//le monde est beau
 			transitionsBuilder: (context, animation, secondaryAnimation, child) {
 				var begin = Offset(0.0, 1.0);

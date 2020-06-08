@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kdg/services/auth.dart';
 import 'package:kdg/views/CarsHome.dart';
+import 'package:kdg/views/login.dart';
 import 'package:provider/provider.dart';
 import 'package:supercharged/supercharged.dart';
-import 'components/page.dart';
+import 'views/page.dart';
 
 void main() {
 	runApp(Kdg());
@@ -28,10 +29,11 @@ class Kdg extends StatelessWidget {
 						return FutureBuilder(
 							future: Provider.of < Auth > (context).currentUser(),
 							builder: (context, snap) {
-								return AnimatedSwitcher(
-									duration: 500. milliseconds,
-									child: snap.data == null ? MyPage() : MyPage(),
-								);
+								if (snap.hasData) {
+									return MyPage();
+								}else{
+									return LoginPage();
+								}
 							},
 						);
 					},
