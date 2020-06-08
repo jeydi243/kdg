@@ -24,13 +24,13 @@ class LoginPage extends StatefulWidget {
 class _LoginState extends State < LoginPage > {
 	final _formKey = GlobalKey < FormState > ();
 	Auth auth;
-	bool showIndicator = true;
-	bool _canObscure = false;
+	bool showIndicator;
+	bool _canObscure;
 	String fin = "#FAD961";
 	String _emailOrNom;
 	String _password;
 
-	bool _validateandSave() {
+	bool  _validateandSave() {
 		final form = _formKey.currentState;
 		if (form.validate()) {
 			form.save();
@@ -39,21 +39,19 @@ class _LoginState extends State < LoginPage > {
 			return false;
 		}
 	}
-	void _submit() async {
+	void  _submit() async {
 		if (_validateandSave()) {
 			setState(() {
 				showIndicator = false;
 			});
 			try {
-				await auth.signIn(_emailOrNom, _password).then((value) => {
-
+				await auth.signIn(_emailOrNom, _password).then((uid) => {
+					setState(() {
+						_formKey.currentState.reset();
+						showIndicator = true;
+						Navigator.of(context).push(_createRoute());
+					})
 				});
-
-				setState(() {
-					_formKey.currentState.reset();
-					showIndicator = true;
-				});
-				Navigator.of(context).push(_createRoute());
 			} catch (e) {
 				print(e);
 			}
@@ -77,6 +75,12 @@ class _LoginState extends State < LoginPage > {
 		);
 	}
 
+	@override
+	void initState() {
+		super.initState();
+		showIndicator = false;
+		_canObscure = false;
+	}
 	@override
 	Widget build(BuildContext context) {
 		auth = Provider.of < Auth > (context);

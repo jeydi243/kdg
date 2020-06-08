@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kdg/services/auth.dart';
-import 'package:kdg/views/CarsHome.dart';
 import 'package:kdg/views/login.dart';
 import 'package:provider/provider.dart';
-import 'package:supercharged/supercharged.dart';
 import 'views/page.dart';
 
 void main() {
