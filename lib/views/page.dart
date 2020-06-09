@@ -79,8 +79,9 @@ class _MyPageState extends State < MyPage > {
 										),
 										child: GestureDetector(
 											onTap: ()async {
-												await auth.signOut();
-												MaterialPageRoute(builder: (context) => LoginPage());
+												await auth.signOut().then((value){
+													Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
+												});
 											},
 											child: CircleAvatar(
 												backgroundColor: Colors.amber,
