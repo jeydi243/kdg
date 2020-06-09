@@ -78,8 +78,8 @@ class _MyPageState extends State < MyPage > {
 											bottom: 10
 										),
 										child: GestureDetector(
-											onTap: ()async {
-												await auth.signOut().then((value){
+											onTap: () async {
+												await auth.signOut().then((value) {
 													Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
 												});
 											},
@@ -99,41 +99,17 @@ class _MyPageState extends State < MyPage > {
 										);
 									} else if (_page == 1) {
 										return Expanded(
-											child: FadeIn(SizedBox(
-												height: double.infinity,
-												width: double.infinity,
-												child: ListView(
-													physics: BouncingScrollPhysics(),
-													children: < Widget > [
-														SlimyCard(
-															color: Colors.blueGrey,
-
-															width: 200,
-															topCardHeight: 400,
-															bottomCardHeight: 200,
-															borderRadius: 15,
-															topCardWidget: Container(
-																color: Colors.green
-															),
-															bottomCardWidget: Container(
-																height: 50,
-																color: Colors.red
-															),
-															slimeEnabled: true,
-														),
-													]
-												),
-											), ),
+											child: FadeIn(first(context)),
 										);
 									} else {
 										return Expanded(
-											child: Container(
+											child: FadeIn(Container(
 												child: DefaultTabController(
 													length: 3,
 													initialIndex: 0,
 													child: Column(
 														children: < Widget > [
-															FadeIn(Padding(
+															Padding(
 																padding: EdgeInsets.only(bottom: 10.0),
 																child: Row(
 																	children: < Widget > [
@@ -154,7 +130,7 @@ class _MyPageState extends State < MyPage > {
 																		)
 																	],
 																),
-															), ),
+															),
 															FadeIn(
 																SizedBox(
 																	height: 30.0,
@@ -208,7 +184,7 @@ class _MyPageState extends State < MyPage > {
 														],
 													),
 												),
-											)
+											), )
 										);
 									}
 								},
@@ -219,4 +195,32 @@ class _MyPageState extends State < MyPage > {
 			),
 		);
 	}
+	Widget first(BuildContext context) {
+		return SizedBox(
+			height: double.infinity,
+			width: double.infinity,
+			child: ListView(
+				physics: BouncingScrollPhysics(),
+				children: < Widget > [
+					SlimyCard(
+						color: Colors.blueGrey,
+
+						width: 200,
+						topCardHeight: 400,
+						bottomCardHeight: 200,
+						borderRadius: 15,
+						topCardWidget: Container(
+							color: Colors.green
+						),
+						bottomCardWidget: Container(
+							height: 50,
+							color: Colors.red
+						),
+						slimeEnabled: true,
+					),
+				]
+			),
+		);
+	}
+
 }
