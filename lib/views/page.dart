@@ -103,88 +103,7 @@ class _MyPageState extends State < MyPage > {
 										);
 									} else {
 										return Expanded(
-											child: FadeIn(Container(
-												child: DefaultTabController(
-													length: 3,
-													initialIndex: 0,
-													child: Column(
-														children: < Widget > [
-															Padding(
-																padding: EdgeInsets.only(bottom: 10.0),
-																child: Row(
-																	children: < Widget > [
-																		Expanded(
-																			child: Container(
-																				decoration: BoxDecoration(
-																					color: Colors.grey.withOpacity(0.2),
-																					borderRadius: BorderRadius.circular(20.0)
-																				),
-																				height: 40,
-																				padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-																				child: TextFormField(
-																					decoration: InputDecoration(
-																						border: InputBorder.none,
-																					),
-																				),
-																			),
-																		)
-																	],
-																),
-															),
-															FadeIn(
-																SizedBox(
-																	height: 30.0,
-																	child: Stack(
-																		fit: StackFit.loose,
-																		children: [
-																			Align(
-																				alignment: Alignment(0, 1),
-																				child: Container(
-																					color: Pigment.fromString("200540"),
-																					height: 0.5,
-																					width: double.infinity,
-																				),
-																			),
-																			TabBar(
-																				indicatorColor: Colors.amber,
-																				tabs: < Widget > [
-																					Tab(
-																						child: Text("Liste", style: GoogleFonts.lobster(
-																							color: Pigment.fromString("200540")
-																						), ),
-																					),
-																					Tab(
-																						child: Text("Etudes", style: GoogleFonts.lobster(
-																							color: Pigment.fromString("200540")
-																						), ),
-																					),
-																					Tab(
-																						child: Text("Notes", style: GoogleFonts.lobster(
-																							color: Colors.black
-																						), ),
-																					),
-																				],
-																			),
-																		]
-																	),
-																), ),
-															Expanded(
-																child: TabBarView(
-																	children: < Widget > [
-																		Perso(),
-																		Container(
-																			color: Colors.white,
-																		),
-																		Container(
-																			color: Colors.white,
-																		),
-																	],
-																),
-															)
-														],
-													),
-												),
-											), )
+											child: FadeIn(second(context))
 										);
 									}
 								},
@@ -219,6 +138,90 @@ class _MyPageState extends State < MyPage > {
 						slimeEnabled: true,
 					),
 				]
+			),
+		);
+	}
+	Widget second(BuildContext context) {
+		return Container(
+			child: DefaultTabController(
+				length: 3,
+				initialIndex: 0,
+				child: Column(
+					children: < Widget > [
+						Padding(
+							padding: EdgeInsets.only(bottom: 10.0),
+							child: Row(
+								children: < Widget > [
+									Expanded(
+										child: Container(
+											decoration: BoxDecoration(
+												color: Colors.grey.withOpacity(0.2),
+												borderRadius: BorderRadius.circular(20.0)
+											),
+											height: 40,
+											padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+											child: TextFormField(
+												decoration: InputDecoration(
+													border: InputBorder.none,
+												),
+											),
+										),
+									)
+								],
+							),
+						),
+						FadeIn(
+							SizedBox(
+								height: 30.0,
+								child: Stack(
+									fit: StackFit.loose,
+									children: [
+										Align(
+											alignment: Alignment(0, 1),
+											child: Container(
+												color: Pigment.fromString("200540"),
+												height: 0.5,
+												width: double.infinity,
+											),
+										),
+										TabBar(
+											indicatorColor: Colors.amber,
+											tabs: < Widget > [
+												Tab(
+													child: Text("Liste", style: GoogleFonts.lobster(
+														color: Pigment.fromString("200540")
+													), ),
+												),
+												Tab(
+													child: Text("Etudes", style: GoogleFonts.lobster(
+														color: Pigment.fromString("200540")
+													), ),
+												),
+												Tab(
+													child: Text("Notes", style: GoogleFonts.lobster(
+														color: Colors.black
+													), ),
+												),
+											],
+										),
+									]
+								),
+							), ),
+						Expanded(
+							child: TabBarView(
+								children: < Widget > [
+									Perso(),
+									Container(
+										color: Colors.white,
+									),
+									Container(
+										color: Colors.white,
+									),
+								],
+							),
+						)
+					],
+				),
 			),
 		);
 	}
