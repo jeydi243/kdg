@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kdg/components/blur.dart';
-import 'package:kdg/views/CarsHome.dart';
 import 'dart:math';
 
 
@@ -19,7 +18,8 @@ class _PageVState extends State < PageV > {
 	double myFraction = 0.8;
 	double pageOffset = 0;
 	String valeurBlur = "";
-	Map < String,String > _list = {
+	Map < String,
+	String > _list = {
 		"Rexton": "assets/onze.jpg",
 		"Audi": "assets/treze.jpg",
 		"Nissan Bus": "assets/six.jpg",
@@ -35,16 +35,15 @@ class _PageVState extends State < PageV > {
 			});
 		});
 	}
- @override
-  void dispose() {
-    super.dispose();
-	_controller.dispose();
-  }
+	@override
+	void dispose() {
+		super.dispose();
+		_controller.dispose();
+	}
 
 	@override
 	Widget build(BuildContext context) {
 		return PageView.builder(
-
 			physics: BouncingScrollPhysics(),
 			controller: _controller,
 			itemCount: _list.length,
@@ -65,10 +64,6 @@ class _PageVState extends State < PageV > {
 								SizedBox(
 									height: double.infinity,
 									child: GestureDetector(
-										onTap: () {
-											valeurBlur = _list.keys.elementAt(index);
-											Navigator.push(context, MaterialPageRoute(builder: (context) => CarsHome(name: _list[_list.keys.elementAt(index)], title: valeurBlur, )));
-										},
 										child: Hero(tag: '${_list[_list.keys.elementAt(index)]}', child: Image.asset(_list[_list.keys.elementAt(index)], fit: BoxFit.cover)),
 									),
 								),

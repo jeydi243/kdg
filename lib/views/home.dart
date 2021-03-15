@@ -1,115 +1,162 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:kdg/views/cars.dart';
-
+import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
+import 'package:kdg/animations/fadein.dart';
+import 'package:kdg/views/sections1.dart';
+import 'package:kdg/services/auth.dart';
+import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Home extends StatefulWidget {
-	Home({
-		Key key
-	}): super(key: key);
+  Home({Key key}) : super(key: key);
 
-	@override
-	_HomeState createState() => _HomeState();
+  @override
+  _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State < Home > {
-	ScrollController _controller;
-
-	@override
-	void initState() {
-		super.initState();
-		_controller = new ScrollController();
-	}
-	@override
-	Widget build(BuildContext context) {
-		return Scaffold(
-			body: SafeArea(
-				child: Padding(
-					padding: EdgeInsets.only(left: 10.0, right: 10.0),
-					child: Column(
-						children: < Widget > [
-							Padding(
-								padding: EdgeInsets.all(10.0),
-								child: Row(
-									children: < Widget > [
-										Spacer(),
-										Material(
-											elevation: 12.0,
-											color: Colors.transparent,
-											shadowColor: Colors.amber,
-											borderRadius: BorderRadius.all(Radius.circular(20.0)),
-											child: CircleAvatar(
-												backgroundColor: Colors.transparent,
-												child: Image.asset("assets/bald-man.png", ),
-
-											),
-										),
-
-									],
-								),
-							),
-							Expanded(
-								child: ListView(
-									controller: _controller,
-									physics: BouncingScrollPhysics(),
-									children: < Widget > [
-										Padding(
-											padding: EdgeInsets.only(bottom: 15.0, left: 15.0, right: 15.0, top: 25.0),
-											child: Stack(
-												children: < Widget > [
-													Card(
-														borderOnForeground: false,
-														color: Colors.transparent,
-														elevation: 15.0,
-														shadowColor: Colors.blueGrey,
-														child: Hero(
-															tag: "cars",
-															child: GestureDetector(
-																onTap: () {
-																	Navigator.of(context).push(MaterialPageRoute(builder: (_) => Cars()));
-																},
-																child: ClipRRect(
-																	borderRadius: BorderRadius.circular(20.0),
-																	child: Image.asset("assets/dix-sept.jpg"),
-																),
-															),
-														),
-													),
-													Positioned(
-														bottom: 8.0,
-														left: 20.0,
-														child: Text("Cars", style: GoogleFonts.dancingScript(
-															color: Colors.white,
-															fontSize: 30,
-															fontWeight: FontWeight.bold
-														), ),
-													),
-
-												]
-											)
-										),
-										Padding(
-											padding: EdgeInsets.only(bottom: 15.0, left: 15.0, right: 15.0, top: 25.0),
-											child: ClipRRect(
-												borderRadius: BorderRadius.circular(20.0),
-												child: Image.asset("assets/treze.jpg")
-											)
-										),
-										Padding(
-											padding: EdgeInsets.only(bottom: 15.0, left: 15.0, right: 15.0, top: 25.0),
-											child: ClipRRect(
-												borderRadius: BorderRadius.circular(20.0),
-												child: Image.asset("assets/huit.jpg")
-											)
-										),
-									],
-								),
-							)
-						],
-					),
-				)
-			)
-		);
-	}
+class _HomeState extends State<Home> {
+  final searchTextController = new TextEditingController();
+  String query = "";
+  @override
+  Widget build(BuildContext context) {
+    Auth auth = Provider.of<Auth>(context);
+    return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: CircleAvatar(),
+            )
+          ],
+        ),
+        body: SafeArea(
+          child: Section1(),
+          // child: Container(
+          //     height: Get.height,
+          //     child: SingleChildScrollView(
+          //       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          //       physics: BouncingScrollPhysics(),
+          //       child: Column(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           Padding(
+          //             padding: const EdgeInsets.only(bottom: 8.0),
+          //             child: FadeIn(
+          //               dur: .2,
+          //               child: Row(
+          //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //                   children: [
+          //                     Expanded(
+          //                       child: TextField(
+          //                         controller: searchTextController,
+          //                         onChanged: (value) {
+          //                           setState(() {
+          //                             query = value;
+          //                             print(value);
+          //                           });
+          //                         },
+          //                         cursorColor: Colors.amber,
+          //                         style: TextStyle(
+          //                           color: Colors.amber[300],
+          //                         ),
+          //                         decoration: InputDecoration(
+          //                           border: null,
+          //                           prefix: Padding(
+          //                             padding:
+          //                                 const EdgeInsets.only(right: 8),
+          //                             child: Icon(FontAwesomeIcons.search,
+          //                                 size: 17),
+          //                           ),
+          //                           hintText: ("Rechercher une information"),
+          //                           isDense: true,
+          //                           focusedBorder: InputBorder.none,
+          //                           contentPadding: EdgeInsets.all(8),
+          //                         ),
+          //                       ),
+          //                     )
+          //                   ]),
+          //             ),
+          //           ),
+          //           FadeIn(
+          //             dur: 0.2,
+          //             child: Material(
+          //               type: MaterialType.transparency,
+          //               elevation: 10,
+          //               child: Container(
+          //                 height: Get.height / 5,
+          //                 width: Get.width,
+          //                 child: ClipRRect(
+          //                   child: Image.asset(
+          //                     'assets/trois.jpg',
+          //                     fit: BoxFit.fitWidth,
+          //                   ),
+          //                   borderRadius: BorderRadius.circular(10),
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //           FadeIn(
+          //             dur: .6,
+          //             child: Container(
+          //               height: Get.height / 5,
+          //               width: Get.width,
+          //               child: ClipRRect(
+          //                 child: Image.asset(
+          //                   'assets/dix.jpg',
+          //                   fit: BoxFit.cover,
+          //                 ),
+          //                 borderRadius: BorderRadius.circular(10),
+          //               ),
+          //             ),
+          //           ),
+          //           FadeIn(
+          //             dur: .8,
+          //             child: Container(
+          //               height: Get.height / 5,
+          //               width: Get.width,
+          //               child: ClipRRect(
+          //                 child: Image.asset(
+          //                   'assets/cinq.jpg',
+          //                   fit: BoxFit.cover,
+          //                 ),
+          //                 borderRadius: BorderRadius.circular(10),
+          //               ),
+          //             ),
+          //           ),
+          //           FadeIn(
+          //             dur: 1,
+          //             child: Container(
+          //               height: Get.height / 5,
+          //               width: Get.width,
+          //               child: ClipRRect(
+          //                 child: Image.asset(
+          //                   'assets/deux.jpg',
+          //                   fit: BoxFit.fitWidth,
+          //                 ),
+          //                 borderRadius: BorderRadius.circular(10),
+          //               ),
+          //             ),
+          //           ),
+          //           FadeIn(
+          //             dur: 1.2,
+          //             child: Container(
+          //               height: Get.height / 5,
+          //               width: Get.width,
+          //               child: ClipRRect(
+          //                 child: Image.asset(
+          //                   'assets/un.jpg',
+          //                   fit: BoxFit.fitWidth,
+          //                 ),
+          //                 borderRadius: BorderRadius.circular(10),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ))
+        ));
+  }
 }
