@@ -19,7 +19,7 @@ class _Section1State extends State<Section1> {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ...imgsrc.map((e) => Image.asset(e)).toList(),
           // Image.asset(

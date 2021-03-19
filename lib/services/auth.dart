@@ -29,9 +29,8 @@ class Auth implements BaseAuth {
   Future<void> signOut() async {
     return _fbAuth.signOut();
   }
-
-  Future<String> currentUserUid() async {
-    User user = await _fbAuth.currentUser;
+String currentUserUid() {
+    User user =  _fbAuth.currentUser;
     return user?.uid;
   }
 
