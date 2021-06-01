@@ -22,26 +22,6 @@ class _Section1State extends State<Section1> {
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ...imgsrc.map((e) => Image.asset(e)).toList(),
-          // Image.asset(
-          //   'assets/melissa2.jpg',
-          //   fit: BoxFit.fitHeight,
-          // ),
-          // Image.asset(
-          //   'assets/melki.jpg',
-          //   fit: BoxFit.fitHeight,
-          // ),
-          // Image.asset(
-          //   'assets/epa.jpg',
-          //   fit: BoxFit.fitHeight,
-          // ),
-          // Image.asset(
-          //   'assets/melissa.jpg',
-          //   fit: BoxFit.fitHeight,
-          // ),
-          // Image.asset(
-          //   'assets/sami.jpg',
-          //   fit: BoxFit.fitHeight,
-          // ),
         ],
       ),
     );
