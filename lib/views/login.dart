@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kdg/services/auth.dart';
+import 'package:kdg/views/home.dart';
 import 'package:kdg/views/user/ModifierPassword.dart';
+import 'package:provider/provider.dart';
 import 'signup.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -122,30 +125,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _facebookButton() {
-    return Container(
-      height: Get.height * .1,
-      margin: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-      child: Column(
-        children: [
-          SignInButton(
-            Buttons.Facebook,
-            text: "Se connecter avec Facebook",
-            onPressed: () {},
-          ),
-          SignInButton(
-            Buttons.Google,
-            text: "Se connecter avec Google",
-            onPressed: () {},
-          )
-        ],
-      ),
-    );
-  }
-
   Widget _createAccountLabel() {
     return InkWell(
       onTap: () {
@@ -190,15 +169,16 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    Auth auth = Provider.of<Auth>(context);
+
     return Scaffold(
         body: SafeArea(
       child: Container(
-        height: height,
+        height: Get.height,
         child: Stack(
           children: <Widget>[
             Positioned(
-                top: -height * .15,
+                top: -Get.height * .15,
                 right: -MediaQuery.of(context).size.width * .4,
                 child: BezierContainer()),
             Container(
@@ -219,7 +199,7 @@ class _LoginState extends State<Login> {
                     ),
                     // SizedBox(height: 50),
                     _emailPasswordWidget(),
-                    SizedBox(height: 20),
+
                     _submitButton(),
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 10),
@@ -237,15 +217,31 @@ class _LoginState extends State<Login> {
                     SignInButton(
                       Buttons.Facebook,
                       text: "Se connecter avec Facebook",
-                      onPressed: () {},
+                      onPressed: () {
+                        auth.signInWithFacebook().then((value) {
+                          if (value) {
+                            print(value);
+                            Get.to(Home());
+                          }
+                        });
+                      },
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                     ),
 
                     SignInButton(
                       Buttons.Google,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       text: "Se connecter avec Google",
-                      onPressed: () {},
+                      onPressed: () {
+                        auth.signInWithGoogle().then((value) {
+                          if (value) {
+                            print(value);
+                            Get.to(Home());
+                          }
+                        });
+                      },
                     ),
-                    SizedBox(height: height * .055),
+
                     _createAccountLabel(),
                   ],
                 ),

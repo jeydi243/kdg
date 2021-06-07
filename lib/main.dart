@@ -23,7 +23,7 @@ class Kdg extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<Auth>(
+        ChangeNotifierProvider<Auth>(
           create: (_) => Auth(),
           lazy: false,
         )

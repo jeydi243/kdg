@@ -15,7 +15,6 @@ import 'package:kdg/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:kdg/services/log.dart';
 
-
 class Auth extends ChangeNotifier {
   FirebaseAuth _auth;
   GoogleSignIn gsign;
@@ -36,14 +35,16 @@ class Auth extends ChangeNotifier {
     _fcm = FirebaseMessaging.instance;
     _fcm.setForegroundNotificationPresentationOptions(
         alert: true, badge: true, sound: true);
-    getDeviceToken();
 
     firestore = FirebaseFirestore.instance;
     gsign = GoogleSignIn();
     fbAuth = FacebookAuth.instance;
     log = Log();
     _auth = FirebaseAuth.instance;
-    if (_auth.currentUser != null) setUserMadia();
+    if (_auth.currentUser != null) {
+      setUserMadia();
+      getDeviceToken();
+    }
   }
 
   Future<Map<String, dynamic>> signup(
@@ -101,7 +102,7 @@ class Auth extends ChangeNotifier {
 
   User get currentUser => _auth.currentUser;
   FirebaseAuth get auth => _auth;
-  UserKDG get userMadia => _user;
+  UserKDG get userKDG => _user;
 
   Future<void> setUserMadia() async {
     try {

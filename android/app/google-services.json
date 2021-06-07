@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "464753026338-i5a2fmsl4bfplo42ui20j34bp7vmdjvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.epinc.kdg",
+            "certificate_hash": "4520fab4f8d80bf888a704cf51432b46cc6a4a5f"
+          }
+        },
+        {
           "client_id": "464753026338-eusho959g5c4b8rn96o9revtd03t658c.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -30,6 +38,13 @@
             {
               "client_id": "464753026338-eusho959g5c4b8rn96o9revtd03t658c.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "464753026338-0ajeag23r0c0df2sco2rltfcng6fc5kb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.epinc.kdg"
+              }
             }
           ]
         }
