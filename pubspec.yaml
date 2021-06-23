@@ -1,8 +1,6 @@
 name: kdg
 description: A new Flutter project.
 
-# The following line prevents the package from being accidentally published to
-# pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
@@ -12,22 +10,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^5.0.0
-  pigment: ^1.0.3
-  google_fonts: ^2.0.0
   adobe_xd: ^1.1.0+1
+  pigment: ^1.0.3
   cloud_firestore: ^1.0.1
+  curved_navigation_bar: ^0.3.2
   firebase_core: ^1.0.1
   firebase_auth: ^1.0.1
   firebase_analytics: ^7.1.1
-  supercharged: ^2.0.0
-  simple_animations: ^3.0.2
-  parallax_image: ^0.3.1+1
-  slimy_card: ^1.0.4
   font_awesome_flutter: ^8.8.1
-  get: ^3.25.4
+  google_fonts: ^2.0.0
+  parallax_image: ^0.3.1+1
+  provider: ^5.0.0
+  get: ^3.26.0
   loading: ^1.0.2
-  curved_navigation_bar: ^0.3.2
+  slimy_card: ^1.0.4
+  simple_animations: ^3.0.2
+  supercharged: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

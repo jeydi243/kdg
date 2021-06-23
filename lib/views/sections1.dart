@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class Section1 extends StatefulWidget {
   Section1({Key key}) : super(key: key);
@@ -18,10 +21,28 @@ class _Section1State extends State<Section1> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
+      child: ListView(
+        scrollDirection: Axis.horizontal,
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ...imgsrc.map((e) => Image.asset(e)).toList(),
+          ...imgsrc
+              .map((e) => MouseRegion(
+                    cursor: MouseCursor.defer,
+                    onEnter: (event) {
+                      print(event.position);
+                    },
+                    onExit: (event) {
+                      print(event.position);
+                    },
+                    child: SizedBox(
+                      width: Get.width / 5,
+                      child: Image.asset(
+                        e,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ))
+              .toList(),
           // Image.asset(
           //   'assets/melissa2.jpg',
           //   fit: BoxFit.fitHeight,

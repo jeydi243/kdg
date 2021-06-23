@@ -5,40 +5,28 @@ import 'package:kdg/services/auth.dart';
 import 'package:kdg/views/home.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Kdg());
+  await Firebase.initializeApp().then((value) {
+    runApp(Kdg());
+  }).catchError((err) {
+
+  });
 }
 
 class Kdg extends StatelessWidget {
   // This widget is the root of your application.
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<Auth>(
-          create: (_) => Auth(),
+          create: (context) => Auth(),
           lazy: false,
         )
       ],
       child: GetMaterialApp(
-          title: 'Kdg',
-          debugShowCheckedModeBanner: false,
-          home: LayoutBuilder(
-            builder: (context,constraints) {
-              return FutureBuilder(
-                future: _initialization,
-                builder: (context, snap) {
-                  if (snap.hasData) {
-                    return Home();
-                  } else {
-                    return Home();
-                  }
-                },
-              );
-            },
-          )),
+          title: 'Kdg', debugShowCheckedModeBanner: false, home: Home()),
     );
   }
 }
