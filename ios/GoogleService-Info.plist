@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>3004679333-mkr7p23co9d2r7p7i3f4uk6gsg7r03oa.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.3004679333-mkr7p23co9d2r7p7i3f4uk6gsg7r03oa</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>3004679333-plbll7fqcme9sb2ll08b93u3206obt8p.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBKLFCqedTN753ECi4MCUf8JI-D0zxr1yU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>3004679333</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>din.technology.madia</string>
+	<key>PROJECT_ID</key>
+	<string>madia-a0999</string>
+	<key>STORAGE_BUCKET</key>
+	<string>madia-a0999.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:3004679333:ios:8b4e6dfb64ea5376b8b94c</string>
+	<key>DATABASE_URL</key>
+	<string>https://madia-a0999.firebaseio.com</string>
+</dict>
+</plist>

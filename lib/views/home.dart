@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
           ],
         ),
         body: SafeArea(
-          child: Section1(), 
+          child: Text("le monde est beau"), 
 
         ));
   }
