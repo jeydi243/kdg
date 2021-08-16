@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/auth.dart';
 import 'package:kdg/views/home.dart';
+import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/login.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +33,9 @@ class Kdg extends StatelessWidget {
       child: GetMaterialApp(
           title: 'Kdg',
           debugShowCheckedModeBanner: false,
+// customTransition: ,
+          customTransition: CircleTrans(),
+          builder: BotToastInit(),
           home: LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxHeight == Get.height) {
@@ -40,7 +45,7 @@ class Kdg extends StatelessWidget {
                     if (snapshot.hasData) {
                       return Home();
                     } else {
-                      return Login();
+                      return Home();
                     }
                   },
                 );
