@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/services/auth.dart';
+import 'package:kdg/services/user_service.dart';
 import 'package:kdg/views/home.dart';
 import 'package:kdg/views/user/ModifierPassword.dart';
 import 'package:provider/provider.dart';
@@ -169,7 +169,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    Auth auth = Provider.of<Auth>(context);
+    UserService userService = Provider.of<UserService>(context);
 
     return Scaffold(
         body: SafeArea(
@@ -218,7 +218,7 @@ class _LoginState extends State<Login> {
                       Buttons.Facebook,
                       text: "Se connecter avec Facebook",
                       onPressed: () {
-                        auth.signInWithFacebook().then((value) {
+                        userService.signInWithFacebook().then((value) {
                           if (value) {
                             print(value);
                             Get.to(Home());
@@ -233,7 +233,7 @@ class _LoginState extends State<Login> {
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       text: "Se connecter avec Google",
                       onPressed: () {
-                        auth.signInWithGoogle().then((value) {
+                        userService.signInWithGoogle().then((value) {
                           if (value) {
                             print(value);
                             Get.to(Home());

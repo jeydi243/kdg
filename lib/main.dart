@@ -2,9 +2,10 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:kdg/services/vehicule_service.dart';
 import 'package:logger/logger.dart';
 import 'package:get/get.dart';
-import 'package:kdg/services/auth.dart';
+import 'package:kdg/services/user_service.dart';
 import 'package:kdg/views/home.dart';
 import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/login.dart';
@@ -25,16 +26,20 @@ class Kdg extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<Auth>(
-          create: (_) => Auth(),
+        ChangeNotifierProvider<UserService>(
+          create: (_) => UserService(),
           lazy: false,
-        )
+        ),
+        ChangeNotifierProvider<VehiculeService>(
+          create: (_) => VehiculeService(),
+          lazy: false,
+        ),
       ],
       child: GetMaterialApp(
           title: 'Kdg',
           debugShowCheckedModeBanner: false,
 // customTransition: ,
-          customTransition: CircleTrans(),
+          // customTransition: CircleTrans(),
           builder: BotToastInit(),
           home: LayoutBuilder(
             builder: (context, constraints) {

@@ -15,8 +15,8 @@ class Rapport {
 		this.visites
 	});
 
-	Rapport.fromMap(Map snapshot, String id):
-		id = id ?? '',
+	Rapport.fromMap(Map<String,dynamic> snapshot):
+		id = snapshot['id'] ?? '',
 		mois = snapshot['mois'] ?? '',
 		heures = snapshot['heures'] ?? '',
 		etudes = snapshot['etudes'] ?? '',

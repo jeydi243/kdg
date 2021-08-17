@@ -15,7 +15,7 @@ import 'package:kdg/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:kdg/services/log.dart';
 
-class Auth extends ChangeNotifier {
+class UserService extends ChangeNotifier {
   FirebaseAuth _auth;
   GoogleSignIn gsign;
   FacebookAuth fbAuth;
