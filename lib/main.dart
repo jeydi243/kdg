@@ -2,6 +2,9 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:kdg/models/maison.dart';
+import 'package:kdg/models/rapport.dart';
+import 'package:kdg/models/vehicule.dart';
 import 'package:kdg/services/vehicule_service.dart';
 import 'package:logger/logger.dart';
 import 'package:get/get.dart';
@@ -34,12 +37,35 @@ class Kdg extends StatelessWidget {
           create: (_) => VehiculeService(),
           lazy: false,
         ),
+        StreamProvider<List<Vehicule>>(
+          create: (_) => VehiculeService().listenCar(),
+          initialData: <Vehicule>[],
+          lazy: false,
+        ),
+        StreamProvider<List<Maison>>(
+          create: (_) => VehiculeService().listenHouse(),
+          initialData: <Maison>[],
+          lazy: false,
+        ),
+        StreamProvider<List<Rapport>>(
+          create: (_) => VehiculeService().listenRapports(),
+          initialData: <Rapport>[],
+          lazy: false,
+        ),
+        StreamProvider<List<Map>>(
+          create: (_) => VehiculeService().listenBdd(),
+          initialData: <Map>[],
+          lazy: false,
+        ),
+        ChangeNotifierProvider<VehiculeService>(
+          create: (_) => VehiculeService(),
+          lazy: false,
+        ),
       ],
       child: GetMaterialApp(
           title: 'Kdg',
           debugShowCheckedModeBanner: false,
-// customTransition: ,
-          // customTransition: CircleTrans(),
+          customTransition: CircleTrans(),
           builder: BotToastInit(),
           home: LayoutBuilder(
             builder: (context, constraints) {

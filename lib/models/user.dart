@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'rapport.dart';
 
-class UserKDG {
+class UserKDG implements Type {
   String _id;
   String _name;
   String _email;

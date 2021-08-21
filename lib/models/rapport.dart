@@ -1,4 +1,4 @@
-class Rapport {
+class Rapport implements Type {
 	String id;
 	String mois;
 	int heures;

@@ -8,7 +8,10 @@ import 'package:kdg/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'details.dart';
+import 'bdd/details.dart';
+import 'cars/details.dart';
+import 'houses/details.dart';
+import 'rapports/details.dart';
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -100,10 +103,33 @@ class _HomeState extends State<Home> {
                   tag: list[index]['imgsrc'],
                   child: GestureDetector(
                     onTap: () {
-                      Get.to(Details(
-                        imgsrc: list[index]['imgsrc'],
-                        collection: list[index]['collection'],
-                      ));
+                      switch (list[index]['collection']) {
+                        case 'cars':
+                          Get.to(DetailsCar(
+                            imgsrc: list[index]['imgsrc'],
+                            collection: list[index]['collection'],
+                          ));
+                          break;
+                        case 'houses':
+                          Get.to(DetailsHouse(
+                            imgsrc: list[index]['imgsrc'],
+                            collection: list[index]['collection'],
+                          ));
+                          break;
+                        case 'rapports':
+                          Get.to(DetailsRapport(
+                            imgsrc: list[index]['imgsrc'],
+                            collection: list[index]['collection'],
+                          ));
+                          break;
+                        case 'bdd':
+                          Get.to(DetailsBdd(
+                            imgsrc: list[index]['imgsrc'],
+                            collection: list[index]['collection'],
+                          ));
+                          break;
+                        default:
+                      }
                     },
                     child: Image.asset(
                       list[index]['imgsrc'],

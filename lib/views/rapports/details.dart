@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kdg/models/vehicule.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/services/vehicule_service.dart';
 import 'package:kdg/utils/utils.dart';
@@ -9,18 +10,19 @@ import 'package:kdg/views/cars/item.dart';
 import 'package:pigment/pigment.dart';
 import 'package:provider/provider.dart';
 
-class Details extends StatefulWidget {
-  Details({Key key, this.imgsrc, this.collection}) : super(key: key);
+class DetailsRapport extends StatefulWidget {
+  DetailsRapport({Key key, this.imgsrc, this.collection}) : super(key: key);
   final String imgsrc;
   final String collection;
   @override
-  _DetailsState createState() => _DetailsState();
+  _DetailsRapportState createState() => _DetailsRapportState();
 }
 
-class _DetailsState extends State<Details> {
+class _DetailsRapportState extends State<DetailsRapport> {
   @override
   Widget build(BuildContext context) {
     VehiculeService vehiculeService = Provider.of<VehiculeService>(context);
+    List<Vehicule> listvehicule = Provider.of<List<Vehicule>>(context);
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
       body: StreamBuilder<List>(
@@ -78,9 +80,13 @@ class _DetailsState extends State<Details> {
                     ),
                   ),
                   SliverList(
-                    delegate: SliverChildBuilderDelegate((ctx, index) {
-                      return CarItem(item: snapshot.data[index]);
-                    }, childCount: snapshot.data.length,),
+                    delegate: SliverChildBuilderDelegate(
+                      (ctx, index) {
+                        return CarItem(
+                            item: vehiculeService.listVehicules[index]);
+                      },
+                      childCount: listvehicule.length,
+                    ),
                   )
                 ],
               );

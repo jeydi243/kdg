@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Vehicule {
+class Vehicule implements Type {
   String model;
   String id;
   String nom;
