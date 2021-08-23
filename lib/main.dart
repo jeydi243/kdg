@@ -33,39 +33,52 @@ class Kdg extends StatelessWidget {
           create: (_) => UserService(),
           lazy: false,
         ),
-        ChangeNotifierProvider<VehiculeService>(
-          create: (_) => VehiculeService(),
-          lazy: false,
-        ),
+        // ChangeNotifierProvider<VehiculeService>(
+        //   create: (_) => VehiculeService(),
+        //   lazy: false,
+        // ),
         StreamProvider<List<Vehicule>>(
-          create: (_) => VehiculeService().listenCar(),
+          create: (_) => VehiculeService().listenCar,
           initialData: <Vehicule>[],
           lazy: false,
+          // value: VehiculeService().listenCar,
+          catchError: (context, error) {
+            Logger().e("Error lors du retrieve: $error ");
+            return <Vehicule>[];
+          },
         ),
-        StreamProvider<List<Maison>>(
-          create: (_) => VehiculeService().listenHouse(),
+        StreamProvider<List<Maison>>.value(
+          value: VehiculeService().listenHouse,
           initialData: <Maison>[],
+          catchError: (context, error) {
+            Logger().e("Error lors du retrieve: $error ");
+            return <Maison>[];
+          },
           lazy: false,
         ),
-        StreamProvider<List<Rapport>>(
-          create: (_) => VehiculeService().listenRapports(),
+        StreamProvider<List<Rapport>>.value(
+          value: VehiculeService().listenRapports,
           initialData: <Rapport>[],
           lazy: false,
+          catchError: (context, error) {
+            Logger().e("Error lors du retrieve: $error");
+            return <Rapport>[];
+          },
         ),
-        StreamProvider<List<Map>>(
-          create: (_) => VehiculeService().listenBdd(),
-          initialData: <Map>[],
-          lazy: false,
-        ),
-        ChangeNotifierProvider<VehiculeService>(
-          create: (_) => VehiculeService(),
-          lazy: false,
-        ),
+        // StreamProvider<List<Map<String, dynamic>>>.value(
+        //   value: VehiculeService().listenBdd,
+        //   initialData: <Map<String, dynamic>>[],
+        //   lazy: false,
+        //   catchError: (context, error) {
+        //     Logger().e("Error lors du retrieve: $error");
+        //     return <Map<String, dynamic>>[];
+        //   },
+        // ),
       ],
       child: GetMaterialApp(
           title: 'Kdg',
           debugShowCheckedModeBanner: false,
-          customTransition: CircleTrans(),
+          // customTransition: CircleTrans(),
           builder: BotToastInit(),
           home: LayoutBuilder(
             builder: (context, constraints) {

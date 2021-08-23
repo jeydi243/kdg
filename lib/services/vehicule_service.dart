@@ -12,7 +12,7 @@ import 'package:kdg/models/rapport.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class VehiculeService extends ChangeNotifier {
+class VehiculeService {
   FirebaseAuth _auth;
   firebase_storage.FirebaseStorage storage;
   FirebaseFirestore firestore;
@@ -23,33 +23,55 @@ class VehiculeService extends ChangeNotifier {
     _auth = FirebaseAuth.instance;
     firestore = FirebaseFirestore.instance;
   }
-  Stream<List<Vehicule>> listenCar() {
+  Stream<List<Vehicule>> get listenCar {
+    Logger().i('Listen for cars');
     return firestore
         .collection('cars')
         .snapshots(includeMetadataChanges: true)
-        .map<List<Vehicule>>(converter);
+        .map<List<Vehicule>>((QuerySnapshot snap) {
+      return snap.docChanges.map<Vehicule>((DocumentChange e) {
+        Logger().v('EPA: ${e.doc.data()}');
+        return Vehicule.fromMap({...e.doc.data(), 'id': e.doc.id});
+      }).toList();
+    });
   }
 
-  Stream<List<Maison>> listenHouse() {
+  Stream<List<Maison>> get listenHouse {
+    Logger().i('Listen for houses');
     return firestore
         .collection('houses')
         .snapshots(includeMetadataChanges: true)
-        .map<List<Maison>>(converter);
+        .map<List<Maison>>((snap) {
+      return snap.docChanges
+          .map<Maison>((e) => Maison.fromMap({...e.doc.data(), 'id': e.doc.id}))
+          .toList();
+    });
   }
 
-  Stream<List<Rapport>> listenRapports() {
+  Stream<List<Rapport>> get listenRapports {
+    Logger().i('Listen for rapports');
     return firestore
         .collection('rapports')
         .snapshots(includeMetadataChanges: true)
-        .map<List<Rapport>>(converter);
+        .map<List<Rapport>>((snap) {
+      return snap.docChanges
+          .map<Rapport>(
+              (e) => Rapport.fromMap({...e.doc.data(), 'id': e.doc.id}))
+          .toList();
+    });
   }
 
-  Stream<List<Map>> listenBdd() {
-    return firestore
-        .collection('bdd')
-        .snapshots(includeMetadataChanges: true)
-        .map<List<Map>>(converter);
-  }
+  // Stream<List<Map<String, dynamic>>> get listenBdd {
+  //   Logger().i('Listen for bdd');
+  //   return firestore
+  //       .collection('bdd')
+  //       .snapshots(includeMetadataChanges: true)
+  //       .map<List<Map>>((snap) {
+  //     return snap.docChanges
+  //         .map<Map<String, dynamic>>((e) => {...e.doc.data(), 'id': e.doc.id})
+  //         .toList();
+  //   });
+  // }
 
   Stream<List> get({String streamOn}) {
     return firestore
@@ -67,26 +89,6 @@ class VehiculeService extends ChangeNotifier {
     return paletteGenerator.dominantColor.color;
   }
 
-  List<T> converter<T>(QuerySnapshot snap) {
-    if (T.runtimeType == Vehicule) {
-      return snap.docChanges
-          .map<dynamic>(
-              (e) => Vehicule.fromMap({...e.doc.data(), 'id': e.doc.id}))
-          .toList();
-    } else if (T.runtimeType == Rapport) {
-      snap.docChanges
-          .map<dynamic>(
-              (e) => Rapport.fromMap({...e.doc.data(), 'id': e.doc.id}))
-          .toList();
-    } else if (T.runtimeType == Maison) {
-      snap.docChanges
-          .map<dynamic>(
-              (e) => Maison.fromMap({...e.doc.data(), 'id': e.doc.id}))
-          .toList();
-    }
-    Logger().i('Just call converter for ${T.runtimeType}');
-  }
-
   genericListener(dynamic items) {
     Logger().i("${(items as List).length} items ajouté ");
     if (items[0] is Maison) {
@@ -98,6 +100,5 @@ class VehiculeService extends ChangeNotifier {
     } else {
       Logger().e("Aucun de ces types n'a ete choisi ...");
     }
-    notifyListeners();
   }
 }

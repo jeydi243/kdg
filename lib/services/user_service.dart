@@ -326,7 +326,7 @@ class UserService extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> updateProfile(
-      {File img, Map<String, String> form}) async {
+      {File img, Map<String, dynamic> form}) async {
     try {
       var userRef = firestore.collection("users").doc(_auth.currentUser.uid);
       var user = await userRef.get();

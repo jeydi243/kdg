@@ -1,4 +1,4 @@
-class Maison implements Type{
+class Maison{
   String nom;
   String id;
   Maison(this.nom);

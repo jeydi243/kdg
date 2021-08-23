@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Vehicule implements Type {
+class Vehicule {
   String model;
   String id;
   String nom;
-  Map<String, String> assurance;
-  Map<String, String> controle;
-  Map<String, String> stationnement;
-  Map<String, String> vignette;
-  List<Map<String, String>> get listDocuments =>
+  Map<String, dynamic> assurance;
+  Map<String, dynamic> controle;
+  Map<String, dynamic> stationnement;
+  Map<String, dynamic> vignette;
+  List<Map<String, dynamic>> get listDocuments =>
       [assurance, controle, stationnement, vignette];
   String get Nom => nom;
   Vehicule({
@@ -19,11 +19,12 @@ class Vehicule implements Type {
     this.stationnement,
     this.vignette,
   });
-  Vehicule.fromMap(Map snapshot)
+  Vehicule.fromMap(Map<String, dynamic> snapshot)
       : id = snapshot['id'] ?? '',
         nom = snapshot['nom'] ?? '',
-        assurance = snapshot['assurance'] ?? '',
-        controle = snapshot['controle'] ?? '',
-        stationnement = snapshot['stationnement'] ?? '',
-        vignette = snapshot['vignette'] ?? '';
+        model = snapshot['model'] ?? '',
+        assurance = snapshot['assurance'] ?? <String, int>{},
+        controle = snapshot['controle'] ?? <String, int>{},
+        stationnement = snapshot['stationnement'] ?? <String, int>{},
+        vignette = snapshot['vignette'] ?? <String, int>{};
 }

@@ -3,19 +3,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kdg/models/vehicule.dart';
 import 'package:kdg/utils/utils.dart';
+import 'package:logger/logger.dart';
 
 class CarItem extends StatefulWidget {
   CarItem({Key key, this.item}) : super(key: key);
-  final dynamic item;
+  final Vehicule item;
   @override
   _CarItemState createState() => _CarItemState();
 }
 
 class _CarItemState extends State<CarItem> {
   @override
+  void initState() {
+    Logger().i('${widget.item.toString()}');
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    QueryDocumentSnapshot er = widget.item;
+    Vehicule car = widget.item;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Container(
@@ -24,7 +32,7 @@ class _CarItemState extends State<CarItem> {
         child: Column(
           children: [
             Text(
-              "${(er.get('nom') as String).capitalizeFirst}",
+              "${(car.Nom)}",
               style: TextStyle(fontSize: 22, color: Colors.black),
             ),
             DottedBorder(
