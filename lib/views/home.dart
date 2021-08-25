@@ -36,11 +36,6 @@ class _HomeState extends State<Home> {
       "collection": "houses"
     },
     {
-      "imgsrc": "assets/rapport.jpg",
-      "text": "Rapports",
-      "collection": "rapports"
-    },
-    {
       "imgsrc": "assets/familles.webp",
       "text": "Familles",
       "collection": "familles"
@@ -49,6 +44,11 @@ class _HomeState extends State<Home> {
       "imgsrc": "assets/paysage.webp",
       "text": "Base de connaissance",
       "collection": "bdd"
+    },
+    {
+      "imgsrc": "assets/rapport.jpg",
+      "text": "Rapports",
+      "collection": "rapports"
     },
   ];
   @override
@@ -60,27 +60,22 @@ class _HomeState extends State<Home> {
           elevation: 0,
           title: InputChip(
             label: Text("Rechercher"),
+            showCheckmark: true,
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: Badge(
-                badgeContent: Text(
-                  '8',
-                  // style: TextStyle(height: 5),
-                ),
-                child: CircleAvatar(
-                  backgroundImage: AssetImage("assets/epa.jpg"),
-                  radius: 20,
-                  child: DropdownButton(
-                      items: ['Modifier le Profil']
-                          .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList()),
-                ),
+              padding: const EdgeInsets.only(right: 20),
+              child: CircleAvatar(
+                backgroundImage: AssetImage("assets/epa.jpg"),
+                radius: 20,
+                // child: DropdownButton(
+                //     items: ['Modifier le Profil']
+                //         .map<DropdownMenuItem<String>>((String value) {
+                //   return DropdownMenuItem<String>(
+                //     value: value,
+                //     child: Text(value),
+                //   );
+                // }).toList()),
               ),
             )
           ],
@@ -109,7 +104,7 @@ class _HomeState extends State<Home> {
                           case 'rapports':
                             Get.to(DetailsRapport(item: list[index]));
                             break;
-                          case 'bdd':
+                          case 'familles':
                             Get.to(DetailsFamille(item: list[index]));
                             break;
                           default:

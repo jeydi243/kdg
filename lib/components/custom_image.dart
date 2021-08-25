@@ -10,15 +10,17 @@ class CustomImage extends StatefulWidget {
 
 class _CustomImageState extends State<CustomImage> {
   Tween<double> heightAnime =
-      Tween(begin: Get.height * .3, end: Get.height * .4);
+      Tween(begin: Get.height * .2, end: Get.height * .4);
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: heightAnime,
-      duration: 2.seconds,
-      curve: Curves.easeOutBack,
+      duration: 1.seconds,
+      curve: Curves.decelerate,
       builder: (context, double value, child) {
-        return SizedBox(width: double.infinity, height: value, child: child);
+        return Center(
+            child:
+                SizedBox(width: double.infinity, height: value, child: child));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),

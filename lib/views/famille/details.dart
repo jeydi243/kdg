@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kdg/components/custom_image.dart';
+import 'package:kdg/utils/utils.dart';
+import 'package:kdg/views/cars/item.dart';
+import 'package:logger/logger.dart';
 
 class DetailsFamille extends StatefulWidget {
   DetailsFamille({Key key, this.item}) : super(key: key);
@@ -10,8 +15,74 @@ class DetailsFamille extends StatefulWidget {
 class _DetailsFamilleState extends State<DetailsFamille> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: null,
+List<Map<String,dynamic>> map = <Map<String,dynamic>>[];
+    return  Scaffold(
+      backgroundColor: HexColor.fromHex("FDF8F8"),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: Get.height * .4,
+              actions: [
+                IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
+              ],
+              stretch: true,
+              backgroundColor: HexColor.fromHex("FDF8F8"),
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                title: Text(widget.item['collection']),
+                stretchModes: [
+                  StretchMode.blurBackground,
+                  StretchMode.fadeTitle
+                ],
+                background: GestureDetector(
+                  onVerticalDragEnd: (gf) {
+                    Logger().i(gf);
+                    Navigator.pop(context);
+                  },
+                  child: Stack(children: [
+                    CustomImage(
+                      imgsrc: widget.item['imgsrc'],
+                    ),
+                    Align(
+                      alignment: Alignment(0, 1),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment(0, 1),
+                                    end: Alignment(0, -1),
+                                    colors: [
+                                  HexColor.fromHex("FDF8F8").withOpacity(.3),
+                                  Colors.transparent
+                                ]))),
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
+            SliverAnimatedList(
+              // delegate: SliverChildBuilderDelegate(
+              //   (ctx, index) {
+              //     print(listVehicules);
+              //     return CarItem(item: listVehicules[index]);
+              //   },
+              //   childCount: listVehicules.length,
+              // ),
+              initialItemCount: map.length,
+              itemBuilder: (BuildContext context, int index,
+                  Animation<double> animation) {
+                // Logger().e('eeeeeeeeeeeeeeeeeeee');
+                return Text("Details familles");
+              },
+            )
+          ],
+        ),
+      ),
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/views/home.dart';
+import 'package:kdg/views/splash_screen.dart';
 import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/login.dart';
 import 'package:provider/provider.dart';
@@ -37,34 +38,34 @@ class Kdg extends StatelessWidget {
         //   create: (_) => VehiculeService(),
         //   lazy: false,
         // ),
-        StreamProvider<List<Vehicule>>(
-          create: (_) => VehiculeService().listenCar,
+        StreamProvider<List<Vehicule>>.value(
+          // create: (_) => VehiculeService().listenCar,
           initialData: <Vehicule>[],
           lazy: false,
-          // value: VehiculeService().listenCar,
+          value: VehiculeService().listenCar,
           catchError: (context, error) {
             Logger().e("Error lors du retrieve: $error ");
             return <Vehicule>[];
           },
         ),
-        StreamProvider<List<Maison>>.value(
-          value: VehiculeService().listenHouse,
-          initialData: <Maison>[],
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error ");
-            return <Maison>[];
-          },
-          lazy: false,
-        ),
-        StreamProvider<List<Rapport>>.value(
-          value: VehiculeService().listenRapports,
-          initialData: <Rapport>[],
-          lazy: false,
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error");
-            return <Rapport>[];
-          },
-        ),
+        // StreamProvider<List<Maison>>.value(
+        //   value: VehiculeService().listenHouse,
+        //   initialData: <Maison>[],
+        //   catchError: (context, error) {
+        //     Logger().e("Error lors du retrieve: $error ");
+        //     return <Maison>[];
+        //   },
+        //   lazy: false,
+        // ),
+        // StreamProvider<List<Rapport>>.value(
+        //   value: VehiculeService().listenRapports,
+        //   initialData: <Rapport>[],
+        //   lazy: false,
+        //   catchError: (context, error) {
+        //     Logger().e("Error lors du retrieve: $error");
+        //     return <Rapport>[];
+        //   },
+        // ),
         // StreamProvider<List<Map<String, dynamic>>>.value(
         //   value: VehiculeService().listenBdd,
         //   initialData: <Map<String, dynamic>>[],
@@ -87,9 +88,13 @@ class Kdg extends StatelessWidget {
                   stream: FirebaseAuth.instance.authStateChanges(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Home();
+                      return SplashScreen(
+                        nextPage: Home(),
+                      );
                     } else {
-                      return Home();
+                      return SplashScreen(
+                        nextPage: Home(),
+                      );
                     }
                   },
                 );
