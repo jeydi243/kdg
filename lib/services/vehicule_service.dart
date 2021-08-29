@@ -24,13 +24,13 @@ class VehiculeService {
     firestore = FirebaseFirestore.instance;
   }
   Stream<List<Vehicule>> get listenCar {
-    Logger().i('Listen for cars');
+    // Logger().i('Listen for cars');
     return firestore
         .collection('cars')
         .snapshots(includeMetadataChanges: true)
         .map<List<Vehicule>>((QuerySnapshot snap) {
       return snap.docChanges.map<Vehicule>((DocumentChange e) {
-        Logger().v('EPA: ${e.doc.data()}');
+        // Logger().i('EPA: ${e.doc.data()}');
         return Vehicule.fromMap({...e.doc.data(), 'id': e.doc.id});
       }).toList();
     });

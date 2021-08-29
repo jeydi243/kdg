@@ -5,7 +5,7 @@ class Log {
   Log() {
     logger = Logger(
       printer: PrettyPrinter(
-          methodCount: 3, // number of method calls to be displayed
+          methodCount: 4, // number of method calls to be displayed
           errorMethodCount: 8,
           lineLength: 130, // width of the output
           colors: true, // Colorful log messages

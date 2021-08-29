@@ -50,11 +50,10 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(widget.item['collection']),
-              stretchModes: [
-                StretchMode.blurBackground,
-                StretchMode.fadeTitle
-              ],
+              title: Hero(
+                  tag: "title${widget.item['text']}",
+                  child: Text(widget.item['text'])),
+              stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(
                 onVerticalDragEnd: (gf) {
                   Logger().i(gf);
@@ -94,8 +93,8 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
             //   childCount: listVehicules.length,
             // ),
             initialItemCount: listVehicules.length,
-            itemBuilder: (BuildContext context, int index,
-                Animation<double> animation) {
+            itemBuilder:
+                (BuildContext context, int index, Animation<double> animation) {
               Logger().e('eeeeeeeeeeeeeeeeeeee');
               return CarItem(item: listVehicules[index]);
             },

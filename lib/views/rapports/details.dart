@@ -1,15 +1,8 @@
-import 'package:animations/animations.dart';
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/components/custom_image.dart';
 import 'package:kdg/models/rapport.dart';
-import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/services/user_service.dart';
-import 'package:kdg/services/vehicule_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:kdg/views/cars/item.dart';
-import 'package:pigment/pigment.dart';
 import 'package:provider/provider.dart';
 
 class DetailsRapport extends StatefulWidget {

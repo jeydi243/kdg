@@ -28,21 +28,18 @@ class UserService extends ChangeNotifier {
   UserKDG _user;
   FirebaseFunctions functions;
 
-  Auth() {
+  UserService() {
     functions = FirebaseFunctions.instance;
     _auth = FirebaseAuth.instance;
+    gsign = GoogleSignIn();
     storage = firebase_storage.FirebaseStorage.instance;
     _fcm = FirebaseMessaging.instance;
     _fcm.setForegroundNotificationPresentationOptions(
         alert: true, badge: true, sound: true);
-
     firestore = FirebaseFirestore.instance;
-    gsign = GoogleSignIn();
-    fbAuth = FacebookAuth.instance;
     log = Log();
-    _auth = FirebaseAuth.instance;
     if (_auth.currentUser != null) {
-      setUserMadia();
+      setUserKDG();
       getDeviceToken();
     }
   }
@@ -54,7 +51,7 @@ class UserService extends ChangeNotifier {
           email: email, password: password);
       await usercredential.user.sendEmailVerification();
       await addUserToFirestore(provider: "emailpassword");
-      await setUserMadia();
+      await setUserKDG();
       await getDeviceToken();
       return {"message": "L'utilisateur a bien été enregistré", "state": true};
     } on FirebaseAuthException catch (e) {
@@ -104,7 +101,7 @@ class UserService extends ChangeNotifier {
   FirebaseAuth get auth => _auth;
   UserKDG get userKDG => _user;
 
-  Future<void> setUserMadia() async {
+  Future<void> setUserKDG() async {
     try {
       var userRef = firestore.collection("users").doc(auth.currentUser.uid);
       var user = await userRef.get();
@@ -115,13 +112,13 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<User> signInWithEmailAndPassword({String email, String password}) async {
     try {
       var usercredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
 
       await addUserToFirestore(provider: "emailpassword");
-      await setUserMadia();
+      await setUserKDG();
       notifyListeners();
       return usercredential.user;
     } on FirebaseAuthException catch (e) {
@@ -152,7 +149,7 @@ class UserService extends ChangeNotifier {
       UserCredential userCred = await _auth.signInWithCredential(credential);
       user = userCred.user;
       await addUserToFirestore(provider: userCred.credential.providerId);
-      await setUserMadia();
+      await setUserKDG();
       // Get.to(Home(), transition: Transition.size, duration: 3.seconds);
       return true;
     } on FirebaseAuthException catch (e) {

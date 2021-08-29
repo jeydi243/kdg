@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  adobe_xd: ^1.1.0+1
+  adobe_xd: 2.0.0+1
   animated_text_kit: ^4.2.1
   animations: ^2.0.1
   badges: ^2.0.1
@@ -30,11 +30,13 @@ dependencies:
   flutter_signin_button: ^2.0.0
   font_awesome_flutter: ^9.0.0
   get: ^3.25.4
+  getwidget: ^2.0.4
   google_fonts: ^1.1.0
   google_sign_in: ^4.5.1
   loading: ^1.0.2
   logger: ^0.9.4
   lottie: ^0.6.0
+  material_design_icons_flutter: ^4.0.5955
   palette_generator: ^0.3.0
   parallax_image: ^0.3.1+1
   pigment: ^1.0.3

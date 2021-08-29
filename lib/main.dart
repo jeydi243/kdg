@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/models/maison.dart';
 import 'package:kdg/models/rapport.dart';
 import 'package:kdg/models/vehicule.dart';
@@ -78,6 +79,10 @@ class Kdg extends StatelessWidget {
       ],
       child: GetMaterialApp(
           title: 'Kdg',
+          theme: new ThemeData(
+            textTheme: GoogleFonts.k2dTextTheme(),
+            accentColor: Colors.blue,
+          ),
           debugShowCheckedModeBanner: false,
           // customTransition: CircleTrans(),
           builder: BotToastInit(),
@@ -89,11 +94,11 @@ class Kdg extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return SplashScreen(
-                        nextPage: Home(),
+                        nextPage: Login(),
                       );
                     } else {
                       return SplashScreen(
-                        nextPage: Home(),
+                        nextPage: Login(),
                       );
                     }
                   },

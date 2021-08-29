@@ -2,12 +2,6 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:kdg/animations/fadein.dart';
-import 'package:kdg/views/sections1.dart';
-import 'package:kdg/services/user_service.dart';
-import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'bdd/details.dart';
 import 'cars/details.dart';
 import 'famille/details.dart';
@@ -51,10 +45,23 @@ class _HomeState extends State<Home> {
       "collection": "rapports"
     },
   ];
+  Widget _flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBodyBehindAppBar: true,
+        extendBodyBehindAppBar: false,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -80,8 +87,7 @@ class _HomeState extends State<Home> {
             )
           ],
         ),
-        body: SafeArea(
-            child: ListView.builder(
+        body: ListView.builder(
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 10),
           itemCount: list.length,
@@ -125,11 +131,15 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 Align(
-                  alignment: Alignment(-1, 0.5),
+                  alignment: Alignment(-0.9, 1.0),
                   child: Container(
-                    child: Text(
-                      list[index]['text'],
-                      style: TextStyle(fontSize: 25, color: Colors.white),
+                    child: Hero(
+                      tag: "title${list[index]['text']}",
+                      flightShuttleBuilder: _flightShuttleBuilder,
+                      child: Text(
+                        list[index]['text'],
+                        style: TextStyle(fontSize: 25, color: Colors.white),
+                      ),
                     ),
                     height: 50,
                   ),
@@ -137,6 +147,6 @@ class _HomeState extends State<Home> {
               ],
             );
           },
-        )));
+        ));
   }
 }

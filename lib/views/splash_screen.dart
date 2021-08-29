@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import "package:animated_text_kit/animated_text_kit.dart";
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:lottie/lottie.dart';
@@ -56,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 5), () => Get.offAll(widget.nextPage));
+    Timer(Duration(seconds: 1), () => Get.offAll(widget.nextPage));
   }
 
   @override
@@ -93,26 +94,39 @@ class _SplashScreenState extends State<SplashScreen> {
             //     ],
             //   ),
             // ),
+            // Center(
+            //   child: RotatedBox(
+            //     quarterTurns: 1,
+            //     child: AnimatedTextKit(
+            //       repeatForever: true,
+            //       animatedTexts: [
+            //         ColorizeAnimatedText(
+            //           'KDG',
+            //           textStyle: colorizeTextStyle,
+            //           speed: 3.seconds,
+            //           colors: colorizeColors,
+            //         ),
+            //       ],
+            //       isRepeatingAnimation: true,
+            //       onTap: () {
+            //         print("Tap Event");
+            //       },
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: Get.height / 2,
+            //   width: Get.width / 2,
+            //   child: SvgPicture.asset("assets/logo.svg",
+            //       semanticsLabel: 'Acme Logo', color: Colors.lightBlueAccent),
+            // ),
             Center(
-              child: RotatedBox(
-                quarterTurns: 1,
-                child: AnimatedTextKit(
-                  repeatForever: true,
-                  animatedTexts: [
-                    ColorizeAnimatedText(
-                      'KDG',
-                      textStyle: colorizeTextStyle,
-                      speed: 3.seconds,
-                      colors: colorizeColors,
-                    ),
-                  ],
-                  isRepeatingAnimation: true,
-                  onTap: () {
-                    print("Tap Event");
-                  },
-                ),
+              child: SizedBox(
+                height: Get.height / 2,
+                width: Get.width / 2,
+                child: Image.asset("assets/logo.png"),
               ),
-            ),
+            )
           ],
         ),
       ),
