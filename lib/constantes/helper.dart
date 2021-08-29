@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:kdg/constantes/values.dart';
+import 'package:kdg/utils/utils.dart';
 
 class Helper {
   static Widget divider() {
@@ -17,7 +18,7 @@ class Helper {
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Divider(
                 thickness: 2,
-                color: Colors.grey[200],
+                color: HexColor.fromHex("#1CBFE2"),
               ),
             ),
           ),
@@ -31,7 +32,7 @@ class Helper {
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Divider(
                 thickness: 2,
-                color: Colors.grey[200],
+                color: HexColor.fromHex("#1CBFE2"),
               ),
             ),
           ),

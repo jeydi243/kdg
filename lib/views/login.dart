@@ -6,6 +6,7 @@ import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:kdg/constantes/helper.dart';
 import 'package:kdg/services/user_service.dart';
+import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/home.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool isPassword = false;
+  bool _keepConnect = false;
   bool _obscureText = false;
   Map<String, String> _map = <String, String>{"email": "", "password": ""};
   TextEditingController textController;
@@ -133,11 +135,24 @@ class _LoginState extends State<Login> {
                         obscureText: _obscureText,
                       ),
                     ),
+                    CheckboxListTile(
+                      value: _keepConnect,
+                      onChanged: (value) {
+                        setState(() {
+                          _keepConnect = value;
+                        });
+                      },
+                      // checkColor: HexColor.fromHex("#1CBFE2"),
+                      activeColor: HexColor.fromHex("#1CBFE2"),
+                      dense: true,
+                      title: Text('Rester connecté ?'),
+                    ),
                     MaterialButton(
                         minWidth: Get.width * .9,
-                        color: Colors.lightBlueAccent,
+                        color: HexColor.fromHex("#1CBFE2"),
                         textColor: Colors.white,
                         highlightElevation: 5,
+                        elevation: 10,
                         onPressed: () async {
                           // print(userService.currentUser);
                           if (_formKey.currentState.validate()) {
@@ -168,9 +183,9 @@ class _LoginState extends State<Login> {
                               if (_formKey.currentState.validate()) {
                                 _formKey.currentState.save();
                                 try {
-                                  var user =
+                                  bool user =
                                       await userService.signInWithFacebook();
-                                  if (user is User) {
+                                  if (user == true) {
                                     print(userService.currentUser);
                                     Get.to(Home());
                                   }
@@ -196,8 +211,9 @@ class _LoginState extends State<Login> {
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
                               try {
-                                var user = await userService.signInWithGoogle();
-                                if (user is User) {
+                                bool user =
+                                    await userService.signInWithGoogle();
+                                if (user == true) {
                                   print(userService.currentUser);
                                   Get.to(Home());
                                 }

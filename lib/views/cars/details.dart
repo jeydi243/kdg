@@ -51,8 +51,10 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Hero(
+                  transitionOnUserGestures: true,
                   tag: "title${widget.item['text']}",
-                  child: Text(widget.item['text'])),
+                  child: Text(widget.item['text'],
+                      style: TextStyle(fontSize: 25, color: Colors.white))),
               stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(
                 onVerticalDragEnd: (gf) {
@@ -60,8 +62,18 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
                   Navigator.pop(context);
                 },
                 child: Stack(children: [
-                  CustomImage(
-                    imgsrc: widget.item['imgsrc'],
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(20)),
+                    child: Hero(
+                      tag: widget.item['imgsrc'],
+                      child: Image.asset(
+                        widget.item['imgsrc'],
+                        fit: BoxFit.cover,
+                        height: Get.height * .45,
+                        width: double.infinity,
+                      ),
+                    ),
                   ),
                   Align(
                     alignment: Alignment(0, 1),

@@ -92,9 +92,9 @@ class Kdg extends StatelessWidget {
                 return StreamBuilder<User>(
                   stream: FirebaseAuth.instance.authStateChanges(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
+                    if (snapshot.hasData && snapshot.data is User) {
                       return SplashScreen(
-                        nextPage: Login(),
+                        nextPage: Home(),
                       );
                     } else {
                       return SplashScreen(
@@ -107,7 +107,7 @@ class Kdg extends StatelessWidget {
               return StreamBuilder<User>(
                 stream: FirebaseAuth.instance.authStateChanges(),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData && snapshot.data is User) {
                     return Home();
                   } else {
                     return Login();

@@ -96,28 +96,28 @@ class _HomeState extends State<Home> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: GestureDetector(
-                      onTap: () {
-                        switch (list[index]['collection']) {
-                          case 'cars':
-                            Get.to(DetailsCar(item: list[index]));
-                            break;
-                          case 'houses':
-                            Get.to(DetailsHouse(item: list[index]));
-                            break;
-                          case 'rapports':
-                            Get.to(DetailsRapport(item: list[index]));
-                            break;
-                          case 'familles':
-                            Get.to(DetailsFamille(item: list[index]));
-                            break;
-                          default:
-                            Get.to(DetailsBdd(item: list[index]));
-                            break;
-                        }
-                      },
+                  child: GestureDetector(
+                    onTap: () {
+                      switch (list[index]['collection']) {
+                        case 'cars':
+                          Get.to(DetailsCar(item: list[index]));
+                          break;
+                        case 'houses':
+                          Get.to(DetailsHouse(item: list[index]));
+                          break;
+                        case 'rapports':
+                          Get.to(DetailsRapport(item: list[index]));
+                          break;
+                        case 'familles':
+                          Get.to(DetailsFamille(item: list[index]));
+                          break;
+                        default:
+                          Get.to(DetailsBdd(item: list[index]));
+                          break;
+                      }
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
                       child: Hero(
                         tag: list[index]['imgsrc'],
                         child: Image.asset(

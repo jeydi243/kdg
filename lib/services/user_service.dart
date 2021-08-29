@@ -31,6 +31,7 @@ class UserService extends ChangeNotifier {
   UserService() {
     functions = FirebaseFunctions.instance;
     _auth = FirebaseAuth.instance;
+    fbAuth = FacebookAuth.instance;
     gsign = GoogleSignIn();
     storage = firebase_storage.FirebaseStorage.instance;
     _fcm = FirebaseMessaging.instance;
@@ -112,7 +113,8 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Future<User> signInWithEmailAndPassword({String email, String password}) async {
+  Future<User> signInWithEmailAndPassword(
+      {String email, String password}) async {
     try {
       var usercredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
