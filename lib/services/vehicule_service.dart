@@ -12,20 +12,24 @@ import 'package:kdg/models/rapport.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class VehiculeService {
+class VehiculeService extends ChangeNotifier {
   FirebaseAuth _auth;
   firebase_storage.FirebaseStorage storage;
   FirebaseFirestore firestore;
   List<Vehicule> listVehicules = <Vehicule>[];
   List<Rapport> listRapports = <Rapport>[];
   List<Maison> listMaisons = <Maison>[];
+  List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   VehiculeService() {
     _auth = FirebaseAuth.instance;
     firestore = FirebaseFirestore.instance;
+    listenCar();
+    listenHouse();
+    listenRapports();
+    listenBdd();
   }
-  Stream<List<Vehicule>> get listenCar {
-    // Logger().i('Listen for cars');
-    return firestore
+  void listenCar() {
+    firestore
         .collection('cars')
         .snapshots(includeMetadataChanges: true)
         .map<List<Vehicule>>((QuerySnapshot snap) {
@@ -33,24 +37,30 @@ class VehiculeService {
         // Logger().i('EPA: ${e.doc.data()}');
         return Vehicule.fromMap({...e.doc.data(), 'id': e.doc.id});
       }).toList();
+    }).listen((event) {
+      Logger().i('Listen for cars');
+      listVehicules.addAll(event);
+      notifyListeners();
     });
   }
 
-  Stream<List<Maison>> get listenHouse {
-    Logger().i('Listen for houses');
-    return firestore
+  void listenHouse() {
+    firestore
         .collection('houses')
         .snapshots(includeMetadataChanges: true)
         .map<List<Maison>>((snap) {
       return snap.docChanges
           .map<Maison>((e) => Maison.fromMap({...e.doc.data(), 'id': e.doc.id}))
           .toList();
+    }).listen((event) {
+      Logger().i('Listen for houses');
+      listMaisons.addAll(event);
+      notifyListeners();
     });
   }
 
-  Stream<List<Rapport>> get listenRapports {
-    Logger().i('Listen for rapports');
-    return firestore
+  void listenRapports() {
+    firestore
         .collection('rapports')
         .snapshots(includeMetadataChanges: true)
         .map<List<Rapport>>((snap) {
@@ -58,27 +68,24 @@ class VehiculeService {
           .map<Rapport>(
               (e) => Rapport.fromMap({...e.doc.data(), 'id': e.doc.id}))
           .toList();
+    }).listen((event) {
+      Logger().i('Listen for rapports');
+      listRapports.addAll(event);
+      notifyListeners();
     });
   }
 
-  // Stream<List<Map<String, dynamic>>> get listenBdd {
-  //   Logger().i('Listen for bdd');
-  //   return firestore
-  //       .collection('bdd')
-  //       .snapshots(includeMetadataChanges: true)
-  //       .map<List<Map>>((snap) {
-  //     return snap.docChanges
-  //         .map<Map<String, dynamic>>((e) => {...e.doc.data(), 'id': e.doc.id})
-  //         .toList();
-  //   });
-  // }
-
-  Stream<List> get({String streamOn}) {
-    return firestore
-        .collection(streamOn)
+  void listenBdd() {
+    firestore
+        .collection('bdd')
         .snapshots(includeMetadataChanges: true)
-        .map((event) {
-      return event.docs;
+        .map<List<Map<String, dynamic>>>((snap) {
+      return snap.docChanges
+          .map<Map<String, dynamic>>((e) => {...e.doc.data(), 'id': e.doc.id})
+          .toList();
+    }).listen((event) {
+      Logger().i('Bdd change ...');
+      listBdd.addAll(event);
     });
   }
 
@@ -87,18 +94,5 @@ class VehiculeService {
     final PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(imageProvider);
     return paletteGenerator.dominantColor.color;
-  }
-
-  genericListener(dynamic items) {
-    Logger().i("${(items as List).length} items ajouté ");
-    if (items[0] is Maison) {
-      listMaisons.addAll(items);
-    } else if (items[0] is Rapport) {
-      listRapports.addAll(items);
-    } else if (items[0] is Vehicule) {
-      listVehicules.addAll(items);
-    } else {
-      Logger().e("Aucun de ces types n'a ete choisi ...");
-    }
   }
 }

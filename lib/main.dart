@@ -35,20 +35,20 @@ class Kdg extends StatelessWidget {
           create: (_) => UserService(),
           lazy: false,
         ),
-        // ChangeNotifierProvider<VehiculeService>(
-        //   create: (_) => VehiculeService(),
-        //   lazy: false,
-        // ),
-        StreamProvider<List<Vehicule>>.value(
-          // create: (_) => VehiculeService().listenCar,
-          initialData: <Vehicule>[],
+        ChangeNotifierProvider<VehiculeService>(
+          create: (_) => VehiculeService(),
           lazy: false,
-          value: VehiculeService().listenCar,
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error ");
-            return <Vehicule>[];
-          },
         ),
+        // StreamProvider<List<Vehicule>>.value(
+        //   create: (_) => VehiculeService().listenCar,
+        //   initialData: <Vehicule>[],
+        //   lazy: false,
+        //   value: VehiculeService().listenCar,
+        //   catchError: (context, error) {
+        //     Logger().e("Error lors du retrieve: $error ");
+        //     return <Vehicule>[];
+        //   },
+        // ),
         // StreamProvider<List<Maison>>.value(
         //   value: VehiculeService().listenHouse,
         //   initialData: <Maison>[],

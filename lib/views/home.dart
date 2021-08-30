@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'bdd/details.dart';
-import 'cars/details.dart';
+import 'cars/index.dart';
 import 'famille/details.dart';
 import 'houses/details.dart';
 import 'rapports/details.dart';
