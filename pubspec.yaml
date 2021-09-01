@@ -12,6 +12,7 @@ environment:
 dependencies:
   adobe_xd: 2.0.0+1
   animated_text_kit: ^4.2.1
+  advance_pdf_viewer:
   animations: ^2.0.1
   badges: ^2.0.1
   bot_toast: ^3.0.4
@@ -44,6 +45,7 @@ dependencies:
   simple_animations: ^3.0.2
   slimy_card: ^1.0.4
   supercharged: ^2.0.0
+  share_plus: ^2.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

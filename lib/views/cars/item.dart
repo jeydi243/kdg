@@ -20,7 +20,6 @@ class _CarItemState extends State<CarItem> {
   @override
   void initState() {
     Vehicule car = widget.item;
-    Logger().i('${widget.item.toString()}');
     list = [
       {"doc": 'assurance', "value": car.assurance},
       {"doc": 'controle', "value": car.assurance},
@@ -39,6 +38,7 @@ class _CarItemState extends State<CarItem> {
         // height: Get.height * .18,
         // width: Get.width * .8,
         child: ListTile(
+          enableFeedback: true,
           contentPadding: EdgeInsets.all(0),
           leading: SizedBox(
             height: Get.height * .07,

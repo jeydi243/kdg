@@ -7,6 +7,7 @@ import 'package:kdg/models/maison.dart';
 import 'package:kdg/models/rapport.dart';
 import 'package:kdg/models/vehicule.dart';
 import 'package:kdg/services/vehicule_service.dart';
+import 'package:kdg/utils/utils.dart';
 import 'package:logger/logger.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
@@ -80,9 +81,23 @@ class Kdg extends StatelessWidget {
       child: GetMaterialApp(
           title: 'Kdg',
           theme: new ThemeData(
-            textTheme: GoogleFonts.k2dTextTheme(),
-            accentColor: Colors.blue,
-          ),
+              textTheme: GoogleFonts.k2dTextTheme(),
+              accentColor: Colors.blue,
+              backgroundColor: HexColor.fromHex("#FDF8F8"),
+              dialogBackgroundColor: HexColor.fromHex("#FDF8F8"),
+
+              dialogTheme: DialogTheme(
+                  backgroundColor: HexColor.fromHex("#FDF8F8"),
+                  titleTextStyle: Theme.of(context).textTheme.bodyText2,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15))),
+              fixTextFieldOutlineLabel: true,
+              inputDecorationTheme: InputDecorationTheme(),
+              textButtonTheme: TextButtonThemeData(
+                style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all<Size>(
+                        new Size(Get.width * .9, Get.height * .05))),
+              )),
           debugShowCheckedModeBanner: false,
           // customTransition: CircleTrans(),
           builder: BotToastInit(),

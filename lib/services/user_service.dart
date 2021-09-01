@@ -273,16 +273,6 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Stream<Map<String, dynamic>> getPanier() {
-    return firestore
-        .collection('users')
-        .doc(_auth.currentUser.uid)
-        .snapshots()
-        .map((e) {
-      return e.data();
-    });
-  }
-
   Future<void> sendEmailPassReinitialisation({String email}) async {
     _auth.sendPasswordResetEmail(email: email).catchError((err) {
       print("**************$err");
@@ -391,5 +381,13 @@ class UserService extends ChangeNotifier {
         };
       }
     }
+  }
+
+  Future<void> notifyMe({String car, String doc}) {
+    return firestore
+        .collection('notification')
+        .doc(_auth.currentUser.uid)
+        .get()
+        .then((value) => null);
   }
 }
