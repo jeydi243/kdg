@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -384,10 +385,9 @@ class UserService extends ChangeNotifier {
   }
 
   Future<void> notifyMe({String car, String doc}) {
-    return firestore
-        .collection('notification')
-        .doc(_auth.currentUser.uid)
-        .get()
-        .then((value) => null);
+    Get.snackbar("Notifications",
+        "Vous recevrez une notification a l'approche de l'écheance",
+        barBlur: 3, colorText: Colors.white,overlayBlur: 5);
+
   }
 }

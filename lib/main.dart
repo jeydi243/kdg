@@ -1,4 +1,3 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +84,6 @@ class Kdg extends StatelessWidget {
               accentColor: Colors.blue,
               backgroundColor: HexColor.fromHex("#FDF8F8"),
               dialogBackgroundColor: HexColor.fromHex("#FDF8F8"),
-
               dialogTheme: DialogTheme(
                   backgroundColor: HexColor.fromHex("#FDF8F8"),
                   titleTextStyle: Theme.of(context).textTheme.bodyText2,
@@ -95,12 +93,15 @@ class Kdg extends StatelessWidget {
               inputDecorationTheme: InputDecorationTheme(),
               textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        EdgeInsets.all(0)),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.blue[100].withOpacity(0.2)),
                     minimumSize: MaterialStateProperty.all<Size>(
                         new Size(Get.width * .9, Get.height * .05))),
               )),
           debugShowCheckedModeBanner: false,
           // customTransition: CircleTrans(),
-          builder: BotToastInit(),
           home: LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxHeight == Get.height) {
