@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ModifierPassword extends StatefulWidget {
-  ModifierPassword({Key key}) : super(key: key);
+  ModifierPassword({Key? key}) : super(key: key);
 
   @override
   _ModifierPasswordState createState() => _ModifierPasswordState();

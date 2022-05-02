@@ -5,7 +5,7 @@ class CircleTransition extends CustomClipper<Path> {
   final Offset center;
   final double radius;
 
-  CircleTransition({this.center, this.radius});
+  CircleTransition({required this.center, required this.radius});
   @override
   Path getClip(Size size) {
     return Path()..addOval(Rect.fromCircle(center: center, radius: radius));
@@ -15,15 +15,14 @@ class CircleTransition extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
 }
 
-Route cr({Widget secondRoute}) {
+Route cr({required Widget secondRoute}) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => secondRoute,
     transitionDuration: Duration(milliseconds: 1000),
     reverseTransitionDuration: Duration(milliseconds: 1000),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var screenSize = Get.size;
-      var centerCircleClipper =
-          Offset(screenSize.width , screenSize.height);
+      var centerCircleClipper = Offset(screenSize.width, screenSize.height);
       double beginsRadius = 0.0;
       double endRadius = Get.height * 1.2;
       var radiusTween = Tween(begin: beginsRadius, end: endRadius);

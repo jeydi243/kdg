@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:kdg/constantes/helper.dart';
 import 'package:kdg/services/user_service.dart';
@@ -12,9 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
-  Login({Key? key, required this.title}) : super(key: key);
-  final String title;
-
+  Login({Key? key}) : super(key: key);
   @override
   _LoginState createState() => _LoginState();
 }
@@ -26,19 +22,17 @@ class _LoginState extends State<Login> {
   Map<String, String> _map = <String, String>{"email": "", "password": ""};
   late TextEditingController textController;
   late TextEditingController passController;
-  late FocusNode _focus;
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    textController = new TextEditingController(text: "email@email.com");
+    textController = new TextEditingController(text: "ekadiongo@gmail.com");
     passController = new TextEditingController(text: "123456789");
-    _focus = new FocusNode();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userService = Provider.of<UserService>(context);
+    UserService userService = Get.find();
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -149,14 +143,10 @@ class _LoginState extends State<Login> {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
                             try {
-                              var user =
-                                  await userService.signInWithEmailAndPassword(
-                                      email: _map['email'] as String,
-                                      password: _map['password'] as String);
-                              if (user is FirebaseUser) {
-                                print(userService.currentUser);
-                                Get.to(Home());
-                              }
+                              // await userService.signInWithEmailAndPassword(
+                              //     email: _map['email'] as String,
+                              //     password: _map['password'] as String);
+                              Get.to(Home());
                             } catch (e) {
                               Logger().i("Une Erreur de connexion: $e");
                             }
@@ -167,51 +157,9 @@ class _LoginState extends State<Login> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: GFIconButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                _formKey.currentState!.save();
-                                try {
-                                  bool user =
-                                      await userService.signInWithFacebook();
-                                  if (user == true) {
-                                    print(userService.currentUser);
-                                    Get.to(Home());
-                                  }
-                                } catch (e) {
-                                  Logger().i("Une Erreur de connexion: $e");
-                                }
-                              }
-                            },
-                            icon: FaIcon(
-                              FontAwesomeIcons.facebookF,
-                              size: 16,
-                            ),
-                            shape: GFIconButtonShape.circle,
-                            buttonBoxShadow: true,
-                            boxShadow: BoxShadow(
-                              blurRadius: 10,
-                              color: Colors.blue[50]!,
-                            ),
-                          ),
-                        ),
                         GFIconButton(
                           onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              try {
-                                bool user =
-                                    await userService.signInWithGoogle();
-                                if (user == true) {
-                                  print(userService.currentUser);
-                                  Get.to(Home());
-                                }
-                              } catch (e) {
-                                Logger().i("Une Erreur de connexion: $e");
-                              }
-                            }
+                            await userService.signInWithGoogle();
                           },
                           color: Colors.red,
                           focusColor: Colors.red,
@@ -220,7 +168,7 @@ class _LoginState extends State<Login> {
                             FontAwesomeIcons.google,
                             size: 16,
                           ),
-                          shape: GFIconButtonShape.circle,
+                          shape: GFIconButtonShape.pills,
                         ),
                       ],
                     ),

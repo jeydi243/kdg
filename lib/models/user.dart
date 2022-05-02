@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'rapport.dart';
 
 class UserKDG implements Type {
   late String _id;

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Vehicule {
   String model;
   late String id;

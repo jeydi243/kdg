@@ -88,11 +88,11 @@ class Helper {
   }
 
   static void showSnack(
-      {@required String title,
-      @required String message,
-      Duration duration,
-      String to,
-      Widget main}) {
+      {required String title,
+      required String message,
+      Duration? duration,
+      String? to,
+      TextButton? main}) {
     Get.snackbar(title, message,
         borderRadius: 10,
         snackStyle: SnackStyle.FLOATING,
@@ -119,6 +119,8 @@ class Helper {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return true;
+      } else {
+        return false;
       }
     } on SocketException catch (_) {
       return false;

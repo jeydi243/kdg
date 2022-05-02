@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kdg/models/vehicule.dart';
 import 'package:kdg/models/maison.dart';
 import 'package:kdg/models/rapport.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class VehiculeService extends ChangeNotifier {
+class VehiculeService extends GetxController {
+  static VehiculeService userservice = Get.find();
+
   late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
   List<Vehicule> listVehicules = <Vehicule>[];
@@ -30,13 +31,12 @@ class VehiculeService extends ChangeNotifier {
         .snapshots(includeMetadataChanges: true)
         .map<List<Vehicule>>((QuerySnapshot snap) {
       return snap.docChanges.map<Vehicule>((DocumentChange e) {
-        // Logger().i('EPA: ${e.doc.data()}');
-        // return Vehicule.fromMap({...e.doc.data(), 'id': e.doc.id});
+        if (e.type == DocumentChangeType.added) {}
+        return Vehicule.fromMap({'id': e.doc.id});
       }).toList();
     }).listen((event) {
       Logger().i('Listen for cars');
       listVehicules.addAll(event);
-      notifyListeners();
     });
   }
 
@@ -46,12 +46,12 @@ class VehiculeService extends ChangeNotifier {
         .snapshots(includeMetadataChanges: true)
         .map<List<Maison>>((snap) {
       return snap.docChanges
-          .map<Maison>((e) => Maison.fromMap({...?e.doc.data(), 'id': e.doc.id}))
+          .map<Maison>(
+              (e) => Maison.fromMap({...?e.doc.data(), 'id': e.doc.id}))
           .toList();
     }).listen((event) {
       Logger().i('Listen for houses');
       listMaisons.addAll(event);
-      notifyListeners();
     });
   }
 
@@ -67,7 +67,7 @@ class VehiculeService extends ChangeNotifier {
     }).listen((event) {
       Logger().i('Listen for rapports');
       listRapports.addAll(event);
-      notifyListeners();
+
     });
   }
 
@@ -89,6 +89,6 @@ class VehiculeService extends ChangeNotifier {
   Future<Color> getImagePalette(ImageProvider imageProvider) async {
     final PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(imageProvider);
-    return paletteGenerator.dominantColor.color;
+    return paletteGenerator.dominantColor!.color;
   }
 }

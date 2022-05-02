@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/custom_image.dart';
-import 'package:kdg/models/maison.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 class DetailsHouse extends StatefulWidget {
   DetailsHouse({Key? key, required this.item}) : super(key: key);

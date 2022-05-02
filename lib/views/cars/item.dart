@@ -1,12 +1,8 @@
 import 'package:animations/animations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/cars/details.dart';
-import 'package:logger/logger.dart';
 
 class CarItem extends StatefulWidget {
   CarItem({Key? key, required this.item}) : super(key: key);

@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/constantes/values.dart';
 
 class SplashScreen extends StatefulWidget {
   final Widget nextPage;

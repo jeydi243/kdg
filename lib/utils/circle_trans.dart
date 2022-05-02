@@ -1,10 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/painting/alignment.dart';
-import 'package:flutter/src/animation/curves.dart';
-import 'package:flutter/src/animation/animation.dart';
 import 'package:get/route_manager.dart';
 import 'package:kdg/utils/circle_transition.dart';
 
@@ -12,8 +6,8 @@ class CircleTrans extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
-      Curve curve,
-      Alignment alignment,
+      Curve? curve,
+      Alignment? alignment,
       Animation<double> animation,
       Animation<double> secondaryAnimation,
       Widget child) {

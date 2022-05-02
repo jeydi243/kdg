@@ -1,6 +1,4 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'bdd/details.dart';
 import 'cars/index.dart';
@@ -9,7 +7,7 @@ import 'houses/details.dart';
 import 'rapports/details.dart';
 
 class Home extends StatefulWidget {
-  Home({Key key}) : super(key: key);
+  Home({Key? key}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();

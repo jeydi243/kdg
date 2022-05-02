@@ -32,7 +32,7 @@ class _DetailsCarState extends State<DetailsCar> {
   }
 
   Widget actions(BuildContext ctx, String link) {
-    UserService userService = Provider.of<UserService>(context, listen: false);
+    UserService userService = Get.find();
     return Container(
         height: Get.height * .3,
         width: Get.width * .9,
@@ -55,11 +55,7 @@ class _DetailsCarState extends State<DetailsCar> {
                         userService.notifyMe();
                       },
                       child: Text("Activer les notifications d'echéance")),
-                  TextButton(
-                      onPressed: () {
-                        
-                      },
-                      child: Text('Voir le document')),
+                  TextButton(onPressed: () {}, child: Text('Voir le document')),
                   TextButton(
                       onPressed: () {
                         Get.dialog(

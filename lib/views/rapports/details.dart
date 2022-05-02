@@ -15,7 +15,7 @@ class DetailsRapport extends StatefulWidget {
 class _DetailsRapportState extends State<DetailsRapport> {
   @override
   Widget build(BuildContext context) {
-    List<Rapport> listrapports = Provider.of<List<Rapport>>(context);
+    List<Rapport> listrapports = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
       body: CustomScrollView(
