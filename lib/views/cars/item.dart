@@ -1,12 +1,12 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/models/vehicule.dart';
+import 'package:kdg/models/car.dart';
 import 'package:kdg/views/cars/details.dart';
 
 class CarItem extends StatefulWidget {
   CarItem({Key? key, required this.item}) : super(key: key);
-  final Vehicule item;
+  final Car item;
   @override
   _CarItemState createState() => _CarItemState();
 }
@@ -15,7 +15,7 @@ class _CarItemState extends State<CarItem> {
   late List<Map<String, dynamic>> list;
   @override
   void initState() {
-    Vehicule car = widget.item;
+    Car car = widget.item;
     list = [
       {"doc": 'assurance', "value": car.assurance},
       {"doc": 'controle', "value": car.assurance},
@@ -27,7 +27,7 @@ class _CarItemState extends State<CarItem> {
 
   @override
   Widget build(BuildContext context) {
-    Vehicule car = widget.item;
+    Car car = widget.item;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Container(

@@ -177,6 +177,7 @@ class _LoginState extends State<Login> {
               ),
               Text(
                 "En vous connectant vous accepter les conditions d'utilisation et les regles de confidentialité de KDG",
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12),
               )
             ],

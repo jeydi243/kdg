@@ -16,7 +16,7 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    Get.put<VehiculeService>(VehiculeService());
+    Get.put<CarService>(CarService());
     Get.put<UserService>(UserService());
     runApp(Kdg());
     print('App running');

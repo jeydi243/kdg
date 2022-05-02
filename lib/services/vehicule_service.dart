@@ -2,22 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/models/vehicule.dart';
+import 'package:kdg/models/car.dart';
 import 'package:kdg/models/maison.dart';
 import 'package:kdg/models/rapport.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class VehiculeService extends GetxController {
-  static VehiculeService userservice = Get.find();
+class CarService extends GetxController {
+  static CarService userservice = Get.find();
 
   late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
-  List<Vehicule> listVehicules = <Vehicule>[];
+  List<Car> listCars = <Car>[];
   List<Rapport> listRapports = <Rapport>[];
   List<Maison> listMaisons = <Maison>[];
   List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
-  VehiculeService() {
+  CarService() {
     _auth = FirebaseAuth.instance;
     firestore = FirebaseFirestore.instance;
     listenCar();
@@ -29,14 +29,14 @@ class VehiculeService extends GetxController {
     firestore
         .collection('cars')
         .snapshots(includeMetadataChanges: true)
-        .map<List<Vehicule>>((QuerySnapshot snap) {
-      return snap.docChanges.map<Vehicule>((DocumentChange e) {
+        .map<List<Car>>((QuerySnapshot snap) {
+      return snap.docChanges.map<Car>((DocumentChange e) {
         if (e.type == DocumentChangeType.added) {}
-        return Vehicule.fromMap({'id': e.doc.id});
+        return Car.fromMap({'id': e.doc.id});
       }).toList();
     }).listen((event) {
       Logger().i('Listen for cars');
-      listVehicules.addAll(event);
+      listCars.addAll(event);
     });
   }
 

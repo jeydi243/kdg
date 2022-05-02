@@ -11,7 +11,7 @@ class Helper {
       child: Row(
         children: <Widget>[
           SizedBox(
-            width: 20,
+            width: 30,
           ),
           Expanded(
             child: Padding(
@@ -37,7 +37,7 @@ class Helper {
             ),
           ),
           SizedBox(
-            width: 20,
+            width: 30,
           ),
         ],
       ),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/models/vehicule.dart';
+import 'package:kdg/models/car.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.car, {Key? key}) : super(key: key);
-  final Vehicule car;
+  final Car car;
   @override
   _DetailsCarState createState() => _DetailsCarState();
 }
@@ -18,7 +18,7 @@ class _DetailsCarState extends State<DetailsCar> {
   @override
   void initState() {
     super.initState();
-    Vehicule car = widget.car;
+    Car car = widget.car;
     list = [
       {"doc": 'assurance', "value": car.assurance, "isExpanded": false},
       {
@@ -116,10 +116,8 @@ class _DetailsCarState extends State<DetailsCar> {
                 ...list
                     .map((e) => ExpansionPanel(
                           isExpanded: e["isExpanded"],
-                          body: actions(context, e['value']["file"] as String),
-                          headerBuilder:
-                              (BuildContext context, bool isExpanded) =>
-                                  ListTile(
+                          body: actions(context, e['value']["file"]! as String),
+                          headerBuilder: (ctx, bool isExpanded) => ListTile(
                             onTap: () {
                               setState(() {
                                 e["isExpanded"] = !e["isExpanded"];

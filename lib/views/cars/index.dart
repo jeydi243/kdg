@@ -30,7 +30,7 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    VehiculeService userservice = Get.find();
+    CarService userservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex("FDF8F8"),
       body: CustomScrollView(
