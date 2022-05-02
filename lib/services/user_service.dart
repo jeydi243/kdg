@@ -35,10 +35,18 @@ class UserService extends ChangeNotifier {
         alert: true, badge: true, sound: true);
     firestore = FirebaseFirestore.instance;
     log = Log();
-    _auth?.currentUser().then((FirebaseUser user) {
-      if (user) {
+    getcurr();
+    _auth?.currentUser().then((FirebaseUser? user) {
+      if (user != null) {
         setUserKDG();
         getDeviceToken();
+      }
+    });
+  }
+  getcurr() {
+    _auth?.currentUser().then((FirebaseUser? user) {
+      if (user != null) {
+        user = user;
       }
     });
   }
@@ -48,35 +56,35 @@ class UserService extends ChangeNotifier {
     try {
       var usercredential = await _auth?.createUserWithEmailAndPassword(
           email: email, password: password);
-      await usercredential?.user.sendEmailVerification();
+      await usercredential?.sendEmailVerification();
       await addUserToFirestore(provider: "emailpassword");
       await setUserKDG();
       await getDeviceToken();
       return {'message': "L'utilisateur a bien été enregistré", "state": true};
     } on FirebaseException catch (e) {
       if (e.code == "email-already-in-use") {
-        log.w("Un compte existe déja avec cette email");
+        log?.w("Un compte existe déja avec cette email");
         return {
           "state": false,
           "message": "Un compte existe déja avec cette email"
         };
       } else if (e.code == "invalid-email") {
-        log.w("L'email est invalide");
+        log?.w("L'email est invalide");
         return {"state": false, "message": "L'email est invalide"};
       } else if (e.code == "operation-not-allowed") {
-        log.w("La méthode de connexion n'est pas permise");
+        log?.w("La méthode de connexion n'est pas permise");
         return {
           "state": false,
           "message": "La méthode de connexion n'est pas permise"
         };
       } else if (e.code == "weak-password") {
-        log.w("Le mot de passe n'est pas suffisament fort");
+        log?.w("Le mot de passe n'est pas suffisament fort");
         return {
           "state": false,
           "message": "Le mot de passe n'est pas suffisament fort"
         };
       } else {
-        log.w("Une erreur s'est produite ${e.message}");
+        log?.w("Une erreur s'est produite ${e.message}");
         return {
           "state": false,
           "message":
@@ -88,26 +96,28 @@ class UserService extends ChangeNotifier {
 
   Future<void> signOut() async {
     try {
-      await gsign.signOut();
-      await _auth.signOut();
+      await gsign?.signOut();
+      await _auth?.signOut();
     } on FirebaseException catch (e) {
-      log.w("$e");
+      log?.w("$e");
     }
-    Get.to(Login());
+    Get.to(Login(
+      title: '11',
+    ));
   }
 
-  Future<FirebaseUser> get currentUser => _auth.currentUser();
+  FirebaseUser? get currentUser => user;
   FirebaseAuth? get auth => _auth;
   UserKDG? get userKDG => _user;
 
   Future<void> setUserKDG() async {
     try {
-      var userRef = firestore.collection("users").doc(auth.currentUser.uid);
+      var userRef = firestore!.collection("users").doc(currentUser?.uid);
       var user = await userRef.get();
-      _user = UserKDG.fromMap({"id": user.id, ...user.data()});
+      _user = UserKDG.fromMap({"id": user.id, ...?user.data()});
       notifyListeners();
     } catch (e) {
-      log.i('Erreur dans user: $e');
+      log?.i('Erreur dans user: $e');
     }
   }
 
@@ -151,23 +161,23 @@ class UserService extends ChangeNotifier {
       message,
       borderWidth: 2,
     );
-    log.w(message);
+    log?.w(message);
   }
 
   Future<bool> signInWithGoogle() async {
     try {
-      GoogleSignInAccount googleSignInAccount = await gsign.signIn();
+      GoogleSignInAccount googleSignInAccount = await gsign!.signIn();
       GoogleSignInAuthentication googleSignInAuthentication =
           await googleSignInAccount.authentication;
 
-      AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
+      // UserCredential credential = GoogleAuthProvider.credential(
+      //   accessToken: googleSignInAuthentication.accessToken,
+      //   idToken: googleSignInAuthentication.idToken,
+      // );
 
-      return signInWithCredential(credential);
+      // return signInWithCredential(credential);
     } catch (e, r) {
-      log.w('${e.message}: $r');
+      log?.w('$e: $r');
     }
     return false;
   }
@@ -180,7 +190,7 @@ class UserService extends ChangeNotifier {
           FacebookAuthProvider.credential(result.accessToken.token);
       return signInWithCredential(facebookAuthCredential);
     } catch (e, stack) {
-      log.w('$e: $stack');
+      log?.w('$e: $stack');
     }
     return false;
   }
@@ -190,10 +200,10 @@ class UserService extends ChangeNotifier {
       await _auth.currentUser.delete();
     } on FirebaseException catch (e) {
       if (e.code == 'requires-recent-login') {
-        log.w(
+        log?.w(
             "L'utilisateur doit se ré-authentifier avant que cette opération puisse être exécutée.");
       } else {
-        log.w(e.message);
+        log?.w(e.message);
       }
     }
   }
@@ -203,14 +213,14 @@ class UserService extends ChangeNotifier {
       token = await _fcm?.getToken();
       await firestore!
           .collection("users")
-          .doc(currentUser.uid)
+          .doc(currentUser!.uid)
           .update({'token': token});
     } catch (e) {
-      log?.e(e);
+      log?.e('$e');
     }
   }
 
-  Future<void> addUserToFirestore({@required String provider}) async {
+  Future<void> addUserToFirestore({required String provider}) async {
     FirebaseUser user = await _auth!.currentUser();
     try {
       var snap = await firestore!.collection('users').doc(user.uid).get();
@@ -245,13 +255,13 @@ class UserService extends ChangeNotifier {
   Future<void> sendEmailPassReinitialisation({String email}) async {
     _auth.sendPasswordResetEmail(email: email).catchError((err) {
       print("**************$err");
-      log.w(err);
+      log?.w(err);
     });
   }
 
   Future<Map<String, dynamic>> updatePassword({String newPassword}) async {
     try {
-      await _auth.currentUser.updatePassword(newPassword);
+      await currentUser.updatePassword(newPassword);
       return {
         'state': true,
         'message': "Le mot de passe a été modifié avec succes!",
@@ -272,7 +282,7 @@ class UserService extends ChangeNotifier {
           "message": "Le mot de passe n'est pas suffisament fort"
         };
       } else {
-        log.w("Une erreur s'est produite ${e.message}");
+        log?.w("Une erreur s'est produite ${e.message}");
         return {
           'shouldBack': false,
           "state": false,
@@ -286,14 +296,14 @@ class UserService extends ChangeNotifier {
   Future<Map<String, dynamic>> updateProfile(
       {File img, Map<String, dynamic> form}) async {
     try {
-      var userRef = firestore.collection("users").doc(currentUser.uid);
+      var userRef = firestore!.collection("users").doc(currentUser!.uid);
       var user = await userRef.get();
       String email = user.get('email').toString();
       String displayName = user.get('name').toString();
       String phoneNumber = user.get('telephone').toString();
 
       if (form['email'].isEmail && form['email'] != email) {
-        await currentUseruser.updateEmail(email);
+        await currentUser?.updateEmail(email);
       }
       if (displayName != form['nom'] && form['nom'] != "") {
         // await _auth.currentUser.updateProfile(displayName: form['nom']);

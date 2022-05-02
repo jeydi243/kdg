@@ -12,8 +12,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
-  Login({Key? key, this.title}) : super(key: key);
-
+  Login({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -25,9 +24,9 @@ class _LoginState extends State<Login> {
   bool _keepConnect = false;
   bool _obscureText = false;
   Map<String, String> _map = <String, String>{"email": "", "password": ""};
-  TextEditingController textController;
-  TextEditingController passController;
-  FocusNode _focus;
+  late TextEditingController textController;
+  late TextEditingController passController;
+  late FocusNode _focus;
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -80,7 +79,7 @@ class _LoginState extends State<Login> {
                           }
                           return null;
                         },
-                        onSaved: (newValue) => _map['email'] = newValue,
+                        onSaved: (newValue) => _map['email'] = newValue!,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                             hintText: "Email@email.com",
@@ -106,20 +105,12 @@ class _LoginState extends State<Login> {
                           }
                           return null;
                         },
-                        onSaved: (newValue) => _map['password'] = newValue,
+                        onSaved: (newValue) => _map['password'] = newValue!,
                         decoration: InputDecoration(
                             isDense: true,
                             hintText: "********",
                             labelText: "Mot de passe",
                             alignLabelWithHint: true,
-                            // suffix: IconButton(
-                            //     onPressed: () {
-                            //       setState(() {
-                            //         _obscureText = !_obscureText;
-                            //       });
-                            //     },
-                            //     icon: Icon(
-                            //         _obscureText ? Icons.lock : Icons.lock_open)),
                             suffixIcon: IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -139,7 +130,7 @@ class _LoginState extends State<Login> {
                       value: _keepConnect,
                       onChanged: (value) {
                         setState(() {
-                          _keepConnect = value;
+                          _keepConnect = value!;
                         });
                       },
                       // checkColor: HexColor.fromHex("#1CBFE2"),
@@ -155,13 +146,13 @@ class _LoginState extends State<Login> {
                         elevation: 10,
                         onPressed: () async {
                           // print(userService.currentUser);
-                          if (_formKey.currentState.validate()) {
-                            _formKey.currentState.save();
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
                             try {
                               var user =
                                   await userService.signInWithEmailAndPassword(
-                                      email: _map['email'],
-                                      password: _map['password']);
+                                      email: _map['email'] as String,
+                                      password: _map['password'] as String);
                               if (user is FirebaseUser) {
                                 print(userService.currentUser);
                                 Get.to(Home());
@@ -180,8 +171,8 @@ class _LoginState extends State<Login> {
                           padding: const EdgeInsets.only(right: 10),
                           child: GFIconButton(
                             onPressed: () async {
-                              if (_formKey.currentState.validate()) {
-                                _formKey.currentState.save();
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
                                 try {
                                   bool user =
                                       await userService.signInWithFacebook();
@@ -202,14 +193,14 @@ class _LoginState extends State<Login> {
                             buttonBoxShadow: true,
                             boxShadow: BoxShadow(
                               blurRadius: 10,
-                              color: Colors.blue[50],
+                              color: Colors.blue[50]!,
                             ),
                           ),
                         ),
                         GFIconButton(
                           onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              _formKey.currentState.save();
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!.save();
                               try {
                                 bool user =
                                     await userService.signInWithGoogle();

@@ -14,7 +14,6 @@ import 'package:kdg/views/splash_screen.dart';
 import 'package:kdg/views/login.dart';
 import 'package:provider/provider.dart';
 
-
 import 'firebase_options.dart';
 
 void main() async {
@@ -60,9 +59,9 @@ class Kdg extends StatelessWidget {
                     padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                         EdgeInsets.all(0)),
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        Colors.blue[100].withOpacity(0.2)),
+                        Colors.blue[100]!.withOpacity(0.2)),
                     minimumSize: MaterialStateProperty.all<Size>(
-                        new Size(Get.width * .9, Get.height * .05))),
+                        Size(Get.width * .9, Get.height * .05))),
               )),
           debugShowCheckedModeBanner: false,
           // customTransition: CircleTrans(),
@@ -78,7 +77,7 @@ class Kdg extends StatelessWidget {
                       );
                     } else {
                       return SplashScreen(
-                        nextPage: Login(),
+                        nextPage: Login(title: '55',),
                       );
                     }
                   },
@@ -90,7 +89,7 @@ class Kdg extends StatelessWidget {
                   if (snapshot.hasData && snapshot.data is FirebaseUser) {
                     return Home();
                   } else {
-                    return Login();
+                    return Login(title: '52',);
                   }
                 },
               );

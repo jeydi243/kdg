@@ -10,9 +10,8 @@ import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class VehiculeService extends ChangeNotifier {
-  FirebaseAuth _auth;
-  FirebaseStorage storage;
-  FirebaseFirestore firestore;
+  late FirebaseAuth _auth;
+  late FirebaseFirestore firestore;
   List<Vehicule> listVehicules = <Vehicule>[];
   List<Rapport> listRapports = <Rapport>[];
   List<Maison> listMaisons = <Maison>[];
@@ -47,7 +46,7 @@ class VehiculeService extends ChangeNotifier {
         .snapshots(includeMetadataChanges: true)
         .map<List<Maison>>((snap) {
       return snap.docChanges
-          .map<Maison>((e) => Maison.fromMap({...e.doc.data(), 'id': e.doc.id}))
+          .map<Maison>((e) => Maison.fromMap({...?e.doc.data(), 'id': e.doc.id}))
           .toList();
     }).listen((event) {
       Logger().i('Listen for houses');
@@ -63,7 +62,7 @@ class VehiculeService extends ChangeNotifier {
         .map<List<Rapport>>((snap) {
       return snap.docChanges
           .map<Rapport>(
-              (e) => Rapport.fromMap({...e.doc.data(), 'id': e.doc.id}))
+              (e) => Rapport.fromMap({...?e.doc.data(), 'id': e.doc.id}))
           .toList();
     }).listen((event) {
       Logger().i('Listen for rapports');
@@ -78,7 +77,7 @@ class VehiculeService extends ChangeNotifier {
         .snapshots(includeMetadataChanges: true)
         .map<List<Map<String, dynamic>>>((snap) {
       return snap.docChanges
-          .map<Map<String, dynamic>>((e) => {...e.doc.data(), 'id': e.doc.id})
+          .map<Map<String, dynamic>>((e) => {...?e.doc.data(), 'id': e.doc.id})
           .toList();
     }).listen((event) {
       Logger().i('Bdd change ...');
