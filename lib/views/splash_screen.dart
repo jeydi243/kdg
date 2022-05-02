@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-import "package:animated_text_kit/animated_text_kit.dart";
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:lottie/lottie.dart';
@@ -12,7 +10,7 @@ import 'package:kdg/constantes/values.dart';
 class SplashScreen extends StatefulWidget {
   final Widget nextPage;
 
-  const SplashScreen({Key key, @required this.nextPage}) : super(key: key);
+  const SplashScreen({Key? key, required this.nextPage}) : super(key: key);
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }

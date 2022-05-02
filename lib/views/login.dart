@@ -12,7 +12,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key, this.title}) : super(key: key);
+  Login({Key? key, this.title}) : super(key: key);
 
   final String title;
 
@@ -162,7 +162,7 @@ class _LoginState extends State<Login> {
                                   await userService.signInWithEmailAndPassword(
                                       email: _map['email'],
                                       password: _map['password']);
-                              if (user is User) {
+                              if (user is FirebaseUser) {
                                 print(userService.currentUser);
                                 Get.to(Home());
                               }

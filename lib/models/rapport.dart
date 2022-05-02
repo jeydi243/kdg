@@ -1,18 +1,18 @@
 class Rapport implements Type {
-	String id;
+	late String id;
 	String mois;
-	int heures;
-	int etudes;
+	late int heures;
+	late int etudes;
 	int visites;
 	int publications;
 
 	Rapport({
-		this.id,
-		this.heures,
-		this.mois,
-		this.etudes,
-		this.publications,
-		this.visites
+		required this.id,
+		required this.heures,
+		required this.mois,
+		required this.etudes,
+		required this.publications,
+		required this.visites
 	});
 
 	Rapport.fromMap(Map<String,dynamic> snapshot):

@@ -4,59 +4,56 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
 import 'package:kdg/views/login.dart';
 import 'package:kdg/models/user.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:kdg/services/log.dart';
 
 class UserService extends ChangeNotifier {
-  FirebaseAuth _auth;
-  GoogleSignIn gsign;
-  FacebookAuth fbAuth;
-  firebase_storage.FirebaseStorage storage;
-  FirebaseFirestore firestore;
-  Log log;
-  String token = "";
-  FirebaseMessaging _fcm;
-  User user;
-  UserKDG _user;
-  FirebaseFunctions functions;
+  FirebaseAuth? _auth;
+  GoogleSignIn? gsign;
+  FirebaseStorage? storage;
+  FirebaseFirestore? firestore;
+  Log? log;
+  String? token = "";
+  FirebaseMessaging? _fcm;
+  FirebaseUser? user;
+  UserKDG? _user;
+  FirebaseFunctions? functions;
 
   UserService() {
     functions = FirebaseFunctions.instance;
     _auth = FirebaseAuth.instance;
-    fbAuth = FacebookAuth.instance;
     gsign = GoogleSignIn();
-    storage = firebase_storage.FirebaseStorage.instance;
+    storage = FirebaseStorage.instance;
     _fcm = FirebaseMessaging.instance;
-    _fcm.setForegroundNotificationPresentationOptions(
+    _fcm?.setForegroundNotificationPresentationOptions(
         alert: true, badge: true, sound: true);
     firestore = FirebaseFirestore.instance;
     log = Log();
-    if (_auth.currentUser != null) {
-      setUserKDG();
-      getDeviceToken();
-    }
+    _auth?.currentUser().then((FirebaseUser user) {
+      if (user) {
+        setUserKDG();
+        getDeviceToken();
+      }
+    });
   }
 
   Future<Map<String, dynamic>> signup(
       String email, String password, String nom) async {
     try {
-      var usercredential = await _auth.createUserWithEmailAndPassword(
+      var usercredential = await _auth?.createUserWithEmailAndPassword(
           email: email, password: password);
-      await usercredential.user.sendEmailVerification();
+      await usercredential?.user.sendEmailVerification();
       await addUserToFirestore(provider: "emailpassword");
       await setUserKDG();
       await getDeviceToken();
-      return {"message": "L'utilisateur a bien été enregistré", "state": true};
-    } on FirebaseAuthException catch (e) {
+      return {'message': "L'utilisateur a bien été enregistré", "state": true};
+    } on FirebaseException catch (e) {
       if (e.code == "email-already-in-use") {
         log.w("Un compte existe déja avec cette email");
         return {
@@ -99,9 +96,9 @@ class UserService extends ChangeNotifier {
     Get.to(Login());
   }
 
-  User get currentUser => _auth.currentUser;
-  FirebaseAuth get auth => _auth;
-  UserKDG get userKDG => _user;
+  Future<FirebaseUser> get currentUser => _auth.currentUser();
+  FirebaseAuth? get auth => _auth;
+  UserKDG? get userKDG => _user;
 
   Future<void> setUserKDG() async {
     try {
@@ -114,18 +111,18 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Future<User> signInWithEmailAndPassword(
+  Future<FirebaseUser?> signInWithEmailAndPassword(
       {String email, String password}) async {
     try {
-      var usercredential = await _auth.signInWithEmailAndPassword(
+      FirebaseUser? user = await _auth?.signInWithEmailAndPassword(
           email: email, password: password);
 
       await addUserToFirestore(provider: "emailpassword");
       await setUserKDG();
       notifyListeners();
-      return usercredential.user;
-    } on FirebaseAuthException catch (e) {
-      log.e("${e.code} : ${e.message}");
+      return user;
+    } on FirebaseException catch (e) {
+      log?.e("${e.code} : ${e.message}");
       switch (e.code) {
         case "invalid-email":
           showSnackBar(title: "Erreur", message: "L'email est incorrect");
@@ -147,37 +144,8 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Future<bool> signInWithCredential(AuthCredential credential) async {
-    try {
-      UserCredential userCred = await _auth.signInWithCredential(credential);
-      user = userCred.user;
-      await addUserToFirestore(provider: userCred.credential.providerId);
-      await setUserKDG();
-      // Get.to(Home(), transition: Transition.size, duration: 3.seconds);
-      return true;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "user-disabled") {
-        showSnackBar(message: "L'utilisateur est désactivée");
-      } else if (e.code == "account-exists-with-different-credential") {
-        showSnackBar(message: "Cet utilisateur existe avec different login");
-      } else if (e.code == "invalid-credential") {
-        showSnackBar(message: "Peut pas se connecter avec cette application!");
-      } else if (e.code == "user-not-found") {
-        showSnackBar(message: "Cet utilisateur n'existe pas!");
-      } else if (e.code == "wrong-password") {
-        showSnackBar(message: "Le mot de passe est incorrect!");
-      } else if (e.code == "invalid-verification-code") {
-        showSnackBar(message: "Code de vérification invalid!");
-      } else if (e.code == "invalid-verification-id") {
-        showSnackBar(message: "L'id de vérification invalid!");
-      }
-    } on FirebaseException catch (e, r) {
-      log.w("${e.code}: ${e.message} \n $r");
-    }
-    return false;
-  }
-
-  void showSnackBar({String title = "Authentification", String message}) {
+  void showSnackBar(
+      {String title = "Authentification", required String message}) {
     Get.snackbar(
       title,
       message,
@@ -220,7 +188,7 @@ class UserService extends ChangeNotifier {
   Future<void> deleteMe() async {
     try {
       await _auth.currentUser.delete();
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseException catch (e) {
       if (e.code == 'requires-recent-login') {
         log.w(
             "L'utilisateur doit se ré-authentifier avant que cette opération puisse être exécutée.");
@@ -232,27 +200,27 @@ class UserService extends ChangeNotifier {
 
   Future<void> getDeviceToken() async {
     try {
-      token = await _fcm.getToken();
-      await firestore
+      token = await _fcm?.getToken();
+      await firestore!
           .collection("users")
-          .doc(_auth.currentUser.uid)
+          .doc(currentUser.uid)
           .update({'token': token});
     } catch (e) {
-      log.e('$e');
+      log?.e(e);
     }
   }
 
   Future<void> addUserToFirestore({@required String provider}) async {
-    User user = _auth.currentUser;
+    FirebaseUser user = await _auth!.currentUser();
     try {
-      var snap = await firestore.collection('users').doc(user.uid).get();
+      var snap = await firestore!.collection('users').doc(user.uid).get();
       if (snap.exists == false) {
-        return await firestore.collection('users').doc(user.uid).set({
+        return await firestore!.collection('users').doc(user.uid).set({
           'name': user.displayName,
           'email': user.email,
-          'creation': user.metadata.creationTime,
-          'emailverified': user.emailVerified,
-          'imgsrc': user.photoURL,
+          'creationTimestamp': user.metadata.creationTimestamp,
+          'isEmailVerified': user.isEmailVerified,
+          'imgsrc': user.photoUrl,
           'uid': user.uid,
           'telephone': user.phoneNumber,
           'panier': [],
@@ -270,7 +238,7 @@ class UserService extends ChangeNotifier {
         });
       }
     } catch (e, r) {
-      log.w('${e.message} : $r');
+      log!.w('$e : $r');
     }
   }
 
@@ -289,7 +257,7 @@ class UserService extends ChangeNotifier {
         'message': "Le mot de passe a été modifié avec succes!",
         'shouldBack': true
       };
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseException catch (e) {
       if (e.code == "requires-recent-login") {
         return {
           "state": false,
@@ -318,17 +286,17 @@ class UserService extends ChangeNotifier {
   Future<Map<String, dynamic>> updateProfile(
       {File img, Map<String, dynamic> form}) async {
     try {
-      var userRef = firestore.collection("users").doc(_auth.currentUser.uid);
+      var userRef = firestore.collection("users").doc(currentUser.uid);
       var user = await userRef.get();
       String email = user.get('email').toString();
       String displayName = user.get('name').toString();
       String phoneNumber = user.get('telephone').toString();
 
       if (form['email'].isEmail && form['email'] != email) {
-        await _auth.currentUser.updateEmail(form['email']);
+        await currentUseruser.updateEmail(email);
       }
       if (displayName != form['nom'] && form['nom'] != "") {
-        await _auth.currentUser.updateProfile(displayName: form['nom']);
+        // await _auth.currentUser.updateProfile(displayName: form['nom']);
         await userRef.update({'name': form['nom']});
         _user.nom = form['nom'];
       }
@@ -337,17 +305,14 @@ class UserService extends ChangeNotifier {
         _user.telephone = form['telephone'];
       }
 
-      List<String> list = await _auth.fetchSignInMethodsForEmail(email);
-      print(list);
-
       if (img != null) {
-        final ref = storage.ref();
+        final ref = storage?.ref();
         var extension = img.path.split('/').last.split('.').last;
-        Reference imgref = ref
+        StorageReference imgref = ref
             .child("users")
-            .child(_auth.currentUser.uid)
-            .child("${_auth.currentUser.uid}.$extension");
-        UploadTask task = imgref.putFile(img);
+            .child(currentUser.uid)
+            .child("${currentUser.uid}.$extension");
+        StorageUploadTask task = imgref.putFile(img);
         task
             .then((val) => val.ref.getDownloadURL())
             .then((value) => userRef.update({'imgsrc': value}));
@@ -358,8 +323,8 @@ class UserService extends ChangeNotifier {
         'message': 'Votre profil a été mis à jour',
         'shouldBack': true
       };
-    } on FirebaseAuthException catch (e, stack) {
-      log.w('Une erreur est survenue: ${e.message} :: $stack');
+    } on FirebaseException catch (e, stack) {
+      log?.w('Une erreur est survenue: ${e.message} :: $stack');
       if (e.code == "requires-recent-login") {
         return {
           "state": false,
@@ -374,7 +339,7 @@ class UserService extends ChangeNotifier {
       } else if (e.code == "email-already-in-use") {
         return {"state": false, "message": "Cette email est deja utilisé"};
       } else {
-        log.w("Une erreur s'est produite ${e.message}");
+        log?.w("Une erreur s'est produite ${e.message}");
         return {
           "state": false,
           "message":
@@ -384,10 +349,9 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Future<void> notifyMe({String car, String doc}) {
+  notifyMe() {
     Get.snackbar("Notifications",
         "Vous recevrez une notification a l'approche de l'écheance",
-        barBlur: 3, colorText: Colors.white,overlayBlur: 5);
-
+        barBlur: 3, colorText: Colors.white, overlayBlur: 5);
   }
 }

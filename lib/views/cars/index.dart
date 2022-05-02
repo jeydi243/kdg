@@ -13,14 +13,14 @@ import 'package:pigment/pigment.dart';
 import 'package:provider/provider.dart';
 
 class DetailsCar extends StatefulWidget {
-  DetailsCar({Key key, this.item}) : super(key: key);
+  DetailsCar({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
   _DetailsCarState createState() => _DetailsCarState();
 }
 
 class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
-  AnimationController controller;
+  late AnimationController controller;
 
   @override
   void initState() {

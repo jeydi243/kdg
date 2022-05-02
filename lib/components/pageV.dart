@@ -5,7 +5,7 @@ import 'dart:math';
 
 class PageV extends StatefulWidget {
 	PageV({
-		Key key,
+		Key? key,
 	}): super(key: key);
 
 	@override
@@ -13,11 +13,11 @@ class PageV extends StatefulWidget {
 }
 
 class _PageVState extends State < PageV > {
-	PageController _controller;
-	String _name;
-	double myFraction = 0.8;
-	double pageOffset = 0;
-	String valeurBlur = "";
+	late PageController _controller;
+	String? _name;
+	double? myFraction = 0.8;
+	double? pageOffset = 0.0;
+	String? valeurBlur = "";
 	Map < String,
 	String > _list = {
 		"Rexton": "assets/onze.jpg",

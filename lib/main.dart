@@ -1,10 +1,9 @@
+// Import the generated file
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kdg/models/maison.dart';
-import 'package:kdg/models/rapport.dart';
-import 'package:kdg/models/vehicule.dart';
 import 'package:kdg/services/vehicule_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:logger/logger.dart';
@@ -12,14 +11,18 @@ import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/views/home.dart';
 import 'package:kdg/views/splash_screen.dart';
-import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/login.dart';
 import 'package:provider/provider.dart';
+
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     runApp(Kdg());
   } on FirebaseException catch (e) {
     Logger().w(e.toString());
@@ -39,49 +42,11 @@ class Kdg extends StatelessWidget {
           create: (_) => VehiculeService(),
           lazy: false,
         ),
-        // StreamProvider<List<Vehicule>>.value(
-        //   create: (_) => VehiculeService().listenCar,
-        //   initialData: <Vehicule>[],
-        //   lazy: false,
-        //   value: VehiculeService().listenCar,
-        //   catchError: (context, error) {
-        //     Logger().e("Error lors du retrieve: $error ");
-        //     return <Vehicule>[];
-        //   },
-        // ),
-        // StreamProvider<List<Maison>>.value(
-        //   value: VehiculeService().listenHouse,
-        //   initialData: <Maison>[],
-        //   catchError: (context, error) {
-        //     Logger().e("Error lors du retrieve: $error ");
-        //     return <Maison>[];
-        //   },
-        //   lazy: false,
-        // ),
-        // StreamProvider<List<Rapport>>.value(
-        //   value: VehiculeService().listenRapports,
-        //   initialData: <Rapport>[],
-        //   lazy: false,
-        //   catchError: (context, error) {
-        //     Logger().e("Error lors du retrieve: $error");
-        //     return <Rapport>[];
-        //   },
-        // ),
-        // StreamProvider<List<Map<String, dynamic>>>.value(
-        //   value: VehiculeService().listenBdd,
-        //   initialData: <Map<String, dynamic>>[],
-        //   lazy: false,
-        //   catchError: (context, error) {
-        //     Logger().e("Error lors du retrieve: $error");
-        //     return <Map<String, dynamic>>[];
-        //   },
-        // ),
       ],
       child: GetMaterialApp(
           title: 'Kdg',
-          theme: new ThemeData(
+          theme: ThemeData(
               textTheme: GoogleFonts.k2dTextTheme(),
-              accentColor: Colors.blue,
               backgroundColor: HexColor.fromHex("#FDF8F8"),
               dialogBackgroundColor: HexColor.fromHex("#FDF8F8"),
               dialogTheme: DialogTheme(
@@ -89,7 +54,6 @@ class Kdg extends StatelessWidget {
                   titleTextStyle: Theme.of(context).textTheme.bodyText2,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15))),
-              fixTextFieldOutlineLabel: true,
               inputDecorationTheme: InputDecorationTheme(),
               textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(
@@ -105,10 +69,10 @@ class Kdg extends StatelessWidget {
           home: LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxHeight == Get.height) {
-                return StreamBuilder<User>(
-                  stream: FirebaseAuth.instance.authStateChanges(),
+                return StreamBuilder<FirebaseUser>(
+                  stream: FirebaseAuth.instance.onAuthStateChanged,
                   builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data is User) {
+                    if (snapshot.hasData && snapshot.data is FirebaseUser) {
                       return SplashScreen(
                         nextPage: Home(),
                       );
@@ -120,10 +84,10 @@ class Kdg extends StatelessWidget {
                   },
                 );
               }
-              return StreamBuilder<User>(
-                stream: FirebaseAuth.instance.authStateChanges(),
+              return StreamBuilder<FirebaseUser>(
+                stream: FirebaseAuth.instance.onAuthStateChanged,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data is User) {
+                  if (snapshot.hasData && snapshot.data is FirebaseUser) {
                     return Home();
                   } else {
                     return Login();

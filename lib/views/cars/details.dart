@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/preview.dart';
 import 'package:kdg/models/vehicule.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DetailsCar extends StatefulWidget {
-  DetailsCar(this.car, {Key key}) : super(key: key);
+  DetailsCar(this.car, {Key? key}) : super(key: key);
   final Vehicule car;
   @override
   _DetailsCarState createState() => _DetailsCarState();
 }
 
 class _DetailsCarState extends State<DetailsCar> {
-  List<Map<String, dynamic>> list;
+  late List<Map<String, dynamic>> list;
 
   @override
   void initState() {
@@ -44,7 +43,7 @@ class _DetailsCarState extends State<DetailsCar> {
               'Actions',
               style: Theme.of(context)
                   .textTheme
-                  .headline6
+                  .headline6!
                   .copyWith(fontWeight: FontWeight.w600),
             ),
             Padding(
@@ -58,11 +57,7 @@ class _DetailsCarState extends State<DetailsCar> {
                       child: Text("Activer les notifications d'echéance")),
                   TextButton(
                       onPressed: () {
-                        Get.dialog(
-                          PreviewDoc(linkToDoc: link),
-                          transitionDuration: 500.milliseconds,
-                          useSafeArea: true,
-                        );
+                        
                       },
                       child: Text('Voir le document')),
                   TextButton(

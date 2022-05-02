@@ -6,10 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class BlurCard extends StatefulWidget {
 	BlurCard({
-		Key key,
-		@required this.titre
+		Key? key,
+		required this.titre
 	}): super(key: key);
-	String titre;
+	final String titre;
 	@override
 	_BlurCardState createState() => _BlurCardState();
 }

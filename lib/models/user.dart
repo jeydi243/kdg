@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'rapport.dart';
 
 class UserKDG implements Type {
-  String _id;
-  String _name;
-  String _email;
-  String _telephone;
-  String _provider;
-  String _imgsrc;
+  late String _id;
+  late String _name;
+  late String _email;
+  late String _telephone;
+  late String _provider;
+  late String _imgsrc;
   var _creation;
 
 //getters

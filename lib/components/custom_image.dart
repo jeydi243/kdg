@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomImage extends StatefulWidget {
-  CustomImage({Key key, this.imgsrc}) : super(key: key);
+  CustomImage({Key? key, required this.imgsrc}) : super(key: key);
   final String imgsrc;
   @override
   _CustomImageState createState() => _CustomImageState();

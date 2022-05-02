@@ -6,7 +6,7 @@ import 'package:kdg/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DetailsHouse extends StatefulWidget {
-  DetailsHouse({Key key, this.item}) : super(key: key);
+  DetailsHouse({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
   _DetailsHouseState createState() => _DetailsHouseState();

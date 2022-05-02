@@ -12,7 +12,7 @@ import 'package:pigment/pigment.dart';
 import 'package:provider/provider.dart';
 
 class DetailsBdd extends StatefulWidget {
-  DetailsBdd({Key key, this.item}) : super(key: key);
+  DetailsBdd({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
   _DetailsBddState createState() => _DetailsBddState();

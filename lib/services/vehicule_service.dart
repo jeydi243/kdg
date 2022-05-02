@@ -1,9 +1,6 @@
-import 'dart:developer';
-import 'dart:ui';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kdg/models/vehicule.dart';
@@ -14,7 +11,7 @@ import 'package:palette_generator/palette_generator.dart';
 
 class VehiculeService extends ChangeNotifier {
   FirebaseAuth _auth;
-  firebase_storage.FirebaseStorage storage;
+  FirebaseStorage storage;
   FirebaseFirestore firestore;
   List<Vehicule> listVehicules = <Vehicule>[];
   List<Rapport> listRapports = <Rapport>[];
@@ -35,7 +32,7 @@ class VehiculeService extends ChangeNotifier {
         .map<List<Vehicule>>((QuerySnapshot snap) {
       return snap.docChanges.map<Vehicule>((DocumentChange e) {
         // Logger().i('EPA: ${e.doc.data()}');
-        return Vehicule.fromMap({...e.doc.data(), 'id': e.doc.id});
+        // return Vehicule.fromMap({...e.doc.data(), 'id': e.doc.id});
       }).toList();
     }).listen((event) {
       Logger().i('Listen for cars');

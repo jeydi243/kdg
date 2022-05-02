@@ -6,7 +6,7 @@ import 'package:kdg/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DetailsRapport extends StatefulWidget {
-  DetailsRapport({Key key, this.item}) : super(key: key);
+  DetailsRapport({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
   _DetailsRapportState createState() => _DetailsRapportState();

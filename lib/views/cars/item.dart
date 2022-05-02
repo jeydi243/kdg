@@ -9,14 +9,14 @@ import 'package:kdg/views/cars/details.dart';
 import 'package:logger/logger.dart';
 
 class CarItem extends StatefulWidget {
-  CarItem({Key key, this.item}) : super(key: key);
+  CarItem({Key? key, required this.item}) : super(key: key);
   final Vehicule item;
   @override
   _CarItemState createState() => _CarItemState();
 }
 
 class _CarItemState extends State<CarItem> {
-  List<Map<String, dynamic>> list;
+  late List<Map<String, dynamic>> list;
   @override
   void initState() {
     Vehicule car = widget.item;
@@ -59,7 +59,7 @@ class _CarItemState extends State<CarItem> {
               },
             ),
           ),
-          title: Text('${car.Nom.capitalizeFirst}'),
+          title: Text(car.Nom.capitalizeFirst!),
           trailing: IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert)),
         ),
         // padding: EdgeInsets.only(left: 10, top: 10),

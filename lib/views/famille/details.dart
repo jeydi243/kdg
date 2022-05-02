@@ -6,7 +6,7 @@ import 'package:kdg/views/cars/item.dart';
 import 'package:logger/logger.dart';
 
 class DetailsFamille extends StatefulWidget {
-  DetailsFamille({Key key, this.item}) : super(key: key);
+  DetailsFamille({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
   _DetailsFamilleState createState() => _DetailsFamilleState();

@@ -5,9 +5,9 @@ import 'package:supercharged/supercharged.dart';
 enum AniProps { opacity, offset }
 
 class FadeIn extends StatefulWidget {
-  FadeIn({this.dur, this.child});
+  FadeIn({Key? key, this.dur, required this.child}) : super(key: key);
   final Widget child;
-  double dur;
+  double? dur;
 
   @override
   _FadeInState createState() => _FadeInState();
@@ -27,7 +27,7 @@ class _FadeInState extends State<FadeIn> {
     return PlayAnimation<MultiTweenValues<AniProps>>(
         tween: tween,
         duration: tween.duration,
-        delay: widget.dur.seconds,
+        delay: widget.dur!.seconds,
         builder: (context, childe, value) {
           return Transform.translate(
               offset: value.get(AniProps.offset),

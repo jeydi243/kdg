@@ -4,7 +4,7 @@ import '../login.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignUp extends StatefulWidget {
-  SignUp({Key key, this.title}) : super(key: key);
+  SignUp({Key? key, this.title}) : super(key: key);
 
   final String title;
 

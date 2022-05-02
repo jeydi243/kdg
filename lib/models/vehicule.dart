@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Vehicule {
   String model;
-  String id;
+  late String id;
   String nom;
   Map<String, dynamic> assurance;
   Map<String, dynamic> controle;
