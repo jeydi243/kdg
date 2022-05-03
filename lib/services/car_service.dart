@@ -3,28 +3,36 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/car.dart';
-import 'package:kdg/models/maison.dart';
-import 'package:kdg/models/rapport.dart';
+import 'package:kdg/models/document.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class CarService extends GetxController {
-  static CarService userservice = Get.find();
+  static CarService carservice = Get.find();
 
   late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
-  List<Car> listCars = <Car>[];
-  List<Rapport> listRapports = <Rapport>[];
-  List<Maison> listMaisons = <Maison>[];
+
+  Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
+  Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
+  Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
   List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   CarService() {
     _auth = FirebaseAuth.instance;
     firestore = FirebaseFirestore.instance;
     listenCar();
-    listenHouse();
-    listenRapports();
     listenBdd();
   }
+
+  @override
+  void onInit() {
+    super.onInit();
+    listDocumentsSnapshot
+        .bindStream(firestore.collection('documents').snapshots());
+  }
+
+  List<Car> get cars => _cars.value;
+
   void listenCar() {
     firestore
         .collection('cars')
@@ -36,38 +44,7 @@ class CarService extends GetxController {
       }).toList();
     }).listen((event) {
       Logger().i('Listen for cars');
-      listCars.addAll(event);
-    });
-  }
-
-  void listenHouse() {
-    firestore
-        .collection('houses')
-        .snapshots(includeMetadataChanges: true)
-        .map<List<Maison>>((snap) {
-      return snap.docChanges
-          .map<Maison>(
-              (e) => Maison.fromMap({...?e.doc.data(), 'id': e.doc.id}))
-          .toList();
-    }).listen((event) {
-      Logger().i('Listen for houses');
-      listMaisons.addAll(event);
-    });
-  }
-
-  void listenRapports() {
-    firestore
-        .collection('rapports')
-        .snapshots(includeMetadataChanges: true)
-        .map<List<Rapport>>((snap) {
-      return snap.docChanges
-          .map<Rapport>(
-              (e) => Rapport.fromMap({...?e.doc.data(), 'id': e.doc.id}))
-          .toList();
-    }).listen((event) {
-      Logger().i('Listen for rapports');
-      listRapports.addAll(event);
-
+      cars.addAll(event);
     });
   }
 
@@ -83,6 +60,22 @@ class CarService extends GetxController {
       Logger().i('Bdd change ...');
       listBdd.addAll(event);
     });
+  }
+
+  Future<List<Document>?> getCarDocs({required String id}) async {
+    List<Document> cardocs = <Document>[];
+    try {
+      QuerySnapshot<Map<String, dynamic>> f = await firestore
+          .collection('documents')
+          .where('carid', isEqualTo: id)
+          .get();
+      for (QueryDocumentSnapshot doc in f.docs) {
+        cardocs.add(new Document.fromMap(doc, doc.id));
+      }
+      return cardocs;
+    } catch (e) {
+      return null;
+    }
   }
 
 // Calculate dominant color from ImageProvider

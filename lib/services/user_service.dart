@@ -11,6 +11,7 @@ import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
 import 'package:kdg/views/login.dart';
 
+import '../models/rapport.dart';
 import '../views/home.dart';
 
 class UserService extends GetxController {
@@ -24,6 +25,7 @@ class UserService extends GetxController {
 
   Rx<User?> firebaseUser = Rx<User?>(null);
   Rx<DocumentReference?> userDoc = Rx<DocumentReference?>(null);
+  Rx<List<Rapport>> _rapports = Rx<List<Rapport>>(<Rapport>[]);
 
   late Log log;
   Rx<String?> token = "".obs;
@@ -46,6 +48,7 @@ class UserService extends GetxController {
     firebaseUser.bindStream(_auth!.authStateChanges());
   }
 
+  List<Rapport> get rapports => _rapports.value;
   @override
   void onReady() {
     userDoc.value = firestore?.collection('users').doc(currentUser?.uid);

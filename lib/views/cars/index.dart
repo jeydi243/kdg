@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/services/vehicule_service.dart';
+import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/cars/item.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 class DetailsCar extends StatefulWidget {
   DetailsCar({Key? key, required this.item}) : super(key: key);
@@ -30,7 +29,7 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    CarService userservice = Get.find();
+    CarService carservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex("FDF8F8"),
       body: CustomScrollView(
@@ -91,10 +90,10 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
             ),
           ),
           SliverAnimatedList(
-            initialItemCount: userservice.listVehicules.length,
+            initialItemCount: carservice.cars.length,
             itemBuilder: (BuildContext context, int i, Animation<double> an) {
               return CarItem(
-                item: userservice.listVehicules[i],
+                item: carservice.cars[i],
               );
             },
           )

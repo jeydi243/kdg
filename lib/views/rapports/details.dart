@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/components/custom_image.dart';
-import 'package:kdg/models/rapport.dart';
+import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 class DetailsRapport extends StatefulWidget {
   DetailsRapport({Key? key, required this.item}) : super(key: key);
@@ -15,7 +14,7 @@ class DetailsRapport extends StatefulWidget {
 class _DetailsRapportState extends State<DetailsRapport> {
   @override
   Widget build(BuildContext context) {
-    List<Rapport> listrapports = Get.find();
+    UserService userservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
       body: CustomScrollView(
@@ -63,7 +62,7 @@ class _DetailsRapportState extends State<DetailsRapport> {
               (ctx, index) {
                 return Text('Detail reapport');
               },
-              childCount: listrapports.length,
+              childCount: userservice.rapports.length,
             ),
           )
         ],

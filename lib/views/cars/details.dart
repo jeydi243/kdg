@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:kdg/models/car.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.car, {Key? key}) : super(key: key);

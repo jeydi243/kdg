@@ -7,7 +7,6 @@ import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/home.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);

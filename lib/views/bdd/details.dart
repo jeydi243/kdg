@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/components/custom_image.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 class DetailsBdd extends StatefulWidget {
   DetailsBdd({Key? key, required this.item}) : super(key: key);
