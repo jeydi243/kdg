@@ -1,4 +1,3 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +78,6 @@ class Kdg extends StatelessWidget {
           title: 'Kdg',
           debugShowCheckedModeBanner: false,
           // customTransition: CircleTrans(),
-          builder: BotToastInit(),
           home: LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxHeight == Get.height) {
