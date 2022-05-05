@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/user.dart';
@@ -24,7 +25,7 @@ class UserService extends GetxController {
   FirebaseFunctions? functions;
 
   Rx<User?> firebaseUser = Rx<User?>(null);
-  Rx<DocumentReference?> userDoc = Rx<DocumentReference?>(null);
+  Rx<DocumentReference?> userDocRef = Rx<DocumentReference?>(null);
   Rx<List<Rapport>> _rapports = Rx<List<Rapport>>(<Rapport>[]);
 
   late Log log;
@@ -51,7 +52,7 @@ class UserService extends GetxController {
   List<Rapport> get rapports => _rapports.value;
   @override
   void onReady() {
-    userDoc.value = firestore?.collection('users').doc(currentUser?.uid);
+    userDocRef.value = firestore?.collection('users').doc(currentUser?.uid);
     ever(firebaseUser, onUserChange);
   }
 
@@ -126,11 +127,10 @@ class UserService extends GetxController {
 
   Future<void> setUserKDG() async {
     try {
-      var userRef = firestore!.collection("users").doc(currentUser?.uid);
-      var user = await userRef.get();
-      _user = UserKDG.fromMap({"id": user.id, ...?user.data()});
-    } catch (e) {
-      log.i('Erreur dans user: $e');
+      var user = await userDocRef.value!.get();
+      _user = UserKDG.fromFirebase2(user, user.id);
+    } on FirebaseException catch (e, r) {
+      log.i('Erreur dans user: ${e.message}');
     }
   }
 
@@ -183,6 +183,9 @@ class UserService extends GetxController {
       );
 
       await _auth?.signInWithCredential(credential);
+    } on PlatformException catch (e, r) {
+      log.i("Can't sign in with Google: ");
+      log.e('${e.message}: $r');
     } catch (e, r) {
       log.e('$e: $r');
     }
@@ -204,7 +207,7 @@ class UserService extends GetxController {
   Future<void> getDeviceToken() async {
     try {
       token.value = await _fcm?.getToken();
-      await userDoc.value!.update({'token': token});
+      await userDocRef.value!.update({'token': token});
     } catch (e) {
       log.e('$e');
     }
@@ -213,7 +216,7 @@ class UserService extends GetxController {
   Future<void> addUserToFirestore({required String provider}) async {
     User? user = currentUser;
     try {
-      var snap = await userDoc.value!.get();
+      var snap = await userDocRef.value!.get();
       if (snap.exists == false) {
         return await firestore!.collection('users').doc(user!.uid).set({
           'name': user.displayName,
@@ -245,8 +248,7 @@ class UserService extends GetxController {
     });
   }
 
-  Future<Map<String, dynamic>> updatePassword(
-      {required String newPassword}) async {
+  Future<Map<String, dynamic>> updatePassword(String newPassword) async {
     try {
       await currentUser?.updatePassword(newPassword);
       return {
@@ -281,7 +283,7 @@ class UserService extends GetxController {
   }
 
   Future<Map<String, dynamic>> updateProfile(
-      {File? img, required Map<String, dynamic> form}) async {
+      File? img, Map<String, dynamic> form) async {
     try {
       var userRef = firestore!.collection("users").doc(currentUser!.uid);
       var user = await userRef.get();

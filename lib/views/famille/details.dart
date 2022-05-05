@@ -75,7 +75,6 @@ List<Map<String,dynamic>> map = <Map<String,dynamic>>[];
               initialItemCount: map.length,
               itemBuilder: (BuildContext context, int index,
                   Animation<double> animation) {
-                // Logger().e('eeeeeeeeeeeeeeeeeeee');
                 return Text("Details familles");
               },
             )

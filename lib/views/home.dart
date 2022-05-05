@@ -70,17 +70,20 @@ class _HomeState extends State<Home> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: CircleAvatar(
-                backgroundImage: AssetImage("assets/epa.jpg"),
-                radius: 20,
-                // child: DropdownButton(
-                //     items: ['Modifier le Profil']
-                //         .map<DropdownMenuItem<String>>((String value) {
-                //   return DropdownMenuItem<String>(
-                //     value: value,
-                //     child: Text(value),
-                //   );
-                // }).toList()),
+              child: InkWell(
+                onTap: () => Get.toNamed('/profil'),
+                child: CircleAvatar(
+                  backgroundImage: AssetImage("assets/epa.jpg"),
+                  radius: 20,
+                  // child: DropdownButton(
+                  //     items: ['Modifier le Profil']
+                  //         .map<DropdownMenuItem<String>>((String value) {
+                  //   return DropdownMenuItem<String>(
+                  //     value: value,
+                  //     child: Text(value),
+                  //   );
+                  // }).toList()),
+                ),
               ),
             )
           ],

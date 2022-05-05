@@ -1,5 +1,6 @@
 // Import the generated file
 import 'package:kdg/views/login.dart';
+import 'package:kdg/views/user/profile.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class Kdg extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Kdg',
+      routes: {'/profile': (context) => Profile()},
       theme: ThemeData(
           textTheme: GoogleFonts.k2dTextTheme(),
           backgroundColor: HexColor.fromHex("#FDF8F8"),
@@ -40,6 +42,7 @@ class Kdg extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15))),
           inputDecorationTheme: InputDecorationTheme(),
+          useMaterial3: true,
           textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
                 padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
