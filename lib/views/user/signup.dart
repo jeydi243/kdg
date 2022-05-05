@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../bezierContainer.dart';
-import '../login.dart';
+import 'login.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignUp extends StatefulWidget {

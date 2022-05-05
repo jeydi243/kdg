@@ -10,7 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
-import 'package:kdg/views/login.dart';
+import 'package:kdg/views/user/login.dart';
 
 import '../models/rapport.dart';
 import '../views/home.dart';
@@ -18,7 +18,7 @@ import '../views/home.dart';
 class UserService extends GetxController {
   static UserService userservice = Get.find();
 
-  FirebaseAuth? _auth;
+  late FirebaseAuth _auth;
   GoogleSignIn? gsign;
   FirebaseStorage? storage;
   FirebaseFirestore? firestore;
@@ -46,7 +46,7 @@ class UserService extends GetxController {
     _fcm?.setForegroundNotificationPresentationOptions(
         alert: true, badge: true, sound: true);
 
-    firebaseUser.bindStream(_auth!.authStateChanges());
+    firebaseUser.bindStream(_auth.authStateChanges());
   }
 
   List<Rapport> get rapports => _rapports.value;
@@ -63,8 +63,8 @@ class UserService extends GetxController {
   Future<Map<String, dynamic>> signup(
       String email, String password, String nom) async {
     try {
-      await _auth!
-          .createUserWithEmailAndPassword(email: email, password: password);
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       return {'message': "L'utilisateur a bien été enregistré", "state": true};
     } on FirebaseException catch (e) {
       if (e.code == "email-already-in-use") {
@@ -114,7 +114,7 @@ class UserService extends GetxController {
   Future<void> signOut() async {
     try {
       await gsign?.signOut();
-      await _auth?.signOut();
+      await _auth.signOut();
     } on FirebaseException catch (e) {
       log.w("$e");
     }
@@ -122,7 +122,7 @@ class UserService extends GetxController {
   }
 
   User? get currentUser => firebaseUser.value;
-  FirebaseAuth? get auth => _auth;
+  FirebaseAuth get auth => _auth;
   UserKDG? get userKDG => _user;
 
   Future<void> setUserKDG() async {
@@ -130,14 +130,14 @@ class UserService extends GetxController {
       var user = await userDocRef.value!.get();
       _user = UserKDG.fromFirebase2(user, user.id);
     } on FirebaseException catch (e, r) {
-      log.i('Erreur dans user: ${e.message}');
+      log.i('Erreur dans user: ${e.message}: $r');
     }
   }
 
   Future<void> signInWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
-      await _auth?.signInWithEmailAndPassword(email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseException catch (e) {
       log.e("${e.code} : ${e.message}");
       switch (e.code) {
@@ -182,7 +182,7 @@ class UserService extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      await _auth?.signInWithCredential(credential);
+      await _auth.signInWithCredential(credential);
     } on PlatformException catch (e, r) {
       log.i("Can't sign in with Google: ");
       log.e('${e.message}: $r');
@@ -242,8 +242,7 @@ class UserService extends GetxController {
   }
 
   Future<void> sendEmailPassReinitialisation({required String email}) async {
-    _auth?.sendPasswordResetEmail(email: email).catchError((err) {
-      print("**************$err");
+    _auth.sendPasswordResetEmail(email: email).catchError((err) {
       log.w(err);
     });
   }

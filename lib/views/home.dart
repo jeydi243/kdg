@@ -71,7 +71,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.only(right: 20),
               child: InkWell(
-                onTap: () => Get.toNamed('/profil'),
+                onTap: () => Get.toNamed('/profile'),
                 child: CircleAvatar(
                   backgroundImage: AssetImage("assets/epa.jpg"),
                   radius: 20,

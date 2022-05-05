@@ -1,6 +1,7 @@
 // Import the generated file
-import 'package:kdg/views/login.dart';
+import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
+import 'constantes/values.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -32,26 +33,8 @@ class Kdg extends StatelessWidget {
     return GetMaterialApp(
       title: 'Kdg',
       routes: {'/profile': (context) => Profile()},
-      theme: ThemeData(
-          textTheme: GoogleFonts.k2dTextTheme(),
-          backgroundColor: HexColor.fromHex("#FDF8F8"),
-          dialogBackgroundColor: HexColor.fromHex("#FDF8F8"),
-          dialogTheme: DialogTheme(
-              backgroundColor: HexColor.fromHex("#FDF8F8"),
-              titleTextStyle: Theme.of(context).textTheme.bodyText2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15))),
-          inputDecorationTheme: InputDecorationTheme(),
-          useMaterial3: true,
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                    EdgeInsets.all(0)),
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Colors.blue[100]!.withOpacity(0.2)),
-                minimumSize: MaterialStateProperty.all<Size>(
-                    Size(Get.width * .9, Get.height * .05))),
-          )),
+      darkTheme: KDGTheme.dark(context),
+      theme: KDGTheme.light(context),
       debugShowCheckedModeBanner: false,
       home: Login(),
       // customTransition: CircleTrans(),
