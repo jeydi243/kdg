@@ -52,10 +52,10 @@ class _LoginState extends State<Login> {
                     children: [
                       Text(
                         "Bienvenue",
-                        style: Theme.of(context).textTheme.headline2,
+                        style: Get.textTheme.headline1,
                       ),
                       Text("Ravis de te revoir",
-                          style: Theme.of(context).textTheme.headline5),
+                          style: Get.textTheme.headline3),
                     ],
                   ),
                   Form(

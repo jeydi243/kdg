@@ -1,13 +1,12 @@
 // Import the generated file
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
 import 'constantes/values.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/services/car_service.dart';
-import 'package:kdg/utils/utils.dart';
 import 'package:logger/logger.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
@@ -18,6 +17,7 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    FirebaseMessaging.instance.setAutoInitEnabled(true);
     Get.put<CarService>(CarService());
     Get.put<UserService>(UserService());
     runApp(Kdg());
@@ -32,9 +32,14 @@ class Kdg extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Kdg',
-      routes: {'/profile': (context) => Profile()},
+      routes: {
+        '/profile': (context) => Profile(),
+        // '/about': (context) => Profile(),
+        // '/rapport': (context) => Profile(),
+      },
       darkTheme: KDGTheme.dark(context),
       theme: KDGTheme.light(context),
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: Login(),
       // customTransition: CircleTrans(),

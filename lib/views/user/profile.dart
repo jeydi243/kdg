@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kdg/services/user_service.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
@@ -9,6 +10,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  List<String> items = ['Modifier le Profil', "Deconnexion"];
+  UserService userservice = Get.find();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -25,14 +28,22 @@ class _ProfileState extends State<Profile> {
                 alignment: Alignment.bottomLeft,
                 enableFeedback: true,
                 icon: Icon(Icons.more_vert_outlined, color: Colors.black),
-                items: ['Modifier le Profil']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: items.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: value == "Deconnexion"
+                        ? Text(
+                            value,
+                            style: TextStyle(color: Colors.red),
+                          )
+                        : Text(value),
                   );
                 }).toList(),
-                onChanged: (String? value) {},
+                onChanged: (String? value) {
+                  if (value == "Deconnexion") {
+                    Future.delayed(2.seconds, (() => userservice.signOut()));
+                  }
+                },
               ),
             ),
           ],
@@ -64,7 +75,10 @@ class _ProfileState extends State<Profile> {
                   Row(
                     children: [
                       MaterialButton(
-                          onPressed: null, child: Text('Modifier le Profil'))
+                          elevation: 0,
+                          color: Colors.blue,
+                          onPressed: () {},
+                          child: Text('Modifier le Profil'))
                     ],
                   )
                 ],

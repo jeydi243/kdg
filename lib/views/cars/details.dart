@@ -51,7 +51,7 @@ class _DetailsCarState extends State<DetailsCar> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        userService.notifyMe();
+                        
                       },
                       child: Text("Activer les notifications d'echéance")),
                   TextButton(onPressed: () {}, child: Text('Voir le document')),

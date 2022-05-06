@@ -33,7 +33,7 @@ class KDGTheme {
                   BorderSide(style: BorderStyle.solid, color: AppColors.error)),
           errorStyle: TextStyle(color: AppColors.error, fontSize: 10)),
       appBarTheme: theme.appBarTheme.copyWith(
-        color: AppColors.white,
+        color: AppColors.text,
         iconTheme: IconThemeData(color: Colors.black),
         titleTextStyle: GoogleFonts.k2d(
           color: AppColors.primary,
@@ -42,23 +42,30 @@ class KDGTheme {
       ),
       textTheme: GoogleFonts.k2dTextTheme().copyWith(
         headline1: TextStyle(
-            fontWeight: FontWeight.w100, color: Colors.black, fontSize: 30),
+            fontWeight: FontWeight.w100,
+            color: AppColors.textDark,
+            fontSize: 30),
         headline2: TextStyle(
-            fontWeight: FontWeight.w200, color: Colors.black, fontSize: 26),
+            fontWeight: FontWeight.w200,
+            color: AppColors.textDark,
+            fontSize: 26),
         headline3: TextStyle(
-            fontWeight: FontWeight.w300, color: Colors.black, fontSize: 24),
+            fontWeight: FontWeight.w300,
+            color: AppColors.textDark,
+            fontSize: 24),
         headline4: TextStyle(
-            fontWeight: FontWeight.w400, color: Colors.black, fontSize: 20),
+            fontWeight: FontWeight.w400,
+            color: AppColors.textDark,
+            fontSize: 20),
         headline5: TextStyle(
-            fontWeight: FontWeight.w500, color: Colors.black, fontSize: 18),
+            fontWeight: FontWeight.w500,
+            color: AppColors.textDark,
+            fontSize: 18),
         button: theme.textTheme.button?.copyWith(
-            fontSize: 14,
-            color: AppColors.white,
-            fontWeight: FontWeight.normal),
+            fontSize: 14, color: AppColors.text, fontWeight: FontWeight.normal),
         caption: theme.textTheme.caption?.copyWith(
             fontSize: 34,
             color: AppColors.primary,
-            fontFamily: 'Metropolis',
             fontWeight: FontWeight.normal),
       ),
       buttonTheme: theme.buttonTheme.copyWith(
@@ -76,7 +83,7 @@ class KDGTheme {
                 Size(Get.width / 4, Get.height * .02)),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
             textStyle: MaterialStateProperty.all<TextStyle>(
-                TextStyle(color: AppColors.white))),
+                TextStyle(color: AppColors.text, fontFamily: "K2D"))),
       ),
       bottomNavigationBarTheme: theme.bottomNavigationBarTheme.copyWith(
           elevation: 0,
@@ -126,7 +133,7 @@ class KDGTheme {
                   BorderSide(style: BorderStyle.solid, color: AppColors.error)),
           errorStyle: TextStyle(color: AppColors.error, fontSize: 10)),
       appBarTheme: theme.appBarTheme.copyWith(
-        color: AppColors.white,
+        color: AppColors.text,
         iconTheme: IconThemeData(color: Colors.black),
         titleTextStyle: GoogleFonts.k2d(
           color: AppColors.primary,
@@ -135,23 +142,20 @@ class KDGTheme {
       ),
       textTheme: GoogleFonts.k2dTextTheme().copyWith(
         headline1: TextStyle(
-            fontWeight: FontWeight.w100, color: Colors.black, fontSize: 30),
+            fontWeight: FontWeight.w100, color: AppColors.text, fontSize: 30),
         headline2: TextStyle(
-            fontWeight: FontWeight.w200, color: Colors.black, fontSize: 26),
+            fontWeight: FontWeight.w200, color: AppColors.text, fontSize: 26),
         headline3: TextStyle(
-            fontWeight: FontWeight.w300, color: Colors.black, fontSize: 24),
+            fontWeight: FontWeight.w300, color: AppColors.text, fontSize: 24),
         headline4: TextStyle(
-            fontWeight: FontWeight.w400, color: Colors.black, fontSize: 20),
+            fontWeight: FontWeight.w400, color: AppColors.text, fontSize: 20),
         headline5: TextStyle(
-            fontWeight: FontWeight.w500, color: Colors.black, fontSize: 18),
+            fontWeight: FontWeight.w500, color: AppColors.text, fontSize: 18),
         button: theme.textTheme.button?.copyWith(
-            fontSize: 14,
-            color: AppColors.white,
-            fontWeight: FontWeight.normal),
+            fontSize: 14, color: AppColors.text, fontWeight: FontWeight.normal),
         caption: theme.textTheme.caption?.copyWith(
             fontSize: 34,
             color: AppColors.primary,
-            fontFamily: 'Metropolis',
             fontWeight: FontWeight.normal),
       ),
       buttonTheme: theme.buttonTheme.copyWith(
@@ -169,7 +173,7 @@ class KDGTheme {
             minimumSize: MaterialStateProperty.all<Size>(
                 Size(Get.width / 4, Get.height * .02)),
             textStyle: MaterialStateProperty.all<TextStyle>(
-                TextStyle(color: AppColors.white))),
+                TextStyle(color: AppColors.text))),
       ),
       bottomNavigationBarTheme: theme.bottomNavigationBarTheme.copyWith(
           elevation: 0,
