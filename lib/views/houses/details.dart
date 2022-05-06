@@ -1,19 +1,9 @@
-import 'package:animations/animations.dart';
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/custom_image.dart';
-import 'package:kdg/models/maison.dart';
-import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/services/user_service.dart';
-import 'package:kdg/services/vehicule_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:kdg/views/cars/item.dart';
-import 'package:pigment/pigment.dart';
-import 'package:provider/provider.dart';
 
 class DetailsHouse extends StatefulWidget {
-  DetailsHouse({Key key, this.item}) : super(key: key);
+  DetailsHouse({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
   _DetailsHouseState createState() => _DetailsHouseState();
@@ -22,7 +12,6 @@ class DetailsHouse extends StatefulWidget {
 class _DetailsHouseState extends State<DetailsHouse> {
   @override
   Widget build(BuildContext context) {
-    List<Maison> listMaisons = Provider.of<List<Maison>>(context);
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
       body: CustomScrollView(
@@ -43,8 +32,18 @@ class _DetailsHouseState extends State<DetailsHouse> {
                   Navigator.pop(context);
                 },
                 child: Stack(children: [
-                  CustomImage(
-                    imgsrc: widget.item['imgsrc'],
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(20)),
+                    child: Hero(
+                      tag: widget.item['imgsrc'],
+                      child: Image.asset(
+                        widget.item['imgsrc'],
+                        fit: BoxFit.cover,
+                        height: Get.height * .45,
+                        width: double.infinity,
+                      ),
+                    ),
                   ),
                   Align(
                     alignment: Alignment(0, 1),
@@ -70,7 +69,7 @@ class _DetailsHouseState extends State<DetailsHouse> {
               (ctx, index) {
                 return Text('Details Maisons');
               },
-              childCount: listMaisons.length,
+              childCount: 5,
             ),
           )
         ],

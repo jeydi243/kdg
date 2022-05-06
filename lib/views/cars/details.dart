@@ -1,104 +1,137 @@
-import 'package:animations/animations.dart';
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/custom_image.dart';
-import 'package:kdg/models/vehicule.dart';
+import 'package:kdg/models/car.dart';
 import 'package:kdg/services/user_service.dart';
-import 'package:kdg/services/vehicule_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:kdg/views/cars/item.dart';
-import 'package:logger/logger.dart';
-import 'package:pigment/pigment.dart';
-import 'package:provider/provider.dart';
 
 class DetailsCar extends StatefulWidget {
-  DetailsCar({Key key, this.item}) : super(key: key);
-  final Map<String, dynamic> item;
+  DetailsCar(this.car, {Key? key}) : super(key: key);
+  final Car car;
   @override
   _DetailsCarState createState() => _DetailsCarState();
 }
 
-class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
-  AnimationController controller;
+class _DetailsCarState extends State<DetailsCar> {
+  late List<Map<String, dynamic>> list;
 
   @override
   void initState() {
-    controller = AnimationController(vsync: this, duration: 1.seconds);
     super.initState();
+    Car car = widget.car;
+    list = [
+      {"doc": 'assurance', "value": car.assurance, "isExpanded": false},
+      {
+        "doc": 'controle technique',
+        "value": car.assurance,
+        "isExpanded": false
+      },
+      {"doc": 'vignette', "value": car.assurance, "isExpanded": false},
+      {"doc": 'stationnement', "value": car.assurance, "isExpanded": false},
+    ];
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  Widget actions(BuildContext ctx, String link) {
+    UserService userService = Get.find();
+    return Container(
+        height: Get.height * .3,
+        width: Get.width * .9,
+        // padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            Text(
+              'Actions',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(fontWeight: FontWeight.w600),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Column(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        userService.notifyMe();
+                      },
+                      child: Text("Activer les notifications d'echéance")),
+                  TextButton(onPressed: () {}, child: Text('Voir le document')),
+                  TextButton(
+                      onPressed: () {
+                        Get.dialog(
+                          connaissance(context),
+                          transitionDuration: 500.milliseconds,
+                          useSafeArea: true,
+                        );
+                      },
+                      child: Text('Ajouter une connaissance')),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget connaissance(
+    BuildContext ctx,
+  ) {
+    return AlertDialog(
+      insetPadding: EdgeInsets.symmetric(vertical: Get.height / 4),
+      content: Container(
+        child: Form(
+            child: Column(
+          children: [
+            TextFormField(
+              decoration: InputDecoration(hintText: "Dite quelque chose"),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: Text('Ajouter'),
+            )
+          ],
+        )),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Vehicule> listVehicules = Provider.of<List<Vehicule>>(context);
     return Scaffold(
-      backgroundColor: HexColor.fromHex("FDF8F8"),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: Get.height * .4,
-              actions: [
-                IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
+      body: Container(
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: [
+            Hero(
+                tag: widget.car.id,
+                child: Image.asset(
+                  "assets/epa.jpg",
+                  fit: BoxFit.cover,
+                  height: Get.height * .3,
+                  width: Get.width,
+                )),
+            ExpansionPanelList(
+              animationDuration: Duration(milliseconds: 1000),
+              dividerColor: HexColor.fromHex("#000"),
+              children: [
+                ...list
+                    .map((e) => ExpansionPanel(
+                          isExpanded: e["isExpanded"],
+                          body: actions(context, e['value']["file"]! as String),
+                          headerBuilder: (ctx, bool isExpanded) => ListTile(
+                            onTap: () {
+                              setState(() {
+                                e["isExpanded"] = !e["isExpanded"];
+                              });
+                            },
+                            title:
+                                Text("${(e['doc'] as String).capitalizeFirst}"),
+                          ),
+                        ))
+                    .toList(),
               ],
-              stretch: true,
-              backgroundColor: HexColor.fromHex("FDF8F8"),
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(widget.item['collection']),
-                stretchModes: [
-                  StretchMode.blurBackground,
-                  StretchMode.fadeTitle
-                ],
-                background: GestureDetector(
-                  onVerticalDragEnd: (gf) {
-                    Logger().i(gf);
-                    Navigator.pop(context);
-                  },
-                  child: Stack(children: [
-                    CustomImage(
-                      imgsrc: widget.item['imgsrc'],
-                    ),
-                    Align(
-                      alignment: Alignment(0, 1),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                            width: double.infinity,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment(0, 1),
-                                    end: Alignment(0, -1),
-                                    colors: [
-                                  HexColor.fromHex("FDF8F8").withOpacity(.3),
-                                  Colors.transparent
-                                ]))),
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
-            ),
-            SliverAnimatedList(
-              // delegate: SliverChildBuilderDelegate(
-              //   (ctx, index) {
-              //     print(listVehicules);
-              //     return CarItem(item: listVehicules[index]);
-              //   },
-              //   childCount: listVehicules.length,
-              // ),
-              initialItemCount: listVehicules.length,
-              itemBuilder: (BuildContext context, int index,
-                  Animation<double> animation) {
-                Logger().e('eeeeeeeeeeeeeeeeeeee');
-                return CarItem(item: listVehicules[index]);
+              expansionCallback: (int item, bool status) {
+                setState(() {
+                  print('LE monde est beau');
+                });
               },
             )
           ],

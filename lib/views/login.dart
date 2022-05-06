@@ -1,256 +1,188 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:kdg/constantes/helper.dart';
 import 'package:kdg/services/user_service.dart';
+import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/home.dart';
-import 'package:kdg/views/user/ModifierPassword.dart';
-import 'package:provider/provider.dart';
-import 'signup.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'bezierContainer.dart';
+import 'package:logger/logger.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+  Login({Key? key}) : super(key: key);
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
   bool isPassword = false;
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-            Text('Back',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _entryField(
-    String title,
-  ) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          TextField(
-              obscureText: isPassword,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true))
-        ],
-      ),
-    );
-  }
-
-  Widget _submitButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-      child: Text(
-        'Login',
-        style: TextStyle(fontSize: 20, color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _divider() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: 20,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 1,
-              ),
-            ),
-          ),
-          Text('ou'),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 1,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _createAccountLabel() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SignUp()));
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20),
-        padding: EdgeInsets.all(15),
-        alignment: Alignment.bottomCenter,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Pas encore de compte ?',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              "S'enregistrer",
-              style: TextStyle(
-                  color: Color(0xfff79c4f),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _emailPasswordWidget() {
-    return Column(
-      children: <Widget>[
-        _entryField("Email"),
-        _entryField("Mot de passe"),
-      ],
-    );
+  bool _keepConnect = false;
+  bool _obscureText = false;
+  Map<String, String> _map = <String, String>{"email": "", "password": ""};
+  late TextEditingController textController;
+  late TextEditingController passController;
+  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    textController = new TextEditingController(text: "ekadiongo@gmail.com");
+    passController = new TextEditingController(text: "123456789");
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    UserService userService = Provider.of<UserService>(context);
-
-    return Scaffold(
-        body: SafeArea(
-      child: Container(
-        height: Get.height,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-                top: -Get.height * .15,
-                right: -MediaQuery.of(context).size.width * .4,
-                child: BezierContainer()),
-            Container(
-              alignment: Alignment.bottomCenter,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: SingleChildScrollView(
+    UserService userService = Get.find();
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+          body: SafeArea(
+        child: Container(
+          height: Get.height,
+          width: Get.width,
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Bienvenue",
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
+                  Text("Ravis de te revoir",
+                      style: Theme.of(context).textTheme.headline5),
+                ],
+              ),
+              Form(
+                key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    // SizedBox(height: height * .2),
-                    // // _title(),
+                    // Add TextFormFields and ElevatedButton here.
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Text("KDG",
-                          style: GoogleFonts.gildaDisplay(
-                              fontWeight: FontWeight.bold)),
-                    ),
-                    // SizedBox(height: 50),
-                    _emailPasswordWidget(),
-
-                    _submitButton(),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Get.to(ModifierPassword());
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: textController,
+                        enableInteractiveSelection: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Ce champ est requis';
+                          }
+                          return null;
                         },
-                        child: Text('Mot de passe oublié ?',
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
+                        onSaved: (newValue) => _map['email'] = newValue!,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            hintText: "Email@email.com",
+                            isDense: true,
+                            labelText: "Email",
+                            alignLabelWithHint: true,
+                            focusColor: Colors.grey[200],
+                            filled: true,
+                            fillColor: Colors.grey[200]),
                       ),
                     ),
-                    _divider(),
-                    SignInButton(
-                      Buttons.Facebook,
-                      text: "Se connecter avec Facebook",
-                      onPressed: () {
-                        userService.signInWithFacebook().then((value) {
-                          if (value) {
-                            print(value);
-                            Get.to(Home());
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: passController,
+                        enableInteractiveSelection: true,
+                        keyboardType: TextInputType.text,
+                        keyboardAppearance: Brightness.dark,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Ce champ est requis';
                           }
+                          return null;
+                        },
+                        onSaved: (newValue) => _map['password'] = newValue!,
+                        decoration: InputDecoration(
+                            isDense: true,
+                            hintText: "********",
+                            labelText: "Mot de passe",
+                            alignLabelWithHint: true,
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureText = !_obscureText;
+                                  });
+                                },
+                                icon: Icon(_obscureText
+                                    ? Icons.lock
+                                    : Icons.lock_open)),
+                            focusColor: Colors.grey[200],
+                            filled: true,
+                            fillColor: Colors.grey[200]),
+                        obscureText: _obscureText,
+                      ),
+                    ),
+                    CheckboxListTile(
+                      value: _keepConnect,
+                      onChanged: (value) {
+                        setState(() {
+                          _keepConnect = value!;
                         });
                       },
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      // checkColor: HexColor.fromHex("#1CBFE2"),
+                      activeColor: HexColor.fromHex("#1CBFE2"),
+                      dense: true,
+                      title: Text('Rester connecté ?'),
                     ),
-
-                    SignInButton(
-                      Buttons.Google,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      text: "Se connecter avec Google",
-                      onPressed: () {
-                        userService.signInWithGoogle().then((value) {
-                          if (value) {
-                            print(value);
-                            Get.to(Home());
+                    MaterialButton(
+                        minWidth: Get.width * .9,
+                        color: HexColor.fromHex("#1CBFE2"),
+                        textColor: Colors.white,
+                        highlightElevation: 5,
+                        elevation: 10,
+                        onPressed: () async {
+                          // print(userService.currentUser);
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            try {
+                              // await userService.signInWithEmailAndPassword(
+                              //     email: _map['email'] as String,
+                              //     password: _map['password'] as String);
+                              Get.to(Home());
+                            } catch (e) {
+                              Logger().i("Une Erreur de connexion: $e");
+                            }
                           }
-                        });
-                      },
+                        },
+                        child: const Text('Se connecter')),
+                    Helper.divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GFIconButton(
+                          onPressed: () async {
+                            await userService.signInWithGoogle();
+                          },
+                          color: Colors.red,
+                          focusColor: Colors.red,
+                          highlightColor: Colors.red,
+                          icon: FaIcon(
+                            FontAwesomeIcons.google,
+                            size: 16,
+                          ),
+                          shape: GFIconButtonShape.pills,
+                        ),
+                      ],
                     ),
-
-                    _createAccountLabel(),
                   ],
                 ),
               ),
-            ),
-            // Positioned(top: 40, left: 0, child: _backButton()),
-          ],
+              Text(
+                "En vous connectant vous accepter les conditions d'utilisation et les regles de confidentialité de KDG",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12),
+              )
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 }

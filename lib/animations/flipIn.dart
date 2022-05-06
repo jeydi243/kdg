@@ -7,8 +7,8 @@ import 'dart:math' as math;
 enum AniProps { opacity, deg, x }
 
 class FlipIn extends StatelessWidget {
-  FlipIn({this.dur, this.child});
-  double dur;
+  FlipIn({this.dur, required this.child});
+  double? dur;
   Widget child;
 
   final _tween = TimelineTween<AniProps>() // <-- design tween
@@ -31,7 +31,7 @@ class FlipIn extends StatelessWidget {
     return PlayAnimation<TimelineValue<AniProps>>(
         tween: _tween,
         duration: _tween.duration,
-        delay: dur.seconds,
+        delay: dur!.seconds,
         builder: (context, childe, value) {
           return Opacity(
             opacity: value.get(AniProps.opacity),

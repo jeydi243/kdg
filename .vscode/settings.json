@@ -1,4 +1,11 @@
 {
   "files.autoSave": "afterDelay",
-  "workbench.colorTheme": "Night Owl"
+  "bracketPairColorizer.showVerticalScopeLine": false,
+  "terminal.integrated.fontFamily": "monospace",
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredLightColorTheme": "GitHub Light Default",
+  "workbench.preferredDarkColorTheme": "Dracula",
+  "editor.fontFamily": "Ubuntu, 'Courier New', monospace",
+  "workbench.colorTheme": "Dracula",
+
 }

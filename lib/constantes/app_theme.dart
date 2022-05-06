@@ -16,8 +16,6 @@ class MadiaTheme {
   static ThemeData of(context) {
     var theme = Theme.of(context);
     return theme.copyWith(
-        accentColor: AppColors.second,
-        accentColorBrightness: Brightness.light,
         primaryColor: AppColors.white,
         primaryColorDark: AppColors.black,
         bottomAppBarColor: AppColors.white,
@@ -25,14 +23,9 @@ class MadiaTheme {
         errorColor: AppColors.warning,
         dividerColor: Colors.transparent,
         appBarTheme: theme.appBarTheme.copyWith(
-            color: AppColors.white,
-            iconTheme: IconThemeData(color: AppColors.black),
-            textTheme: theme.textTheme.copyWith(
-              caption: GoogleFonts.poppins(
-                  color: AppColors.second,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400),
-            )),
+          color: AppColors.white,
+          iconTheme: IconThemeData(color: AppColors.black),
+        ),
         textTheme: GoogleFonts.poppinsTextTheme(theme.textTheme)
             .copyWith(
               // bodyText1: TextStyle(
@@ -59,11 +52,11 @@ class MadiaTheme {
                   fontWeight: FontWeight.w500,
                   color: AppColors.black,
                   fontSize: 18),
-              button: theme.textTheme.button.copyWith(
+              button: theme.textTheme.button!.copyWith(
                   fontSize: 14,
                   color: AppColors.white,
                   fontWeight: FontWeight.normal),
-              caption: theme.textTheme.caption.copyWith(
+              caption: theme.textTheme.caption!.copyWith(
                   fontSize: 34,
                   color: AppColors.primary,
                   fontFamily: 'Metropolis',
@@ -75,8 +68,6 @@ class MadiaTheme {
           buttonColor: AppColors.black,
         ),
         iconTheme: theme.iconTheme.copyWith(color: AppColors.black, size: 24),
-        accentIconTheme:
-            theme.iconTheme.copyWith(color: AppColors.second, size: 24),
         primaryIconTheme: IconThemeData(color: AppColors.second, size: 24),
         bottomNavigationBarTheme: theme.bottomNavigationBarTheme.copyWith(
             elevation: 0,

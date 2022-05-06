@@ -1,57 +1,64 @@
 import 'package:animations/animations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/utils/utils.dart';
-import 'package:logger/logger.dart';
+import 'package:kdg/models/car.dart';
+import 'package:kdg/views/cars/details.dart';
 
 class CarItem extends StatefulWidget {
-  CarItem({Key key, this.item}) : super(key: key);
-  final Vehicule item;
+  CarItem({Key? key, required this.item}) : super(key: key);
+  final Car item;
   @override
   _CarItemState createState() => _CarItemState();
 }
 
 class _CarItemState extends State<CarItem> {
+  late List<Map<String, dynamic>> list;
   @override
   void initState() {
-    Logger().i('${widget.item.toString()}');
+    Car car = widget.item;
+    list = [
+      {"doc": 'assurance', "value": car.assurance},
+      {"doc": 'controle', "value": car.assurance},
+      {"doc": 'vignette', "value": car.assurance},
+      {"doc": 'stationnement', "value": car.assurance},
+    ];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Vehicule car = widget.item;
+    Car car = widget.item;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Container(
-        height: Get.height * .15,
-        width: Get.width * .8,
-        child: Column(
-          children: [
-            Text(
-              "${(car.Nom)}",
-              style: TextStyle(fontSize: 22, color: Colors.black),
+        // height: Get.height * .18,
+        // width: Get.width * .8,
+        child: ListTile(
+          enableFeedback: true,
+          contentPadding: EdgeInsets.all(0),
+          leading: SizedBox(
+            height: Get.height * .07,
+            width: Get.height * .07,
+            child: OpenContainer(
+              transitionDuration: 1.seconds,
+              closedBuilder: (context, action) {
+                return Hero(
+                  tag: car.id,
+                  child: Image.asset(
+                    "assets/epa.jpg",
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+              openBuilder: (context, action) {
+                return DetailsCar(car);
+              },
             ),
-            DottedBorder(
-              borderType: BorderType.RRect,
-              radius: Radius.circular(12),
-              color: Colors.blue[900],
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                child: Container(
-                  height: Get.height * .03,
-                  width: Get.width * .3,
-                  color: Colors.white,
-                  child: Center(child: Text('Stationnement')),
-                ),
-              ),
-            )
-          ],
+          ),
+          title: Text(car.Nom.capitalizeFirst!),
+          trailing: IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert)),
         ),
-        padding: EdgeInsets.only(left: 10, top: 10),
+        // padding: EdgeInsets.only(left: 10, top: 10),
         decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             color: Colors.white,

@@ -1,23 +1,25 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kdg/utils/utils.dart';
+import 'package:kdg/views/login.dart';
+
+import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:kdg/models/maison.dart';
-import 'package:kdg/models/rapport.dart';
-import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/services/vehicule_service.dart';
+import 'package:kdg/services/car_service.dart';
 import 'package:logger/logger.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
-import 'package:kdg/views/home.dart';
-import 'package:kdg/utils/circle_trans.dart';
-import 'package:kdg/views/login.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    Get.put<CarService>(CarService());
+    Get.put<UserService>(UserService());
     runApp(Kdg());
+    print('App running');
   } on FirebaseException catch (e) {
     Logger().w(e.toString());
   }
@@ -26,84 +28,64 @@ void main() async {
 class Kdg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UserService>(
-          create: (_) => UserService(),
-          lazy: false,
-        ),
-        // ChangeNotifierProvider<VehiculeService>(
-        //   create: (_) => VehiculeService(),
-        //   lazy: false,
-        // ),
-        StreamProvider<List<Vehicule>>(
-          create: (_) => VehiculeService().listenCar,
-          initialData: <Vehicule>[],
-          lazy: false,
-          // value: VehiculeService().listenCar,
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error ");
-            return <Vehicule>[];
-          },
-        ),
-        StreamProvider<List<Maison>>.value(
-          value: VehiculeService().listenHouse,
-          initialData: <Maison>[],
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error ");
-            return <Maison>[];
-          },
-          lazy: false,
-        ),
-        StreamProvider<List<Rapport>>.value(
-          value: VehiculeService().listenRapports,
-          initialData: <Rapport>[],
-          lazy: false,
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error");
-            return <Rapport>[];
-          },
-        ),
-        // StreamProvider<List<Map<String, dynamic>>>.value(
-        //   value: VehiculeService().listenBdd,
-        //   initialData: <Map<String, dynamic>>[],
-        //   lazy: false,
-        //   catchError: (context, error) {
-        //     Logger().e("Error lors du retrieve: $error");
-        //     return <Map<String, dynamic>>[];
-        //   },
-        // ),
-      ],
-      child: GetMaterialApp(
-          title: 'Kdg',
-          debugShowCheckedModeBanner: false,
-          // customTransition: CircleTrans(),
-          home: LayoutBuilder(
-            builder: (context, constraints) {
-              if (constraints.maxHeight == Get.height) {
-                return StreamBuilder<User>(
-                  stream: FirebaseAuth.instance.authStateChanges(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Home();
-                    } else {
-                      return Home();
-                    }
-                  },
-                );
-              }
-              return StreamBuilder<User>(
-                stream: FirebaseAuth.instance.authStateChanges(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Home();
-                  } else {
-                    return Login();
-                  }
-                },
-              );
-            },
+    return GetMaterialApp(
+      title: 'Kdg',
+      theme: ThemeData(
+          textTheme: GoogleFonts.k2dTextTheme(),
+          backgroundColor: HexColor.fromHex("#FDF8F8"),
+          dialogBackgroundColor: HexColor.fromHex("#FDF8F8"),
+          dialogTheme: DialogTheme(
+              backgroundColor: HexColor.fromHex("#FDF8F8"),
+              titleTextStyle: Theme.of(context).textTheme.bodyText2,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15))),
+          inputDecorationTheme: InputDecorationTheme(),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    EdgeInsets.all(0)),
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.blue[100]!.withOpacity(0.2)),
+                minimumSize: MaterialStateProperty.all<Size>(
+                    Size(Get.width * .9, Get.height * .05))),
           )),
+      debugShowCheckedModeBanner: false,
+      home: Login(),
+      // customTransition: CircleTrans(),
+      // home: LayoutBuilder(
+      //   builder: (context, constraints) {
+      //     if (constraints.maxHeight == Get.height) {
+      //       return StreamBuilder<User>(
+      //         stream: FirebaseAuth.instance.authStateChanges(),
+      //         builder: (context, snapshot) {
+      //           if (snapshot.hasData && snapshot.data is User) {
+      //             return SplashScreen(
+      //               nextPage: Home(),
+      //             );
+      //           } else {
+      //             return SplashScreen(
+      //               nextPage: Login(
+      //                 title: '55',
+      //               ),
+      //             );
+      //           }
+      //         },
+      //       );
+      //     }
+      //     return StreamBuilder<User>(
+      //       stream: FirebaseAuth.instance.onAuthStateChanged,
+      //       builder: (context, snapshot) {
+      //         if (snapshot.hasData && snapshot.data is User) {
+      //           return Home();
+      //         } else {
+      //           return Login(
+      //             title: '52',
+      //           );
+      //         }
+      //       },
+      //     );
+      //   },
+      // )
     );
   }
 }
