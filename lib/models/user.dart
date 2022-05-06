@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserKDG implements Type {
   late String _id;
@@ -33,7 +34,7 @@ class UserKDG implements Type {
 
   @override
   String toString() {
-    return "$nom,$email,$imgsrc,$creation, $provider, ID:$id";
+    return "$nom, $email, $imgsrc, $creation, $provider, ID:$id";
   }
 
   UserKDG.fromMap(Map<String, dynamic> map) {
@@ -45,10 +46,33 @@ class UserKDG implements Type {
     _provider = map['provider'];
     _creation = map['creation'];
   }
+
+  UserKDG.fromFirebase(QueryDocumentSnapshot map,String id) {
+    _id =id;
+    _name = map['name'];
+    _imgsrc = map['imgsrc'];
+    _email = map['email'];
+    _telephone = map['telephone'];
+    _provider = map['provider'];
+    _creation = map['creation'];
+  }
+  UserKDG.fromFirebase2(DocumentSnapshot map,String id) {
+    _id =id;
+    _name = map['name'];
+    _imgsrc = map['imgsrc'];
+    _email = map['email'];
+    _telephone = map['telephone'];
+    _provider = map['provider'];
+    _creation = map['creation'];
+  }
   Map<String, dynamic> toMap() {
     return {
+      'id': _id,
       'name': nom,
+      'email': _email,
       'imgsrc': imgsrc,
+      'provider': _provider,
+			'creation': _creation,
     };
   }
 }

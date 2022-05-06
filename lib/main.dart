@@ -1,7 +1,8 @@
-import 'package:google_fonts/google_fonts.dart';
-import 'package:kdg/utils/utils.dart';
-import 'package:kdg/views/login.dart';
-
+// Import the generated file
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:kdg/views/user/login.dart';
+import 'package:kdg/views/user/profile.dart';
+import 'constantes/values.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    FirebaseMessaging.instance.setAutoInitEnabled(true);
     Get.put<CarService>(CarService());
     Get.put<UserService>(UserService());
     runApp(Kdg());
@@ -30,25 +32,14 @@ class Kdg extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Kdg',
-      theme: ThemeData(
-          textTheme: GoogleFonts.k2dTextTheme(),
-          backgroundColor: HexColor.fromHex("#FDF8F8"),
-          dialogBackgroundColor: HexColor.fromHex("#FDF8F8"),
-          dialogTheme: DialogTheme(
-              backgroundColor: HexColor.fromHex("#FDF8F8"),
-              titleTextStyle: Theme.of(context).textTheme.bodyText2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15))),
-          inputDecorationTheme: InputDecorationTheme(),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                    EdgeInsets.all(0)),
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Colors.blue[100]!.withOpacity(0.2)),
-                minimumSize: MaterialStateProperty.all<Size>(
-                    Size(Get.width * .9, Get.height * .05))),
-          )),
+      routes: {
+        '/profile': (context) => Profile(),
+        // '/about': (context) => Profile(),
+        // '/rapport': (context) => Profile(),
+      },
+      darkTheme: KDGTheme.dark(context),
+      // theme: KDGTheme.light(context),
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: Login(),
       // customTransition: CircleTrans(),

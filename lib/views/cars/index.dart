@@ -46,7 +46,7 @@ class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
               title: Hero(
                   transitionOnUserGestures: true,
                   tag: "title${widget.item['text']}",
-                  child: Text(widget.item['text'],
+                  child: Text(widget.item['collection'],
                       style: TextStyle(fontSize: 25, color: Colors.white))),
               stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(

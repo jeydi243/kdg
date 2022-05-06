@@ -1,6 +1,6 @@
 name: kdg
 description: A family app.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+3
 
 environment:
@@ -10,13 +10,15 @@ dependencies:
   animations: ^2.0.1
   badges: ^2.0.1
   circular_reveal_animation: ^2.0.0
-  dotted_border: 
+  circular_clip_route: ^0.2.0+3
+  dotted_border:
   firebase_core: ^1.15.0
   flutter:
     sdk: flutter
   get: ^4.6.1
   getwidget: ^2.0.4
   glass_kit: ^2.0.1
+  flutter_staggered_animations: ^1.0.0
   google_fonts: ^2.3.2
   google_sign_in: ^5.3.0
   font_awesome_flutter: ^10.1.0

@@ -26,15 +26,26 @@ class _DetailsBddState extends State<DetailsBdd> {
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(widget.item['collection']),
+              title: Text(
+                  "${(widget.item['collection'] as String).capitalizeFirst}"),
               stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(
                 onVerticalDragEnd: (gf) {
                   Navigator.pop(context);
                 },
                 child: Stack(children: [
-                  CustomImage(
-                    imgsrc: widget.item['imgsrc'],
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(20)),
+                    child: Hero(
+                      tag: widget.item['imgsrc'],
+                      child: Image.asset(
+                        widget.item['imgsrc'],
+                        fit: BoxFit.cover,
+                        height: Get.height * .45,
+                        width: double.infinity,
+                      ),
+                    ),
                   ),
                   Align(
                     alignment: Alignment(0, 1),

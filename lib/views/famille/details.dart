@@ -14,8 +14,8 @@ class DetailsFamille extends StatefulWidget {
 class _DetailsFamilleState extends State<DetailsFamille> {
   @override
   Widget build(BuildContext context) {
-List<Map<String,dynamic>> map = <Map<String,dynamic>>[];
-    return  Scaffold(
+    List<Map<String, dynamic>> map = <Map<String, dynamic>>[];
+    return Scaffold(
       backgroundColor: HexColor.fromHex("FDF8F8"),
       body: SafeArea(
         child: CustomScrollView(
@@ -29,7 +29,8 @@ List<Map<String,dynamic>> map = <Map<String,dynamic>>[];
               backgroundColor: HexColor.fromHex("FDF8F8"),
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
-                title: Text(widget.item['collection']),
+                title: Text(
+                    "${(widget.item['collection'] as String).capitalizeFirst}"),
                 stretchModes: [
                   StretchMode.blurBackground,
                   StretchMode.fadeTitle
@@ -40,8 +41,18 @@ List<Map<String,dynamic>> map = <Map<String,dynamic>>[];
                     Navigator.pop(context);
                   },
                   child: Stack(children: [
-                    CustomImage(
-                      imgsrc: widget.item['imgsrc'],
+                    ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(20)),
+                      child: Hero(
+                        tag: widget.item['imgsrc'],
+                        child: Image.asset(
+                          widget.item['imgsrc'],
+                          fit: BoxFit.cover,
+                          height: Get.height * .45,
+                          width: double.infinity,
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment(0, 1),
@@ -75,7 +86,6 @@ List<Map<String,dynamic>> map = <Map<String,dynamic>>[];
               initialItemCount: map.length,
               itemBuilder: (BuildContext context, int index,
                   Animation<double> animation) {
-                // Logger().e('eeeeeeeeeeeeeeeeeeee');
                 return Text("Details familles");
               },
             )

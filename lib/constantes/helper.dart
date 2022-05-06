@@ -96,7 +96,7 @@ class Helper {
     Get.snackbar(title, message,
         borderRadius: 10,
         snackStyle: SnackStyle.FLOATING,
-        colorText: AppColors.white,
+        colorText: AppColors.text,
         backgroundColor: AppColors.black,
         duration: duration ?? 3.seconds, onTap: (snack) {
       // switch (to) {

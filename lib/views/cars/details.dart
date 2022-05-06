@@ -40,10 +40,11 @@ class _DetailsCarState extends State<DetailsCar> {
           children: [
             Text(
               'Actions',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.w600),
+
+              // style: Theme.of(context)
+              //     .textTheme
+              //     .headline6!
+              //     .copyWith(fontWeight: FontWeight.w600),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -51,7 +52,7 @@ class _DetailsCarState extends State<DetailsCar> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        userService.notifyMe();
+                        
                       },
                       child: Text("Activer les notifications d'echéance")),
                   TextButton(onPressed: () {}, child: Text('Voir le document')),
