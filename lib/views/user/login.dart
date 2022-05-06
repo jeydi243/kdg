@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/constantes/helper.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
@@ -50,12 +51,16 @@ class _LoginState extends State<Login> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Bienvenue",
-                        style: Get.textTheme.headline1,
+                      FadeIn(
+                        Text(
+                          "Bienvenue",
+                          style: Get.textTheme.headline1,
+                        ),
                       ),
-                      Text("Ravis de te revoir",
-                          style: Get.textTheme.headline3),
+                      FadeIn(
+                        Text("Ravis de te revoir",
+                            style: Get.textTheme.headline3),
+                      ),
                     ],
                   ),
                   Form(
@@ -63,157 +68,171 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: <Widget>[
                         // Add TextFormFields and ElevatedButton here.
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            controller: textController,
-                            enableInteractiveSelection: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Ce champ est requis';
-                              }
-                              return null;
-                            },
-                            onSaved: (newValue) => _map['email'] = newValue!,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                                hintText: "Email@email.com",
-                                isDense: true,
-                                labelText: "Email",
-                                alignLabelWithHint: true,
-                                focusColor: Colors.grey[200],
-                                filled: true,
-                                fillColor: Colors.grey[200]),
+                        FadeIn(
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: textController,
+                              enableInteractiveSelection: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Ce champ est requis';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) => _map['email'] = newValue!,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                  hintText: "Email@email.com",
+                                  isDense: true,
+                                  labelText: "Email",
+                                  alignLabelWithHint: true,
+                                  focusColor: Colors.grey[200],
+                                  filled: true,
+                                  fillColor: Colors.grey[200]),
+                            ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            controller: passController,
-                            enableInteractiveSelection: true,
-                            keyboardType: TextInputType.text,
-                            keyboardAppearance: Brightness.dark,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Ce champ est requis';
-                              }
-                              return null;
-                            },
-                            onSaved: (newValue) => _map['password'] = newValue!,
-                            decoration: InputDecoration(
-                                isDense: true,
-                                hintText: "********",
-                                labelText: "Mot de passe",
-                                alignLabelWithHint: true,
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureText = !_obscureText;
-                                      });
-                                    },
-                                    icon: Icon(_obscureText
-                                        ? Icons.lock
-                                        : Icons.lock_open)),
-                                focusColor: Colors.grey[200],
-                                filled: true,
-                                fillColor: Colors.grey[200]),
-                            obscureText: _obscureText,
+                        FadeIn(
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: passController,
+                              enableInteractiveSelection: true,
+                              keyboardType: TextInputType.text,
+                              keyboardAppearance: Brightness.dark,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Ce champ est requis';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) =>
+                                  _map['password'] = newValue!,
+                              decoration: InputDecoration(
+                                  isDense: true,
+                                  hintText: "********",
+                                  labelText: "Mot de passe",
+                                  alignLabelWithHint: true,
+                                  suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscureText = !_obscureText;
+                                        });
+                                      },
+                                      icon: Icon(_obscureText
+                                          ? Icons.lock
+                                          : Icons.lock_open)),
+                                  focusColor: Colors.grey[200],
+                                  filled: true,
+                                  fillColor: Colors.grey[200]),
+                              obscureText: _obscureText,
+                            ),
                           ),
                         ),
-                        CheckboxListTile(
-                          value: _keepConnect,
-                          onChanged: (value) {
-                            setState(() {
-                              _keepConnect = value!;
-                            });
-                          },
-                          // checkColor: HexColor.fromHex("#1CBFE2"),
-                          activeColor: HexColor.fromHex("#1CBFE2"),
-                          dense: true,
-                          title: Text('Rester connecté ?'),
-                        ),
-                        MaterialButton(
-                            minWidth: Get.width * .9,
-                            color: HexColor.fromHex("#1CBFE2"),
-                            textColor: Colors.white,
-                            highlightElevation: 5,
-                            disabledColor: HexColor.fromHex("#1CBFE2"),
-                            elevation: 10,
-                            onPressed: () async {
+                        FadeIn(
+                          CheckboxListTile(
+                            value: _keepConnect,
+                            onChanged: (value) {
                               setState(() {
-                                isConnecting = !isConnecting;
+                                _keepConnect = value!;
                               });
-                              Future.delayed(2.seconds, () {
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
-                                  setState(() {
-                                    isConnecting = !isConnecting;
-                                  });
-                                  try {
-                                    // await userService.signInWithEmailAndPassword(
-                                    //     email: _map['email'] as String,
-                                    //     password: _map['password'] as String);
-                                    Get.to(Home());
-                                  } catch (e) {
+                            },
+                            // checkColor: HexColor.fromHex("#1CBFE2"),
+                            activeColor: HexColor.fromHex("#1CBFE2"),
+                            dense: true,
+                            title: Text('Rester connecté ?'),
+                          ),
+                        ),
+                        FadeIn(
+                          MaterialButton(
+                              minWidth: Get.width * .9,
+                              color: HexColor.fromHex("#1CBFE2"),
+                              textColor: Colors.white,
+                              highlightElevation: 5,
+                              disabledColor: HexColor.fromHex("#1CBFE2"),
+                              elevation: 10,
+                              onPressed: () async {
+                                setState(() {
+                                  isConnecting = !isConnecting;
+                                });
+                                Future.delayed(2.seconds, () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
                                     setState(() {
                                       isConnecting = !isConnecting;
                                     });
-                                    Logger().i("Une Erreur de connexion: $e");
+                                    try {
+                                      // await userService.signInWithEmailAndPassword(
+                                      //     email: _map['email'] as String,
+                                      //     password: _map['password'] as String);
+                                      Get.to(Home());
+                                    } catch (e) {
+                                      setState(() {
+                                        isConnecting = !isConnecting;
+                                      });
+                                      Logger().i("Une Erreur de connexion: $e");
+                                    }
                                   }
-                                }
-                              });
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                isConnecting == true
-                                    ? Padding(
-                                        padding: EdgeInsets.only(right: 10),
-                                        child: SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(
-                                            valueColor: AlwaysStoppedAnimation(
-                                                Colors.white),
-                                            strokeWidth: 2.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                                Text('Se connecter'),
-                              ],
-                            )),
-                        Helper.divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GFIconButton(
-                              onPressed: () async {
-                                await userService.signInWithGoogle();
+                                });
                               },
-                              color: Colors.red,
-                              focusColor: Colors.red,
-                              highlightColor: Colors.red,
-                              icon: FaIcon(
-                                FontAwesomeIcons.google,
-                                size: 16,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  isConnecting == true
+                                      ? Padding(
+                                          padding: EdgeInsets.only(right: 10),
+                                          child: SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                      Colors.white),
+                                              strokeWidth: 2.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                  Text('Se connecter'),
+                                ],
+                              )),
+                        ),
+                        FadeIn(Helper.divider()),
+                        FadeIn(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GFIconButton(
+                                onPressed: () async {
+                                  await userService.signInWithGoogle();
+                                },
+                                color: Colors.red,
+                                focusColor: Colors.red,
+                                highlightColor: Colors.red,
+                                icon: FaIcon(
+                                  FontAwesomeIcons.google,
+                                  size: 16,
+                                ),
+                                shape: GFIconButtonShape.pills,
                               ),
-                              shape: GFIconButtonShape.pills,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Text(
-                    "En vous connectant vous accepter les conditions d'utilisation et les regles de confidentialité de KDG",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12),
+                  FadeIn(
+                    Text(
+                      "En vous connectant vous accepter les conditions d'utilisation et les regles de confidentialité de KDG",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
+                    ),
                   )
                 ],
               ),

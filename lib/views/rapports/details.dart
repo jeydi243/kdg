@@ -28,7 +28,8 @@ class _DetailsRapportState extends State<DetailsRapport> {
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(widget.item['collection']),
+              title: Text(
+                  "${(widget.item['collection'] as String).capitalizeFirst}"),
               stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(
                 onVerticalDragEnd: (gf) {

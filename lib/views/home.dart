@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:kdg/animations/fadein.dart';
 import 'bdd/details.dart';
 import 'cars/index.dart';
 import 'famille/details.dart';
@@ -61,6 +63,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
         extendBodyBehindAppBar: false,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           elevation: 0,
           title: InputChip(
@@ -88,66 +91,73 @@ class _HomeState extends State<Home> {
             )
           ],
         ),
-        body: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      switch (list[index]['collection']) {
-                        case 'cars':
-                          Get.to(DetailsCar(item: list[index]));
-                          break;
-                        case 'houses':
-                          Get.to(DetailsHouse(item: list[index]));
-                          break;
-                        case 'rapports':
-                          Get.to(DetailsRapport(item: list[index]));
-                          break;
-                        case 'familles':
-                          Get.to(DetailsFamille(item: list[index]));
-                          break;
-                        default:
-                          Get.to(DetailsBdd(item: list[index]));
-                          break;
-                      }
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Hero(
-                        tag: list[index]['imgsrc'],
-                        child: Image.asset(
-                          list[index]['imgsrc'],
-                          fit: BoxFit.cover,
-                          height: Get.height * .2,
-                          width: Get.height * .9,
+        body: AnimationConfiguration.staggeredList(
+          position: 5,
+          delay: .5.seconds,
+          child: ListView.builder(
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              return FadeIn(
+                Stack(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          switch (list[index]['collection']) {
+                            case 'cars':
+                              Get.to(DetailsCar(item: list[index]));
+                              break;
+                            case 'houses':
+                              Get.to(DetailsHouse(item: list[index]));
+                              break;
+                            case 'rapports':
+                              Get.to(DetailsRapport(item: list[index]));
+                              break;
+                            case 'familles':
+                              Get.to(DetailsFamille(item: list[index]));
+                              break;
+                            default:
+                              Get.to(DetailsBdd(item: list[index]));
+                              break;
+                          }
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Hero(
+                            tag: list[index]['imgsrc'],
+                            child: Image.asset(
+                              list[index]['imgsrc'],
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                              height: Get.height * .2,
+                              width: Get.height * .9,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment(-0.9, 1.0),
-                  child: Container(
-                    child: Hero(
-                      tag: "title${list[index]['text']}",
-                      flightShuttleBuilder: _flightShuttleBuilder,
-                      child: Text(
-                        list[index]['text'],
-                        style: TextStyle(fontSize: 25, color: Colors.white),
+                    Align(
+                      alignment: Alignment(-0.9, 1.0),
+                      child: Container(
+                        child: Hero(
+                          tag: "title${list[index]['text']}",
+                          flightShuttleBuilder: _flightShuttleBuilder,
+                          child: Text(
+                            list[index]['text'],
+                            style: TextStyle(fontSize: 25, color: Colors.white),
+                          ),
+                        ),
+                        height: 50,
                       ),
-                    ),
-                    height: 50,
-                  ),
-                )
-              ],
-            );
-          },
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
         ));
   }
 }
