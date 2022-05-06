@@ -93,7 +93,8 @@ class _HomeState extends State<Home> {
         ),
         body: AnimationConfiguration.staggeredList(
           position: 5,
-          delay: .5.seconds,
+          delay: 1.seconds,
+          duration: 1.seconds,
           child: ListView.builder(
             physics: BouncingScrollPhysics(),
             padding: EdgeInsets.symmetric(horizontal: 10),
