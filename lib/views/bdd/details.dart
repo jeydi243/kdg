@@ -1,16 +1,17 @@
+import 'package:animated_clipper/animated_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/components/custom_image.dart';
 import 'package:kdg/utils/utils.dart';
 
-class DetailsBdd extends StatefulWidget {
-  DetailsBdd({Key? key, required this.item}) : super(key: key);
+class IndexBdd extends StatefulWidget {
+  IndexBdd({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsBddState createState() => _DetailsBddState();
+  _IndexBddState createState() => _IndexBddState();
 }
 
-class _DetailsBddState extends State<DetailsBdd> {
+class _IndexBddState extends State<IndexBdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +70,10 @@ class _DetailsBddState extends State<DetailsBdd> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (ctx, index) {
-                return Text('Details bdd');
+                return AnimatedClipReveal(
+                  child: Text('Details bdd'),
+                  pathBuilder: PathBuilders.slideDown,
+                );
               },
               childCount: 10,
             ),

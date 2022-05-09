@@ -1,20 +1,18 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/custom_image.dart';
-import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 
-class DetailsRapport extends StatefulWidget {
-  DetailsRapport({Key? key, required this.item}) : super(key: key);
+class IndexHouse extends StatefulWidget {
+  IndexHouse({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsRapportState createState() => _DetailsRapportState();
+  _IndexHouseState createState() => _IndexHouseState();
 }
 
-class _DetailsRapportState extends State<DetailsRapport> {
+class _IndexHouseState extends State<IndexHouse> {
   @override
   Widget build(BuildContext context) {
-    UserService userservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
       body: CustomScrollView(
@@ -25,6 +23,11 @@ class _DetailsRapportState extends State<DetailsRapport> {
               IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
             ],
             stretch: true,
+            collapsedHeight: Get.height * .35,
+            onStretchTrigger: () async {
+              print("onStretchTrigger ..");
+            },
+            stretchTriggerOffset: 92,
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
@@ -71,9 +74,24 @@ class _DetailsRapportState extends State<DetailsRapport> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (ctx, index) {
-                return Text('Detail reapport');
+                return OpenContainer(
+                  transitionType: ContainerTransitionType.fade,
+                  transitionDuration: 900.milliseconds,
+                  openBuilder: (context, action) {
+                    return IndexHouse(item: widget.item);
+                  },
+                  closedBuilder: (context, void Function() action) {
+                    return InkWell(
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        width: Get.width * .95,
+                        child: Text('Details Maisons $index'),
+                      ),
+                    );
+                  },
+                );
               },
-              childCount: userservice.rapports.length,
+              childCount: 15,
             ),
           )
         ],

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 
-class DetailsHouse extends StatefulWidget {
-  DetailsHouse({Key? key, required this.item}) : super(key: key);
+class IndexRapport extends StatefulWidget {
+  IndexRapport({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsHouseState createState() => _DetailsHouseState();
+  _IndexRapportState createState() => _IndexRapportState();
 }
 
-class _DetailsHouseState extends State<DetailsHouse> {
+class _IndexRapportState extends State<IndexRapport> {
   @override
   Widget build(BuildContext context) {
+    UserService userservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
       body: CustomScrollView(
@@ -68,9 +70,9 @@ class _DetailsHouseState extends State<DetailsHouse> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (ctx, index) {
-                return Text('Details Maisons');
+                return Text('Detail reapport');
               },
-              childCount: 5,
+              childCount: userservice.rapports.length,
             ),
           )
         ],

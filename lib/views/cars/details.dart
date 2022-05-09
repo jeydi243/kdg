@@ -4,14 +4,14 @@ import 'package:kdg/models/car.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 
-class DetailsCar extends StatefulWidget {
-  DetailsCar(this.car, {Key? key}) : super(key: key);
+class IndexCar extends StatefulWidget {
+  IndexCar(this.car, {Key? key}) : super(key: key);
   final Car car;
   @override
-  _DetailsCarState createState() => _DetailsCarState();
+  _IndexCarState createState() => _IndexCarState();
 }
 
-class _DetailsCarState extends State<DetailsCar> {
+class _IndexCarState extends State<IndexCar> {
   late List<Map<String, dynamic>> list;
 
   @override

@@ -51,7 +51,7 @@ class _CarItemState extends State<CarItem> {
                 );
               },
               openBuilder: (context, action) {
-                return DetailsCar(car);
+                return IndexCar(car);
               },
             ),
           ),

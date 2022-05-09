@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'bdd/details.dart';
 import 'cars/index.dart';
-import 'famille/details.dart';
-import 'houses/details.dart';
-import 'rapports/details.dart';
+import 'famille/index.dart';
+import 'houses/index.dart';
+import 'rapports/index.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -109,19 +109,19 @@ class _HomeState extends State<Home> {
                         onTap: () {
                           switch (list[index]['collection']) {
                             case 'cars':
-                              Get.to(DetailsCar(item: list[index]));
+                              Get.to(IndexCar(item: list[index]));
                               break;
                             case 'houses':
-                              Get.to(DetailsHouse(item: list[index]));
+                              Get.to(IndexHouse(item: list[index]));
                               break;
                             case 'rapports':
-                              Get.to(DetailsRapport(item: list[index]));
+                              Get.to(IndexRapport(item: list[index]));
                               break;
                             case 'familles':
-                              Get.to(DetailsFamille(item: list[index]));
+                              Get.to(IndexFamille(item: list[index]));
                               break;
                             default:
-                              Get.to(DetailsBdd(item: list[index]));
+                              Get.to(IndexBdd(item: list[index]));
                               break;
                           }
                         },

@@ -5,14 +5,14 @@ import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/cars/item.dart';
 import 'package:logger/logger.dart';
 
-class DetailsCar extends StatefulWidget {
-  DetailsCar({Key? key, required this.item}) : super(key: key);
+class IndexCar extends StatefulWidget {
+  IndexCar({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsCarState createState() => _DetailsCarState();
+  _IndexCarState createState() => _IndexCarState();
 }
 
-class _DetailsCarState extends State<DetailsCar> with TickerProviderStateMixin {
+class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
   late AnimationController controller;
 
   @override

@@ -11,6 +11,7 @@ dependencies:
   badges: ^2.0.1
   circular_reveal_animation: ^2.0.0
   circular_clip_route: ^0.2.0+3
+  animated_clipper: ^0.2.0+2
   dotted_border:
   firebase_core: ^1.15.0
   flutter:

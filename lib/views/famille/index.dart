@@ -4,14 +4,14 @@ import 'package:kdg/components/custom_image.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:logger/logger.dart';
 
-class DetailsFamille extends StatefulWidget {
-  DetailsFamille({Key? key, required this.item}) : super(key: key);
+class IndexFamille extends StatefulWidget {
+  IndexFamille({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsFamilleState createState() => _DetailsFamilleState();
+  _IndexFamilleState createState() => _IndexFamilleState();
 }
 
-class _DetailsFamilleState extends State<DetailsFamille> {
+class _IndexFamilleState extends State<IndexFamille> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> map = <Map<String, dynamic>>[];
