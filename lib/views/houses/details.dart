@@ -1,80 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
-import 'package:kdg/utils/utils.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:swipe_deck/swipe_deck.dart';
+import 'package:vector_math/vector_math.dart' as math;
 
 class DetailsHouse extends StatefulWidget {
-  DetailsHouse({Key? key, required this.item}) : super(key: key);
+  DetailsHouse(
+    this.item, {
+    Key? key,
+  }) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsHouseState createState() => _DetailsHouseState();
+  State<DetailsHouse> createState() => _DetailsHouseState();
 }
 
 class _DetailsHouseState extends State<DetailsHouse> {
+  List<String> images = ["assets/deux.jpg", "assets/quatre.jpg"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor.fromHex('#EEF2F6'),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: Get.height * .4,
-            actions: [
-              IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
-            ],
-            stretch: true,
-            backgroundColor: HexColor.fromHex("FDF8F8"),
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: Text(
-                  "${(widget.item['collection'] as String).capitalizeFirst}"),
-              stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
-              background: GestureDetector(
-                onVerticalDragEnd: (gf) {
-                  Navigator.pop(context);
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showAnimatedDialog(
+            context: context,
+            barrierDismissible: true,
+            axis: Axis.vertical,
+            alignment: Alignment.center,
+            builder: (BuildContext context) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Image.asset(
+                          "assets/deux.jpg",
+                          height: 200,
+                          width: Get.width * .8,
+                        ))
+                  ],
+                ),
+              );
+              return ClassicGeneralDialogWidget(
+                titleText: 'Title',
+                contentText: 'content',
+                onPositiveClick: () {
+                  Navigator.of(context).pop();
                 },
-                child: Stack(children: [
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                    child: Hero(
-                      tag: widget.item['imgsrc'],
-                      child: Image.asset(
-                        widget.item['imgsrc'],
-                        fit: BoxFit.cover,
-                        height: Get.height * .45,
-                        width: double.infinity,
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 1),
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment(0, 1),
-                              end: Alignment(0, -1),
-                              colors: [
-                            Colors.blue.withOpacity(0.2),
-                            Colors.transparent
-                          ])),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (ctx, index) {
-                return Text('Details Maisons');
-              },
-              childCount: 5,
-            ),
-          )
-        ],
+                onNegativeClick: () {
+                  Navigator.of(context).pop();
+                },
+              );
+            },
+            animationType: DialogTransitionType.size,
+            curve: Curves.fastOutSlowIn,
+            duration: Duration(seconds: 1),
+          );
+        },
+        child: Icon(Icons.add),
       ),
+      body: Column(children: [
+        SwipeDeck(
+          // aspectRatio: 16 / 9,
+          widgets: [
+            ...images
+                .map<Widget>((name) => ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.asset(
+                      name,
+                      fit: BoxFit.contain,
+                      height: 200,
+                      width: 100,
+                    )))
+                .toList()
+          ],
+        ),
+        Table(
+          children: [
+            TableRow(
+                decoration: BoxDecoration(
+                    border: Border(
+                        left: BorderSide(color: Colors.amber, width: 3))),
+                children: [Text('Locataire'), Text('Le mondes')]),
+            TableRow(
+                decoration: BoxDecoration(
+                    border: Border(
+                        left: BorderSide(color: Colors.amber, width: 3))),
+                children: [Text('Locataire'), Text('Le mondes')]),
+            TableRow(
+                decoration: BoxDecoration(
+                    border: Border(
+                        left: BorderSide(color: Colors.amber, width: 3))),
+                children: [Text('Locataire'), Text('Le mondes')]),
+          ],
+        )
+      ]),
     );
   }
 }

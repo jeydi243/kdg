@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'bdd/details.dart';
 import 'cars/index.dart';
-import 'famille/details.dart';
-import 'houses/details.dart';
-import 'rapports/details.dart';
+import 'famille/index.dart';
+import 'houses/index.dart';
+import 'rapports/index.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -20,10 +21,10 @@ class _HomeState extends State<Home> {
   String query = "";
   List<Map<String, dynamic>> list = <Map<String, dynamic>>[
     {
-      "imgsrc": "assets/vehicules.webp",
-      "text": "Vehicules",
-      "collection": "cars"
-    },
+      "imgsrc": "assets/rapport.jpg",
+      "text": "Rapports",
+      "collection": "rapports"
+    },{"imgsrc": "assets/vehicules.webp", "text": "Cars", "collection": "cars"},
     {
       "imgsrc": "assets/maisons.webp",
       "text": "Maisons",
@@ -39,11 +40,7 @@ class _HomeState extends State<Home> {
       "text": "Base de connaissance",
       "collection": "bdd"
     },
-    {
-      "imgsrc": "assets/rapport.jpg",
-      "text": "Rapports",
-      "collection": "rapports"
-    },
+    
   ];
   Widget _flightShuttleBuilder(
     BuildContext flightContext,
@@ -66,10 +63,6 @@ class _HomeState extends State<Home> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           elevation: 0,
-          title: InputChip(
-            label: Text("Rechercher"),
-            showCheckmark: true,
-          ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20),
@@ -106,24 +99,29 @@ class _HomeState extends State<Home> {
                     Padding(
                       padding: EdgeInsets.only(bottom: 8.0),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          await HapticFeedback.vibrate();
                           switch (list[index]['collection']) {
                             case 'cars':
-                              Get.to(DetailsCar(item: list[index]));
+                              Get.to(IndexCar(item: list[index]));
                               break;
                             case 'houses':
-                              Get.to(DetailsHouse(item: list[index]));
+                              Get.to(IndexHouse(item: list[index]));
                               break;
                             case 'rapports':
-                              Get.to(DetailsRapport(item: list[index]));
+                              Get.to(IndexRapport(item: list[index]));
                               break;
                             case 'familles':
-                              Get.to(DetailsFamille(item: list[index]));
+                              Get.to(IndexFamille(item: list[index]));
                               break;
                             default:
-                              Get.to(DetailsBdd(item: list[index]));
+                              Get.to(IndexBdd(item: list[index]));
                               break;
                           }
+                        },
+                        onLongPressEnd: (details) async {
+                          await HapticFeedback.vibrate();
+                          await HapticFeedback.selectionClick();
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/custom_image.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 
-class DetailsRapport extends StatefulWidget {
-  DetailsRapport({Key? key, required this.item}) : super(key: key);
+class IndexRapport extends StatefulWidget {
+  IndexRapport({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsRapportState createState() => _DetailsRapportState();
+  _IndexRapportState createState() => _IndexRapportState();
 }
 
-class _DetailsRapportState extends State<DetailsRapport> {
+class _IndexRapportState extends State<IndexRapport> {
   @override
   Widget build(BuildContext context) {
     UserService userservice = Get.find();
@@ -35,11 +34,11 @@ class _DetailsRapportState extends State<DetailsRapport> {
                 onVerticalDragEnd: (gf) {
                   Navigator.pop(context);
                 },
-                child: Stack(children: [
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                    child: Hero(
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                  child: Stack(children: [
+                    Hero(
                       tag: widget.item['imgsrc'],
                       child: Image.asset(
                         widget.item['imgsrc'],
@@ -48,23 +47,23 @@ class _DetailsRapportState extends State<DetailsRapport> {
                         width: double.infinity,
                       ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 1),
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment(0, 1),
-                              end: Alignment(0, -1),
-                              colors: [
-                            Colors.blue.withOpacity(0.2),
-                            Colors.transparent
-                          ])),
+                    Align(
+                      alignment: Alignment(0, 1),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment(0, 1),
+                                end: Alignment(0, -1),
+                                colors: [
+                              Colors.blue.withOpacity(0.2),
+                              Colors.transparent
+                            ])),
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
             ),
           ),
