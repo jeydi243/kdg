@@ -40,13 +40,15 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
               IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
             ],
             stretch: true,
+            collapsedHeight: Get.height * .35,
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Hero(
                   transitionOnUserGestures: true,
                   tag: "title${widget.item['text']}",
-                  child: Text(widget.item['collection'],
+                  child: Text(
+                      "${(widget.item['collection'] as String).capitalizeFirst}",
                       style: TextStyle(fontSize: 25, color: Colors.white))),
               stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(
@@ -54,11 +56,11 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                   Logger().i(gf);
                   Navigator.pop(context);
                 },
-                child: Stack(children: [
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                    child: Hero(
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                  child: Stack(children: [
+                    Hero(
                       tag: widget.item['imgsrc'],
                       child: Image.asset(
                         widget.item['imgsrc'],
@@ -67,25 +69,23 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                         width: double.infinity,
                       ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 1),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                    Align(
+                      alignment: Alignment(0, 1),
                       child: Container(
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment(0, 1),
-                                  end: Alignment(0, -1),
-                                  colors: [
-                                HexColor.fromHex("FDF8F8").withOpacity(.3),
-                                Colors.transparent
-                              ]))),
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment(0, 1),
+                                end: Alignment(0, -1),
+                                colors: [
+                              Colors.blue.withOpacity(0.2),
+                              Colors.transparent
+                            ])),
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
             ),
           ),

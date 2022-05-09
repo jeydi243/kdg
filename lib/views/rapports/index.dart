@@ -34,11 +34,11 @@ class _IndexRapportState extends State<IndexRapport> {
                 onVerticalDragEnd: (gf) {
                   Navigator.pop(context);
                 },
-                child: Stack(children: [
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                    child: Hero(
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                  child: Stack(children: [
+                    Hero(
                       tag: widget.item['imgsrc'],
                       child: Image.asset(
                         widget.item['imgsrc'],
@@ -47,23 +47,23 @@ class _IndexRapportState extends State<IndexRapport> {
                         width: double.infinity,
                       ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 1),
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment(0, 1),
-                              end: Alignment(0, -1),
-                              colors: [
-                            Colors.blue.withOpacity(0.2),
-                            Colors.transparent
-                          ])),
+                    Align(
+                      alignment: Alignment(0, 1),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment(0, 1),
+                                end: Alignment(0, -1),
+                                colors: [
+                              Colors.blue.withOpacity(0.2),
+                              Colors.transparent
+                            ])),
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
             ),
           ),

@@ -38,6 +38,7 @@ dependencies:
   cloud_firestore: ^3.1.13
   firebase_auth: ^3.3.16
   firebase_storage: ^10.2.14
+  swipe_deck: ^1.1.0
   cloud_functions: ^3.2.13
   firebase_messaging: ^11.2.15
 dev_dependencies:

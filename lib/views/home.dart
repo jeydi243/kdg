@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:kdg/animations/fadein.dart';
@@ -19,11 +20,7 @@ class _HomeState extends State<Home> {
   final searchTextController = new TextEditingController();
   String query = "";
   List<Map<String, dynamic>> list = <Map<String, dynamic>>[
-    {
-      "imgsrc": "assets/vehicules.webp",
-      "text": "Vehicules",
-      "collection": "cars"
-    },
+    {"imgsrc": "assets/vehicules.webp", "text": "Cars", "collection": "cars"},
     {
       "imgsrc": "assets/maisons.webp",
       "text": "Maisons",
@@ -66,10 +63,6 @@ class _HomeState extends State<Home> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           elevation: 0,
-          title: InputChip(
-            label: Text("Rechercher"),
-            showCheckmark: true,
-          ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20),
@@ -124,6 +117,9 @@ class _HomeState extends State<Home> {
                               Get.to(IndexBdd(item: list[index]));
                               break;
                           }
+                        },
+                        onLongPressEnd: (details) async {
+                          await HapticFeedback.vibrate();
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),

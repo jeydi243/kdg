@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/utils/utils.dart';
+import 'package:kdg/views/houses/details.dart';
 
 class IndexHouse extends StatefulWidget {
   IndexHouse({Key? key, required this.item}) : super(key: key);
@@ -38,11 +39,11 @@ class _IndexHouseState extends State<IndexHouse> {
                 onVerticalDragEnd: (gf) {
                   Navigator.pop(context);
                 },
-                child: Stack(children: [
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                    child: Hero(
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                  child: Stack(children: [
+                    Hero(
                       tag: widget.item['imgsrc'],
                       child: Image.asset(
                         widget.item['imgsrc'],
@@ -51,23 +52,23 @@ class _IndexHouseState extends State<IndexHouse> {
                         width: double.infinity,
                       ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 1),
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment(0, 1),
-                              end: Alignment(0, -1),
-                              colors: [
-                            Colors.blue.withOpacity(0.2),
-                            Colors.transparent
-                          ])),
+                    Align(
+                      alignment: Alignment(0, 1),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment(0, 1),
+                                end: Alignment(0, -1),
+                                colors: [
+                              Colors.blue.withOpacity(0.2),
+                              Colors.transparent
+                            ])),
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
             ),
           ),
@@ -75,16 +76,21 @@ class _IndexHouseState extends State<IndexHouse> {
             delegate: SliverChildBuilderDelegate(
               (ctx, index) {
                 return OpenContainer(
-                  transitionType: ContainerTransitionType.fade,
+                  // transitionType: ContainerTransitionType.fadeThrough,
+                  // transitionType: Transition.size,
                   transitionDuration: 900.milliseconds,
                   openBuilder: (context, action) {
                     return IndexHouse(item: widget.item);
                   },
                   closedBuilder: (context, void Function() action) {
                     return InkWell(
+                      onTap: () {
+                        Get.to(() => DetailsHouse());
+                      },
                       child: Container(
                         padding: EdgeInsets.only(bottom: 5),
                         width: Get.width * .95,
+                        height: 45,
                         child: Text('Details Maisons $index'),
                       ),
                     );
