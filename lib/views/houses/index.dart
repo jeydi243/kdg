@@ -26,7 +26,7 @@ class _IndexHouseState extends State<IndexHouse> {
             stretch: true,
             collapsedHeight: Get.height * .35,
             onStretchTrigger: () async {
-              print("onStretchTrigger ..");
+              print("onStretchTrigger... ");
             },
             stretchTriggerOffset: 92,
             backgroundColor: HexColor.fromHex("FDF8F8"),
@@ -76,17 +76,13 @@ class _IndexHouseState extends State<IndexHouse> {
             delegate: SliverChildBuilderDelegate(
               (ctx, index) {
                 return OpenContainer(
-                  // transitionType: ContainerTransitionType.fadeThrough,
-                  // transitionType: Transition.size,
                   transitionDuration: 900.milliseconds,
                   openBuilder: (context, action) {
-                    return IndexHouse(item: widget.item);
+                    return DetailsHouse(widget.item);
                   },
                   closedBuilder: (context, void Function() action) {
                     return InkWell(
-                      onTap: () {
-                        Get.to(() => DetailsHouse());
-                      },
+                      onTap: action,
                       child: Container(
                         padding: EdgeInsets.only(bottom: 5),
                         width: Get.width * .95,
