@@ -162,7 +162,10 @@ class _HomeState extends State<Home> {
                           flightShuttleBuilder: _flightShuttleBuilder,
                           child: Text(
                             list[index]['text'],
-                            style: TextStyle(fontSize: 25, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         height: 50,

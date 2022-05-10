@@ -32,6 +32,8 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
     CarService carservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex("FDF8F8"),
+      floatingActionButton:
+          FloatingActionButton(onPressed: () {}, child: Icon(Icons.add)),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(

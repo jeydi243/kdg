@@ -21,6 +21,7 @@ dependencies:
   glass_kit: ^2.0.1
   flutter_staggered_animations: ^1.0.0
   google_fonts: ^2.3.2
+  fab_circular_menu: ^1.0.0
   google_sign_in: ^5.3.0
   font_awesome_flutter: ^10.1.0
   loading: ^1.0.2

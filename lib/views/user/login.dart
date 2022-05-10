@@ -54,12 +54,12 @@ class _LoginState extends State<Login> {
                       FadeIn(
                         Text(
                           "Bienvenue",
-                          style: Get.textTheme.headline1,
+                          style: Get.textTheme.bodyText1,
                         ),
                       ),
                       FadeIn(
                         Text("Ravis de te revoir",
-                            style: Get.textTheme.headline3),
+                            style: Get.textTheme.bodyText2),
                       ),
                     ],
                   ),
@@ -170,7 +170,7 @@ class _LoginState extends State<Login> {
                                       // await userService.signInWithEmailAndPassword(
                                       //     email: _map['email'] as String,
                                       //     password: _map['password'] as String);
-                                      Get.to(()=>Home());
+                                      Get.to(() => Home());
                                     } catch (e) {
                                       setState(() {
                                         isConnecting = !isConnecting;

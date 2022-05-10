@@ -33,8 +33,12 @@ class _IndexHouseState extends State<IndexHouse> {
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(
-                  "${(widget.item['collection'] as String).capitalizeFirst}"),
+              title: Hero(
+                transitionOnUserGestures: true,
+                tag: "title${widget.item['text']}",
+                child: Text(
+                    "${(widget.item['collection'] as String).capitalizeFirst}"),
+              ),
               stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(
                 onVerticalDragEnd: (gf) {
