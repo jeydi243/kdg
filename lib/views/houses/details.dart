@@ -72,7 +72,9 @@ class _DetailsHouseState extends State<DetailsHouse> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SwipeDeck(
-              // aspectRatio: 16 / 9,
+              cardSpreadInDegrees: 10,
+              emptyIndicator: Container(),
+              aspectRatio: 1,
               widgets: [
                 ...images
                     .map<Widget>((name) => ClipRRect(

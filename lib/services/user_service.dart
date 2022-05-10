@@ -10,6 +10,7 @@ import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
 import 'package:kdg/views/user/login.dart';
 
+import '../models/car.dart';
 import '../models/rapport.dart';
 import '../views/home.dart';
 
@@ -161,6 +162,13 @@ class UserService extends GetxController {
     } finally {
       update();
     }
+  }
+
+  ff() async {
+    final ref = firestore.collection("cities").doc("LA").withConverter(
+          fromFirestore: Car.fromFirestore,
+          toFirestore: (Car car, _) => car.toFirestore(),
+        );
   }
 
   void showSnackBar(String title, {required String message}) {

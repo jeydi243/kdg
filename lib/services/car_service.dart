@@ -12,6 +12,9 @@ class CarService extends GetxController {
 
   late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
+  late CollectionReference docsRef;
+  late CollectionReference carsRef;
+  late CollectionReference housesRef;
 
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
@@ -25,10 +28,13 @@ class CarService extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    listDocumentsSnapshot
-        .bindStream(firestore.collection('documents').snapshots());
+
+    docsRef = firestore.collection('documents');
+    carsRef = firestore.collection('vehicules');
+    housesRef = firestore.collection('houses');
+    listDocumentsSnapshot.bindStream(docsRef.snapshots());
   }
 
   List<Car> get cars => _cars.value;
@@ -84,4 +90,6 @@ class CarService extends GetxController {
         await PaletteGenerator.fromImageProvider(imageProvider);
     return paletteGenerator.dominantColor!.color;
   }
+
+
 }

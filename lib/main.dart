@@ -38,7 +38,7 @@ class Kdg extends StatelessWidget {
         // '/rapport': (context) => Profile(),
       },
       darkTheme: KDGTheme.dark(context),
-      // theme: KDGTheme.light(context),
+      theme: KDGTheme.light(context),
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: Login(),
