@@ -98,20 +98,9 @@ class Helper {
         snackStyle: SnackStyle.FLOATING,
         colorText: AppColors.text,
         backgroundColor: AppColors.black,
-        duration: duration ?? 3.seconds, onTap: (snack) {
-      // switch (to) {
-      //   case 'panier':
-      //     Get.to(Panier());
-      //     break;
-      //   case 'favoris':
-      //     Get.to(Favoris());
-      //     break;
-      //   case 'profil':
-      //     Get.to(ProfileScreen());
-      //     break;
-      //   default:
-      // }
-    }, mainButton: main);
+        duration: duration ?? 3.seconds,
+        onTap: (snack) {},
+        mainButton: main);
   }
 
   static Future<bool> isInternetAvailable() async {

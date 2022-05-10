@@ -20,6 +20,8 @@ class _DetailsHouseState extends State<DetailsHouse> {
 
   @override
   Widget build(BuildContext context) {
+    BoxDecoration _rowsdecoration = BoxDecoration(
+        border: Border(right: BorderSide(color: Colors.amber, width: 2)));
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -33,6 +35,7 @@ class _DetailsHouseState extends State<DetailsHouse> {
                 borderRadius: BorderRadius.circular(5),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                         decoration: BoxDecoration(
@@ -64,42 +67,42 @@ class _DetailsHouseState extends State<DetailsHouse> {
         },
         child: Icon(Icons.add),
       ),
-      body: Column(children: [
-        SwipeDeck(
-          // aspectRatio: 16 / 9,
-          widgets: [
-            ...images
-                .map<Widget>((name) => ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.asset(
-                      name,
-                      fit: BoxFit.contain,
-                      height: 200,
-                      width: 100,
-                    )))
-                .toList()
-          ],
-        ),
-        Table(
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TableRow(
-                decoration: BoxDecoration(
-                    border: Border(
-                        left: BorderSide(color: Colors.amber, width: 3))),
-                children: [Text('Locataire'), Text('Le mondes')]),
-            TableRow(
-                decoration: BoxDecoration(
-                    border: Border(
-                        left: BorderSide(color: Colors.amber, width: 3))),
-                children: [Text('Locataire'), Text('Le mondes')]),
-            TableRow(
-                decoration: BoxDecoration(
-                    border: Border(
-                        left: BorderSide(color: Colors.amber, width: 3))),
-                children: [Text('Locataire'), Text('Le mondes')]),
-          ],
-        )
-      ]),
+            SwipeDeck(
+              // aspectRatio: 16 / 9,
+              widgets: [
+                ...images
+                    .map<Widget>((name) => ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.asset(
+                          name,
+                          fit: BoxFit.fill,
+                          height: 200,
+                          width: 100,
+                        )))
+                    .toList()
+              ],
+            ),
+            Table(
+              children: [
+                TableRow(
+                    decoration: _rowsdecoration,
+                    children: [Text('Locataire actuel'), Text('Le mondes')]),
+                TableRow(
+                    decoration: _rowsdecoration,
+                    children: [Text('Dernier loyé payé'), Text('Janvier')]),
+                TableRow(
+                    decoration: _rowsdecoration,
+                    children: [Text('Adresse'), Text('Le mondes')]),
+                TableRow(
+                    decoration: _rowsdecoration,
+                    children: [Text('Facts'), Text('Le mondes')]),
+              ],
+            )
+          ]),
     );
   }
 }

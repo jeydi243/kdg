@@ -103,19 +103,19 @@ class _HomeState extends State<Home> {
                           await HapticFeedback.vibrate();
                           switch (list[index]['collection']) {
                             case 'cars':
-                              Get.to(IndexCar(item: list[index]));
+                              Get.to(()=>IndexCar(item: list[index]));
                               break;
                             case 'houses':
-                              Get.to(IndexHouse(item: list[index]));
+                              Get.to(()=>IndexHouse(item: list[index]));
                               break;
                             case 'rapports':
-                              Get.to(IndexRapport(item: list[index]));
+                              Get.to(()=>IndexRapport(item: list[index]));
                               break;
                             case 'familles':
-                              Get.to(IndexFamille(item: list[index]));
+                              Get.to(()=>IndexFamille(item: list[index]));
                               break;
                             default:
-                              Get.to(IndexBdd(item: list[index]));
+                              Get.to(()=>IndexBdd(item: list[index]));
                               break;
                           }
                         },

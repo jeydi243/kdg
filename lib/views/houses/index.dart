@@ -16,6 +16,7 @@ class _IndexHouseState extends State<IndexHouse> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
+// floatingActionButton: ,
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(

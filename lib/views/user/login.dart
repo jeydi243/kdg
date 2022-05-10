@@ -170,7 +170,7 @@ class _LoginState extends State<Login> {
                                       // await userService.signInWithEmailAndPassword(
                                       //     email: _map['email'] as String,
                                       //     password: _map['password'] as String);
-                                      Get.to(Home());
+                                      Get.to(()=>Home());
                                     } catch (e) {
                                       setState(() {
                                         isConnecting = !isConnecting;
