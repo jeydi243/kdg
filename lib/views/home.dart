@@ -4,6 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/services/user_service.dart';
+import 'package:kdg/views/projets/index.dart';
 import 'bdd/details.dart';
 import 'cars/index.dart';
 import 'famille/index.dart';
@@ -42,6 +43,7 @@ class _HomeState extends State<Home> {
       "text": "Base de connaissance",
       "collection": "bdd"
     },
+    {"imgsrc": "assets/seize.jpg", "text": "Projets", "collection": "projets"},
   ];
   Widget _flightShuttleBuilder(
     BuildContext flightContext,
@@ -64,6 +66,7 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
+          centerTitle: false,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -104,14 +107,26 @@ class _HomeState extends State<Home> {
             )
           ],
         ),
-        body: AnimationConfiguration.staggeredList(
+        bottomNavigationBar: BottomNavigationBar(
+            items: list
+                .map<BottomNavigationBarItem>(
+                  (map) => BottomNavigationBarItem(
+                      label: "${map['text']}", icon: Icon(Icons.abc_outlined)),
+                )
+                .toList(),
+            currentIndex: 0),
+        body: AnimationConfiguration.staggeredGrid(
           position: 5,
           delay: 1.seconds,
           duration: 1.seconds,
-          child: ListView.builder(
+          columnCount: 2,
+          child: GridView.builder(
             physics: BouncingScrollPhysics(),
             padding: EdgeInsets.symmetric(horizontal: 10),
             itemCount: list.length,
+            scrollDirection: Axis.vertical,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, crossAxisSpacing: 10),
             itemBuilder: (context, index) {
               return FadeIn(
                 Stack(
@@ -133,6 +148,9 @@ class _HomeState extends State<Home> {
                               break;
                             case 'familles':
                               Get.to(() => IndexFamille(item: list[index]));
+                              break;
+                            case 'projets':
+                              Get.to(() => IndexProjet(item: list[index]));
                               break;
                             default:
                               Get.to(() => IndexBdd(item: list[index]));
@@ -170,7 +188,7 @@ class _HomeState extends State<Home> {
                         ),
                         height: 50,
                       ),
-                    )
+                    ),
                   ],
                 ),
               );

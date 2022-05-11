@@ -3,98 +3,96 @@ part of values;
 class KDGTheme {
   static ThemeData light(context) {
     var theme = Theme.of(context);
-    
-      return theme.copyWith(
-        primaryColor: AppColors.primary,
-        errorColor: AppColors.error,
-        platform: TargetPlatform.android,
-        useMaterial3: false,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-            error: AppColors.error,
-            primary: AppColors.primary,
-            brightness: Brightness.light),
-        tabBarTheme: TabBarTheme(
-            labelColor: Colors.teal,
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelPadding: EdgeInsets.all(5),
-            labelStyle: TextStyle(
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
-            unselectedLabelStyle: GoogleFonts.k2d(color: Colors.teal[50])),
-        dividerColor: AppColors.accent,
-        inputDecorationTheme: InputDecorationTheme(
-            filled: true,
-            helperStyle: TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
-            focusedErrorBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                    style: BorderStyle.solid, color: AppColors.error)),
-            errorBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                    style: BorderStyle.solid, color: AppColors.error)),
-            errorStyle: TextStyle(color: AppColors.error, fontSize: 10)),
-        appBarTheme: theme.appBarTheme.copyWith(
-          color: AppColors.text,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: GoogleFonts.k2d(
-            color: AppColors.primary,
-            fontSize: 19,
-          ),
+
+    return theme.copyWith(
+      primaryColor: AppColors.primary,
+      errorColor: AppColors.error,
+      platform: TargetPlatform.android,
+      useMaterial3: false,
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+          error: AppColors.error,
+          primary: AppColors.primary,
+          brightness: Brightness.light),
+      tabBarTheme: TabBarTheme(
+          labelColor: Colors.teal,
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelPadding: EdgeInsets.all(5),
+          labelStyle: TextStyle(
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+              color: Colors.white,
+              fontWeight: FontWeight.bold),
+          unselectedLabelStyle: GoogleFonts.k2d(color: Colors.teal[50])),
+      dividerColor: AppColors.accent,
+      inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          helperStyle: TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
+          focusedErrorBorder: UnderlineInputBorder(
+              borderSide:
+                  BorderSide(style: BorderStyle.solid, color: AppColors.error)),
+          errorBorder: UnderlineInputBorder(
+              borderSide:
+                  BorderSide(style: BorderStyle.solid, color: AppColors.error)),
+          errorStyle: TextStyle(color: AppColors.error, fontSize: 10)),
+      appBarTheme: theme.appBarTheme.copyWith(
+        color: AppColors.text,
+        iconTheme: IconThemeData(color: Colors.black),
+        centerTitle: true,
+        titleTextStyle: GoogleFonts.k2d(
+          color: AppColors.textDark,
+          fontSize: 19,
         ),
-        textTheme: GoogleFonts.k2dTextTheme().copyWith(
-          headline1: TextStyle(
-              fontWeight: FontWeight.w100,
-              color: AppColors.textDark,
-              fontSize: 30),
-          headline2: TextStyle(
-              fontWeight: FontWeight.w200,
-              color: AppColors.textDark,
-              fontSize: 26),
-          headline3: TextStyle(
-              fontWeight: FontWeight.w300,
-              color: AppColors.textDark,
-              fontSize: 24),
-          headline4: TextStyle(
-              fontWeight: FontWeight.w400,
-              color: AppColors.textDark,
-              fontSize: 20),
-          headline5: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: AppColors.textDark,
-              fontSize: 18),
-          button: theme.textTheme.button?.copyWith(
-              fontSize: 14,
-              color: AppColors.text,
-              fontWeight: FontWeight.normal),
-        ),
-        buttonTheme: theme.buttonTheme.copyWith(
-          minWidth: 50,
-          buttonColor: AppColors.primary,
-        ),
-        iconTheme: theme.iconTheme.copyWith(color: AppColors.primary, size: 24),
-        primaryIconTheme: IconThemeData(color: AppColors.accent, size: 24),
-        textButtonTheme: TextButtonThemeData(
-          style: ButtonStyle(
-              enableFeedback: true,
-              backgroundColor: MaterialStateProperty.all<Color?>(
-                  Color.fromARGB(255, 243, 248, 248)),
-              minimumSize: MaterialStateProperty.all<Size>(
-                  Size(Get.width / 4, Get.height * .02)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-              textStyle: MaterialStateProperty.all<TextStyle>(
-                  TextStyle(color: AppColors.text))),
-        ),
-        bottomNavigationBarTheme: theme.bottomNavigationBarTheme.copyWith(
-            elevation: 0,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            selectedIconTheme: IconThemeData(color: AppColors.accent),
-            unselectedIconTheme: IconThemeData(color: Colors.black),
-            selectedLabelStyle: GoogleFonts.k2d(),
-            selectedItemColor: AppColors.accent),
-      );
-    
+      ),
+      textTheme: GoogleFonts.k2dTextTheme().copyWith(
+        headline1: TextStyle(
+            fontWeight: FontWeight.w100,
+            color: AppColors.textDark,
+            fontSize: 30),
+        headline2: TextStyle(
+            fontWeight: FontWeight.w200,
+            color: AppColors.textDark,
+            fontSize: 26),
+        headline3: TextStyle(
+            fontWeight: FontWeight.w300,
+            color: AppColors.textDark,
+            fontSize: 24),
+        headline4: TextStyle(
+            fontWeight: FontWeight.w400,
+            color: AppColors.textDark,
+            fontSize: 20),
+        headline5: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: AppColors.textDark,
+            fontSize: 18),
+        button: theme.textTheme.button?.copyWith(
+            fontSize: 14, color: AppColors.text, fontWeight: FontWeight.normal),
+      ),
+      buttonTheme: theme.buttonTheme.copyWith(
+        minWidth: 50,
+        buttonColor: AppColors.primary,
+      ),
+      iconTheme: theme.iconTheme.copyWith(color: AppColors.primary, size: 24),
+      primaryIconTheme: IconThemeData(color: AppColors.accent, size: 24),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+            enableFeedback: true,
+            backgroundColor: MaterialStateProperty.all<Color?>(
+                Color.fromARGB(255, 243, 248, 248)),
+            minimumSize: MaterialStateProperty.all<Size>(
+                Size(Get.width / 4, Get.height * .02)),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+            textStyle: MaterialStateProperty.all<TextStyle>(
+                TextStyle(color: AppColors.text))),
+      ),
+      bottomNavigationBarTheme: theme.bottomNavigationBarTheme.copyWith(
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedIconTheme: IconThemeData(color: AppColors.accent),
+          unselectedIconTheme: IconThemeData(color: Colors.black),
+          selectedLabelStyle: GoogleFonts.k2d(),
+          selectedItemColor: AppColors.accent),
+    );
   }
 
   static ThemeData dark(context) {

@@ -21,20 +21,8 @@ class IndexRapport extends StatefulWidget {
 
 class _IndexRapportState extends State<IndexRapport> {
   final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController nameController;
-  late TextEditingController otherController;
-  bool _check = false;
-  bool _expanding = false;
-  bool _connecting = false;
-  Map<String, String> _map = <String, String>{"name": "", "other": ""};
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    nameController = new TextEditingController(text: "Etude 1");
-    otherController = new TextEditingController(text: "Other 1");
-  }
+ 
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +43,7 @@ class _IndexRapportState extends State<IndexRapport> {
           children: <Widget>[
             OpenContainer(
               transitionDuration: 900.milliseconds,
+              closedColor: Colors.transparent,
               closedBuilder: (BuildContext context, void Function() action) {
                 return IconButton(
                     icon: Icon(Icons.account_box),

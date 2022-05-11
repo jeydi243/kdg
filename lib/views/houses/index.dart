@@ -82,6 +82,8 @@ class _IndexHouseState extends State<IndexHouse> {
               (ctx, index) {
                 return OpenContainer(
                   transitionDuration: 900.milliseconds,
+                  openElevation: 0,
+                  closedElevation: 0,
                   openBuilder: (context, action) {
                     return DetailsHouse(widget.item);
                   },
