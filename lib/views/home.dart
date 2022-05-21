@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:kdg/animations/fadein.dart';
+import 'package:kdg/components/custom_grid.dart';
 import 'package:kdg/services/user_service.dart';
-import 'package:kdg/views/projets/index.dart';
-import 'bdd/details.dart';
-import 'cars/index.dart';
-import 'famille/index.dart';
-import 'houses/index.dart';
-import 'rapports/index.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -19,45 +12,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final searchTextController = new TextEditingController();
-  String query = "";
-  List<Map<String, dynamic>> list = <Map<String, dynamic>>[
-    {
-      "imgsrc": "assets/rapport.jpg",
-      "text": "Rapports",
-      "collection": "rapports"
-    },
-    {"imgsrc": "assets/vehicules.webp", "text": "Cars", "collection": "cars"},
-    {
-      "imgsrc": "assets/maisons.webp",
-      "text": "Maisons",
-      "collection": "houses"
-    },
-    {
-      "imgsrc": "assets/familles.webp",
-      "text": "Familles",
-      "collection": "familles"
-    },
-    {
-      "imgsrc": "assets/paysage.webp",
-      "text": "Base de connaissance",
-      "collection": "bdd"
-    },
-    {"imgsrc": "assets/seize.jpg", "text": "Projets", "collection": "projets"},
-  ];
-  Widget _flightShuttleBuilder(
-    BuildContext flightContext,
-    Animation<double> animation,
-    HeroFlightDirection flightDirection,
-    BuildContext fromHeroContext,
-    BuildContext toHeroContext,
-  ) {
-    return DefaultTextStyle(
-      style: DefaultTextStyle.of(toHeroContext).style,
-      child: toHeroContext.widget,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     UserService us = Get.find();
@@ -107,93 +61,14 @@ class _HomeState extends State<Home> {
             )
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-            items: list
-                .map<BottomNavigationBarItem>(
-                  (map) => BottomNavigationBarItem(
-                      label: "${map['text']}", icon: Icon(Icons.abc_outlined)),
-                )
-                .toList(),
-            currentIndex: 0),
-        body: AnimationConfiguration.staggeredGrid(
-          position: 5,
-          delay: 1.seconds,
-          duration: 1.seconds,
-          columnCount: 2,
-          child: GridView.builder(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            itemCount: list.length,
-            scrollDirection: Axis.vertical,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, crossAxisSpacing: 10),
-            itemBuilder: (context, index) {
-              return FadeIn(
-                Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: GestureDetector(
-                        onTap: () async {
-                          await HapticFeedback.vibrate();
-                          switch (list[index]['collection']) {
-                            case 'cars':
-                              Get.to(() => IndexCar(item: list[index]));
-                              break;
-                            case 'houses':
-                              Get.to(() => IndexHouse(item: list[index]));
-                              break;
-                            case 'rapports':
-                              Get.to(() => IndexRapport(item: list[index]));
-                              break;
-                            case 'familles':
-                              Get.to(() => IndexFamille(item: list[index]));
-                              break;
-                            case 'projets':
-                              Get.to(() => IndexProjet(item: list[index]));
-                              break;
-                            default:
-                              Get.to(() => IndexBdd(item: list[index]));
-                              break;
-                          }
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Hero(
-                            tag: list[index]['imgsrc'],
-                            child: Image.asset(
-                              list[index]['imgsrc'],
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topCenter,
-                              height: Get.height * .2,
-                              width: Get.height * .9,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment(-0.9, 1.0),
-                      child: Container(
-                        child: Hero(
-                          tag: "title${list[index]['text']}",
-                          flightShuttleBuilder: _flightShuttleBuilder,
-                          child: Text(
-                            list[index]['text'],
-                            style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        height: 50,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ));
+        // bottomNavigationBar: BottomNavigationBar(
+        //     items: list
+        //         .map<BottomNavigationBarItem>(
+        //           (map) => BottomNavigationBarItem(
+        //               label: "${map['text']}", icon: Icon(Icons.abc_outlined)),
+        //         )
+        //         .toList(),
+        //     currentIndex: 0),
+        body: CustomGrid());
   }
 }

@@ -4,14 +4,14 @@ import 'package:kdg/models/car.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 
-class IndexCar extends StatefulWidget {
-  IndexCar(this.car, {Key? key}) : super(key: key);
+class DetailsCar extends StatefulWidget {
+  DetailsCar(this.car, {Key? key}) : super(key: key);
   final Car car;
   @override
-  _IndexCarState createState() => _IndexCarState();
+  _DetailsCarState createState() => _DetailsCarState();
 }
 
-class _IndexCarState extends State<IndexCar> {
+class _DetailsCarState extends State<DetailsCar> {
   late List<Map<String, dynamic>> list;
 
   @override
@@ -40,20 +40,13 @@ class _IndexCarState extends State<IndexCar> {
           children: [
             Text(
               'Actions',
-
-              // style: Theme.of(context)
-              //     .textTheme
-              //     .headline6!
-              //     .copyWith(fontWeight: FontWeight.w600),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
                 children: [
                   TextButton(
-                      onPressed: () {
-                        
-                      },
+                      onPressed: () {},
                       child: Text("Activer les notifications d'echéance")),
                   TextButton(onPressed: () {}, child: Text('Voir le document')),
                   TextButton(

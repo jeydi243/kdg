@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kdg/components/viewerpdf.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/cars/item.dart';
@@ -32,8 +33,18 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
     CarService carservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex("FDF8F8"),
-      floatingActionButton:
-          FloatingActionButton(onPressed: () {}, child: Icon(Icons.add)),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Get.dialog(Center(
+            //     child: SizedBox(
+            //         height: 20,
+            //         width: 20,
+            //         child: CircularProgressIndicator(
+            //           strokeWidth: 2,
+            //         ))));
+            Get.to(() => ViewerPDF());
+          },
+          child: Icon(Icons.add)),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -92,13 +103,16 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
             ),
           ),
           SliverAnimatedList(
-            initialItemCount: carservice.cars.length,
+            initialItemCount: 10,
             itemBuilder: (BuildContext context, int i, Animation<double> an) {
-              return CarItem(
-                item: carservice.cars[i],
-              );
+              // if (10) {
+              return Container();
+              // }
+              // return CarItem(
+              //   item: carservice.cars[i],
+              // );
             },
-          )
+          ),
         ],
       ),
     );

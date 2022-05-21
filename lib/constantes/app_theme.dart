@@ -43,6 +43,21 @@ class KDGTheme {
           fontSize: 19,
         ),
       ),
+      dataTableTheme: theme.dataTableTheme.copyWith(
+          dataRowHeight: 15,
+          dataTextStyle: GoogleFonts.k2d(),
+          dividerThickness: 1,
+          horizontalMargin: 5,
+          decoration: BoxDecoration(
+            color: const Color(0xff7c94b6),
+            border: Border.all(
+              color: Colors.black,
+              width: 8,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          dataRowColor: MaterialStateProperty.all(Colors.red),
+          headingRowColor: MaterialStateProperty.all(AppColors.textDark)),
       textTheme: GoogleFonts.k2dTextTheme().copyWith(
         headline1: TextStyle(
             fontWeight: FontWeight.w100,

@@ -54,12 +54,14 @@ class _LoginState extends State<Login> {
                       FadeIn(
                         Text(
                           "Bienvenue",
-                          style: Get.textTheme.bodyText1,
+                          style: Get.textTheme.displayLarge!.copyWith(
+                              fontSize: 48, fontWeight: FontWeight.w400),
                         ),
                       ),
                       FadeIn(
                         Text("Ravis de te revoir",
-                            style: Get.textTheme.bodyText2),
+                            style: Get.textTheme.displayLarge!.copyWith(
+                                fontSize: 30, fontWeight: FontWeight.w400)),
                       ),
                     ],
                   ),

@@ -20,6 +20,7 @@ class CarService extends GetxController {
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
   Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
   List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
+  RxBool isLoadingDocument = RxBool(true);
   CarService() {
     _auth = FirebaseAuth.instance;
     firestore = FirebaseFirestore.instance;
@@ -32,7 +33,7 @@ class CarService extends GetxController {
     super.onInit();
 
     docsRef = firestore.collection('documents');
-    carsRef = firestore.collection('vehicules');
+    carsRef = firestore.collection('cars');
     housesRef = firestore.collection('houses');
     listDocumentsSnapshot.bindStream(docsRef.snapshots());
   }
@@ -91,5 +92,13 @@ class CarService extends GetxController {
     return paletteGenerator.dominantColor!.color;
   }
 
+  void onDocumentLoadFailed(String description) {
+    Get.snackbar("File", description);
+    update();
+  }
 
+  void stopLoading() {
+    isLoadingDocument.value = false;
+    update();
+  }
 }

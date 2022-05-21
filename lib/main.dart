@@ -1,4 +1,5 @@
 // Import the generated file
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
@@ -7,7 +8,6 @@ import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kdg/services/car_service.dart';
-import 'package:logger/logger.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
 
@@ -21,9 +21,8 @@ void main() async {
     Get.put<CarService>(CarService());
     Get.put<UserService>(UserService());
     runApp(Kdg());
-    print('App running');
-  } on FirebaseException catch (e) {
-    Logger().w(e.toString());
+  } on FirebaseException catch (e, stack) {
+    FirebaseCrashlytics.instance.recordError(e, stack);
   }
 }
 

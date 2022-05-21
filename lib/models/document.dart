@@ -7,38 +7,42 @@ class Document {
   late DateTime endValidity;
   late String description;
   late String linkFile;
+  late String idCar;
 
   Document(
     this.name,
     this.startValidity,
   );
   Document.fromMap(QueryDocumentSnapshot snapshot, this.id) {
-    name = snapshot.get('name') ?? '';
-    id = id;
     startValidity = snapshot['startValidity'] ?? null;
     endValidity = snapshot['endValidity'] ?? null;
     description = snapshot['description'] ?? '';
     linkFile = snapshot['linkFile'] ?? '';
+    idCar = snapshot['idCar'];
+    name = snapshot.get('name') ?? '';
+    id = id;
   }
   Document.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
-    name = snapshot.get('name') ?? '';
     id = snapshot.id;
-    startValidity = snapshot['startValidity'] ?? null;
+    name = snapshot.get('name') ?? '';
+    idCar = snapshot.get('idCar') ?? '';
+    linkFile = snapshot['linkFile'] ?? '';
     endValidity = snapshot['endValidity'] ?? null;
     description = snapshot['description'] ?? '';
-    linkFile = snapshot['linkFile'] ?? '';
+    startValidity = snapshot['startValidity'] ?? null;
   }
 
   toFirestore() {
     return {
-      "name": name,
       "startValidity": startValidity,
       "endValidity": endValidity,
       "description": description,
-      "linkFile": linkFile
+      "linkFile": linkFile,
+      "idCar": idCar,
+      "name": name,
     };
   }
 

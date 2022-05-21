@@ -15,23 +15,26 @@ class _IndexHouseState extends State<IndexHouse> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor.fromHex('#EEF2F6'),
-// floatingActionButton: ,
+      backgroundColor: Colors.deepOrange,
       body: CustomScrollView(
+        physics: BouncingScrollPhysics(),
         slivers: <Widget>[
           SliverAppBar(
-            expandedHeight: Get.height * .4,
+            expandedHeight: Get.height * .35,
             actions: [
               IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
             ],
             stretch: true,
-            collapsedHeight: Get.height * .35,
+            collapsedHeight: Get.height * .30,
             onStretchTrigger: () async {
               print("onStretchTrigger... ");
             },
-            stretchTriggerOffset: 92,
+            stretchTriggerOffset: 52,
             backgroundColor: HexColor.fromHex("FDF8F8"),
+            floating: true,
             flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              expandedTitleScale: 2,
               centerTitle: true,
               title: Hero(
                 transitionOnUserGestures: true,
@@ -39,7 +42,10 @@ class _IndexHouseState extends State<IndexHouse> {
                 child: Text(
                     "${(widget.item['collection'] as String).capitalizeFirst}"),
               ),
-              stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
+              stretchModes: [
+                StretchMode.blurBackground,
+                StretchMode.zoomBackground
+              ],
               background: GestureDetector(
                 onVerticalDragEnd: (gf) {
                   Navigator.pop(context);
@@ -88,13 +94,14 @@ class _IndexHouseState extends State<IndexHouse> {
                     return DetailsHouse(widget.item);
                   },
                   closedBuilder: (context, void Function() action) {
-                    return InkWell(
-                      onTap: action,
-                      child: Container(
-                        padding: EdgeInsets.only(bottom: 5),
-                        width: Get.width * .95,
-                        height: 45,
-                        child: Text('Details Maisons $index'),
+                    return Container(
+                      margin: EdgeInsets.symmetric(vertical: 15),
+                      width: Get.width * .70,
+                      color: Colors.teal,
+                      height: 45,
+                      child: InkWell(
+                        onTap: action,
+                        child: Text('Détails Maisons $index'),
                       ),
                     );
                   },

@@ -79,29 +79,38 @@ class _DetailsHouseState extends State<DetailsHouse> {
                 ...images
                     .map<Widget>((name) => ClipRRect(
                         borderRadius: BorderRadius.circular(5),
-                        child: Image.asset(
-                          name,
-                          fit: BoxFit.fill,
+                        child: SizedBox(
                           height: 200,
-                          width: 100,
+                          width: 70,
+                          child: Image.asset(
+                            name,
+                            fit: BoxFit.cover,
+                            height: 200,
+                            width: 70,
+                          ),
                         )))
                     .toList()
               ],
             ),
             Table(
+              border: TableBorder(right: BorderSide(color: Colors.black26)),
               children: [
-                TableRow(
-                    decoration: _rowsdecoration,
-                    children: [Text('Locataire actuel'), Text('Le mondes')]),
-                TableRow(
-                    decoration: _rowsdecoration,
-                    children: [Text('Dernier loyé payé'), Text('Janvier')]),
-                TableRow(
-                    decoration: _rowsdecoration,
-                    children: [Text('Adresse'), Text('Le mondes')]),
-                TableRow(
-                    decoration: _rowsdecoration,
-                    children: [Text('Facts'), Text('Le mondes')]),
+                TableRow(children: [
+                  TableCell(child: Text('Locataire')),
+                  TableCell(child: Text('Le mondes'))
+                ]),
+                TableRow(children: [
+                  TableCell(child: Text('Last payed')),
+                  TableCell(child: Text('Janvier'))
+                ]),
+                TableRow(children: [
+                  TableCell(child: Text('Adresse')),
+                  TableCell(child: Text('Le mondes'))
+                ]),
+                TableRow(children: [
+                  TableCell(child: Text('Facts')),
+                  TableCell(child: Text('Le mondes'))
+                ]),
               ],
             )
           ]),
