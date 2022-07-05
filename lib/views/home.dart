@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:kdg/animations/fadein.dart';
+import 'package:kdg/animations/fadein_fromleft.dart';
 import 'package:kdg/components/custom_grid.dart';
 import 'package:kdg/services/user_service.dart';
 
@@ -24,41 +26,49 @@ class _HomeState extends State<Home> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Hi, ${us.userKDG?.nom ?? 'Kadiongo Ilunga'}",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold)),
-              Text(us.currentUser?.email ?? 'ilungakadiongo@gmail.com',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontWeight: FontWeight.normal))
+              FadeInLeft(
+                Text("Hi, ${us.userKDG?.nom ?? 'Kadiongo Ilunga'}",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold)),
+                delay: 1,
+              ),
+              FadeInLeft(
+                Text(us.currentUser?.email ?? 'ilungakadiongo@gmail.com',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal)),
+                delay: 2,
+              )
             ],
           ),
           elevation: 0,
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: InkWell(
-                onTap: () => Get.toNamed('/profile'),
-                child: Hero(
-                  tag: "Profil",
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage("assets/epa.jpg"),
-                    radius: 20,
-                    // child: DropdownButton(
-                    //     items: ['Modifier le Profil']
-                    //         .map<DropdownMenuItem<String>>((String value) {
-                    //   return DropdownMenuItem<String>(
-                    //     value: value,
-                    //     child: Text(value),
-                    //   );
-                    // }).toList()),
+            FadeInLeft(
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: InkWell(
+                    onTap: () => Get.toNamed('/profile'),
+                    child: Hero(
+                      tag: "Profil",
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage("assets/epa.jpg"),
+                        radius: 20,
+                        // child: DropdownButton(
+                        //     items: ['Modifier le Profil']
+                        //         .map<DropdownMenuItem<String>>((String value) {
+                        //   return DropdownMenuItem<String>(
+                        //     value: value,
+                        //     child: Text(value),
+                        //   );
+                        // }).toList()),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            )
+                delay: 3)
           ],
         ),
         // bottomNavigationBar: BottomNavigationBar(

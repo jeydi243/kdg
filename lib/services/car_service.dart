@@ -4,77 +4,60 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/car.dart';
 import 'package:kdg/models/document.dart';
-import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
+import '../models/maison.dart';
 
 class CarService extends GetxController {
   static CarService carservice = Get.find();
 
   late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
-  late CollectionReference docsRef;
-  late CollectionReference carsRef;
-  late CollectionReference housesRef;
+  late final CollectionReference<Document> docsRef;
+  late final CollectionReference<Car> carsRef;
+  late final CollectionReference<Maison> housesRef;
 
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
   Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
   List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   RxBool isLoadingDocument = RxBool(true);
-  CarService() {
-    _auth = FirebaseAuth.instance;
-    firestore = FirebaseFirestore.instance;
-    listenCar();
-    listenBdd();
+
+  @override
+  void onReady() {
+    carservice.getCars().then((value) => null);
+    super.onReady();
   }
 
   @override
   void onInit() async {
-    super.onInit();
+    _auth = FirebaseAuth.instance;
+    firestore = FirebaseFirestore.instance;
 
-    docsRef = firestore.collection('documents');
-    carsRef = firestore.collection('cars');
-    housesRef = firestore.collection('houses');
+    docsRef = firestore.collection('documents').withConverter<Document>(
+          fromFirestore: Document.fromFirestore,
+          toFirestore: (Document doc, _) => doc.toFirestore(),
+        );
+    carsRef = firestore.collection('cars').withConverter<Car>(
+          fromFirestore: Car.fromFirestore,
+          toFirestore: (Car car, _) => car.toFirestore(),
+        );
+    housesRef = firestore.collection('houses').withConverter<Maison>(
+          fromFirestore: Maison.fromFirestore,
+          toFirestore: (Maison house, _) => house.toFirestore(),
+        );
+
     listDocumentsSnapshot.bindStream(docsRef.snapshots());
+    super.onInit();
   }
 
   List<Car> get cars => _cars.value;
 
-  void listenCar() {
-    firestore
-        .collection('cars')
-        .snapshots(includeMetadataChanges: true)
-        .map<List<Car>>((QuerySnapshot snap) {
-      return snap.docChanges.map<Car>((DocumentChange e) {
-        if (e.type == DocumentChangeType.added) {}
-        return Car.fromMap({'id': e.doc.id});
-      }).toList();
-    }).listen((event) {
-      Logger().i('Listen for cars');
-      cars.addAll(event);
-    });
-  }
-
-  void listenBdd() {
-    firestore
-        .collection('bdd')
-        .snapshots(includeMetadataChanges: true)
-        .map<List<Map<String, dynamic>>>((snap) {
-      return snap.docChanges
-          .map<Map<String, dynamic>>((e) => {...?e.doc.data(), 'id': e.doc.id})
-          .toList();
-    }).listen((event) {
-      Logger().i('Bdd change ...');
-      listBdd.addAll(event);
-    });
-  }
-
   Future<List<Document>?> getCarDocs({required String id}) async {
     List<Document> cardocs = <Document>[];
     try {
-      QuerySnapshot<Map<String, dynamic>> f = await firestore
-          .collection('documents')
-          .where('carid', isEqualTo: id)
+      QuerySnapshot f = await docsRef
+          .where('idCar', isEqualTo: id)
+          .where("startValidity", isLessThanOrEqualTo: DateTime.now())
           .get();
       for (QueryDocumentSnapshot doc in f.docs) {
         cardocs.add(new Document.fromMap(doc, doc.id));
@@ -82,6 +65,17 @@ class CarService extends GetxController {
       return cardocs;
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<void> getCars() async {
+    try {
+      QuerySnapshot f = await carsRef.get();
+      for (var i = 0; i < f.size; i++) {
+        _cars.value.add(f.docs[i].data() as Car);
+      }
+    } catch (e, s) {
+      Get.snackbar("CARS", "Can't retrive car $e: $s");
     }
   }
 

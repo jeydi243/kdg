@@ -3,47 +3,59 @@ import 'package:kdg/models/document.dart';
 
 class Car {
   String model;
-  String name;
+  String nom;
   late String id;
-  late Document assurance;
-  late Document controle;
-  late Document stationnement;
-  late Document vignette;
-  List<Document> get listDocuments =>
+  Document? assurance;
+  Document? controle;
+  Document? stationnement;
+  Document? vignette;
+
+  late Map<String, dynamic> defaultControle;
+  late Map<String, dynamic> defaultAssurance;
+  late Map<String, dynamic> defaultStationnement;
+  late Map<String, dynamic> defaultVignette;
+
+  List<Document?> get listDocuments =>
       [assurance, controle, stationnement, vignette];
-  String get Nom => name;
+  String get Nom => nom;
   Car({
     required this.model,
-    required this.name,
-    required this.assurance,
-    required this.controle,
-    required this.stationnement,
-    required this.vignette,
+    required this.nom,
+    required this.id,
+    required this.defaultAssurance,
+    required this.defaultControle,
+    required this.defaultStationnement,
+    required this.defaultVignette,
   });
   Car.fromMap(Map<String, dynamic> snapshot)
       : id = snapshot['id'] ?? '',
-        name = snapshot['name'] ?? '',
+        nom = snapshot['name'] ?? '',
         model = snapshot['model'] ?? '',
-        assurance = snapshot['assurance'] ?? <String, int>{},
-        controle = snapshot['controle'] ?? <String, int>{},
-        stationnement = snapshot['stationnement'] ?? <String, int>{},
-        vignette = snapshot['vignette'] ?? <String, int>{};
+        defaultControle = snapshot['controle'] ?? <String, dynamic>{},
+        defaultVignette = snapshot['vignette'] ?? <String, dynamic>{},
+        defaultAssurance = snapshot['assurance'] ?? <String, dynamic>{},
+        defaultStationnement = snapshot['stationnement'] ?? <String, dynamic>{};
 
   Car.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
-  )   : name = snapshot.data()?["name"],
-        model = snapshot.data()?["model"];
+  )   : nom = snapshot.data()?["nom"],
+        id = snapshot.id,
+        model = snapshot.data()?["model"],
+        defaultControle = snapshot.data()?['controle'] ?? <String, dynamic>{},
+        defaultVignette = snapshot.data()?['vignette'] ?? <String, dynamic>{},
+        defaultAssurance = snapshot.data()?['assurance'] ?? <String, dynamic>{},
+        defaultStationnement =
+            snapshot.data()?['stationnement'] ?? <String, dynamic>{};
 
   toFirestore() {
     return {
       'name': model,
       'model': model,
-      'assurance': assurance.id,
-      'controle': controle.id,
-      'stationnement': stationnement.id,
-      'vignette': vignette.id
+      'assurance': defaultAssurance,
+      'controle': defaultControle,
+      'stationnement': defaultStationnement,
+      'vignette': defaultVignette
     };
   }
-  
 }

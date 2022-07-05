@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:kdg/components/size_me.dart';
 
 import '../animations/fadein.dart';
 import '../views/bdd/details.dart';
@@ -84,72 +85,75 @@ class _CustomGridState extends State<CustomGrid> {
         itemBuilder: (context, index) {
           return AnimationConfiguration.staggeredGrid(
             position: index,
-            delay: 1.seconds,
-            duration: 1.seconds,
+            delay: 1.5.seconds,
             columnCount: list.length,
-            child: FadeIn(
-              Stack(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8.0),
-                    child: GestureDetector(
-                      onTap: () async {
-                        await HapticFeedback.vibrate();
-                        switch (list[index]['collection']) {
-                          case 'cars':
-                            Get.to(() => IndexCar(item: list[index]));
-                            break;
-                          case 'houses':
-                            Get.to(() => IndexHouse(item: list[index]));
-                            break;
-                          case 'rapports':
-                            Get.to(() => IndexRapport(item: list[index]));
-                            break;
-                          case 'familles':
-                            Get.to(() => IndexFamille(item: list[index]));
-                            break;
-                          case 'projets':
-                            Get.to(() => IndexProjet(item: list[index]));
-                            break;
-                          default:
-                            Get.to(() => IndexBdd(item: list[index]));
-                            break;
-                        }
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Hero(
-                          tag: list[index]['imgsrc'],
-                          child: Image.asset(
-                            list[index]['imgsrc'],
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
-                            height: Get.height * .2,
-                            width: Get.height * .9,
+            child: SlideAnimation(
+              verticalOffset: 20.0,
+              curve: Curves.easeInOutBack,
+              child: FadeInAnimation(
+                  duration: 1.seconds,
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
+                        child: GestureDetector(
+                          onTap: () async {
+                            await HapticFeedback.vibrate();
+                            switch (list[index]['collection']) {
+                              case 'cars':
+                                Get.to(() => IndexCar(item: list[index]));
+                                break;
+                              case 'houses':
+                                Get.to(() => IndexHouse(item: list[index]));
+                                break;
+                              case 'rapports':
+                                Get.to(() => IndexRapport(item: list[index]));
+                                break;
+                              case 'familles':
+                                Get.to(() => IndexFamille(item: list[index]));
+                                break;
+                              case 'projets':
+                                Get.to(() => IndexProjet(item: list[index]));
+                                break;
+                              default:
+                                Get.to(() => IndexBdd(item: list[index]));
+                                break;
+                            }
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Hero(
+                              tag: list[index]['imgsrc'],
+                              child: Image.asset(
+                                list[index]['imgsrc'],
+                                fit: BoxFit.cover,
+                                alignment: Alignment.topCenter,
+                                height: Get.height * .2,
+                                width: Get.height * .9,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment(-0.9, 1.0),
-                    child: Container(
-                      child: Hero(
-                        tag: "title${list[index]['text']}",
-                        flightShuttleBuilder: _flightShuttleBuilder,
-                        child: Text(
-                          list[index]['text'],
-                          style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                      Align(
+                        alignment: Alignment(-0.9, 1.0),
+                        child: Container(
+                          child: Hero(
+                            tag: "title${list[index]['text']}",
+                            flightShuttleBuilder: _flightShuttleBuilder,
+                            child: Text(
+                              list[index]['text'],
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          height: 50,
                         ),
                       ),
-                      height: 50,
-                    ),
-                  ),
-                ],
-              ),
+                    ],
+                  )),
             ),
           );
         },

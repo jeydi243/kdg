@@ -7,7 +7,7 @@ class Document {
   late DateTime endValidity;
   late String description;
   late String linkFile;
-  late String idCar;
+  String? idCar;
 
   Document(
     this.name,
