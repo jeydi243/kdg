@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/size_me.dart';
-
-import '../animations/fadein.dart';
 import '../views/bdd/details.dart';
-import '../views/cars/details.dart';
 import '../views/cars/index.dart';
 import '../views/famille/index.dart';
 import '../views/houses/index.dart';
@@ -85,10 +81,10 @@ class _CustomGridState extends State<CustomGrid> {
         itemBuilder: (context, index) {
           return AnimationConfiguration.staggeredGrid(
             position: index,
-            delay: 1.5.seconds,
+            delay: .2.seconds,
             columnCount: list.length,
             child: SlideAnimation(
-              verticalOffset: 20.0,
+              verticalOffset: 10,
               curve: Curves.easeInOutBack,
               child: FadeInAnimation(
                   duration: 1.seconds,

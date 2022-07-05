@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
                         color: Colors.black,
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
-                delay: 1,
+                delay: .3,
               ),
               FadeInLeft(
                 Text(us.currentUser?.email ?? 'ilungakadiongo@gmail.com',
@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
                         color: Colors.black,
                         fontSize: 12,
                         fontWeight: FontWeight.normal)),
-                delay: 2,
+                delay: .6,
               )
             ],
           ),
@@ -68,17 +68,9 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-                delay: 3)
+                delay: .9)
           ],
         ),
-        // bottomNavigationBar: BottomNavigationBar(
-        //     items: list
-        //         .map<BottomNavigationBarItem>(
-        //           (map) => BottomNavigationBarItem(
-        //               label: "${map['text']}", icon: Icon(Icons.abc_outlined)),
-        //         )
-        //         .toList(),
-        //     currentIndex: 0),
         body: CustomGrid());
   }
 }

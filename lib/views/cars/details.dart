@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kdg/components/pageV.dart';
 import 'package:kdg/models/car.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
@@ -17,14 +18,14 @@ class DetailsCar extends StatefulWidget {
 
 class _DetailsCarState extends State<DetailsCar> {
   late List<Map<String, dynamic>> list;
-//map for car info
+  late ScrollController _scrollController;
+  PanelController _pc = new PanelController();
   Map<String, dynamic> infos = {
     "Color": "Brown",
     "Brand": "Audi Q5",
     "Model": "Quatttro 2.0",
     "Year": "2009",
     "Price": "\$\$\$",
-    "Description": "La description de la audi"
   };
   List<Map<String, dynamic>> messages = [
     {
@@ -34,13 +35,15 @@ class _DetailsCarState extends State<DetailsCar> {
     },
     {
       "sender": "Jeydi243",
-      "comment": "Hello, how are you?",
+      "comment":
+          "Hello, how are you? Nostrud dolor adipisicing fugiat ut officia laboris tempor aliqua pariatur ex ea nostrud ipsum irure.",
       "date": DateTime.now()
     },
     {
       "sender": "Logan Bowen",
       "comment": "Hello, how are you?",
-      "date": DateTime.now()
+      "date": DateTime.now(),
+      "img": null
     },
     {
       "sender": "Randall Harris",
@@ -50,11 +53,13 @@ class _DetailsCarState extends State<DetailsCar> {
     {
       "sender": "Sadie Dean",
       "comment": "Hello, how are you?",
-      "date": DateTime.now()
+      "date": DateTime.now(),
+      "link": "http://gesal.no/kufufhet"
     },
     {
       "sender": "Tony Jones",
       "comment": "Hello, how are you?",
+      "img": "assets/rapport.jpg",
       "date": DateTime.now()
     },
     {
@@ -98,10 +103,11 @@ class _DetailsCarState extends State<DetailsCar> {
       "date": DateTime.now()
     }
   ];
-  Widget chat(String sender, String comment, DateTime date) {
+  Widget chat(String sender, String comment, DateTime date,
+      {String? img, String? link}) {
     return Container(
       width: Get.width,
-      height: 50,
+      height: 60,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -113,40 +119,25 @@ class _DetailsCarState extends State<DetailsCar> {
                 Text(
                   sender,
                   style: GoogleFonts.courgette(
-                      color: Color.fromARGB(255, 0, 43, 64)),
+                      color: Color.fromARGB(255, 0, 156, 57)),
                 ),
                 Text("${date.toLocal().hour}:${date.toLocal().minute}",
                     style: GoogleFonts.courgette(
-                        color: Color.fromARGB(255, 0, 43, 64))),
+                        fontSize: 12, color: Color.fromARGB(255, 0, 43, 64))),
               ],
             ),
             Container(
-                padding: EdgeInsets.only(left: 10),
-                color: Colors.grey[50],
+                margin: EdgeInsets.only(left: 5),
                 width: Get.width,
+                padding: EdgeInsets.only(left: 5),
+                decoration: BoxDecoration(
+                    image:
+                        DecorationImage(image: AssetImage("assets/chat.png")),
+                    borderRadius: BorderRadius.circular(5)),
+                height: 35,
                 child: Text(comment))
           ]),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    Car car = widget.car;
-    list = [
-      {"doc": 'assurance', "value": car.defaultAssurance, "isExpanded": false},
-      {
-        "doc": 'controle technique',
-        "value": car.defaultControle,
-        "isExpanded": false
-      },
-      {"doc": 'vignette', "value": car.defaultVignette, "isExpanded": false},
-      {
-        "doc": 'stationnement',
-        "value": car.defaultStationnement,
-        "isExpanded": false
-      },
-    ];
   }
 
   Widget actions(BuildContext ctx, String link) {
@@ -206,12 +197,49 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
-  PanelController _pc = new PanelController();
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (1 == 1) {}
+      if (_scrollController.position.pixels == 0) {
+        print("top");
+      } else {
+        print("bottom");
+      }
+    });
+    Car car = widget.car;
+    list = [
+      {"doc": 'assurance', "value": car.defaultAssurance, "isExpanded": false},
+      {
+        "doc": 'controle technique',
+        "value": car.defaultControle,
+        "isExpanded": false
+      },
+      {"doc": 'vignette', "value": car.defaultVignette, "isExpanded": false},
+      {
+        "doc": 'stationnement',
+        "value": car.defaultStationnement,
+        "isExpanded": false
+      },
+    ];
+  }
+
+  handlechange() {
+    print(_scrollController.position.maxScrollExtent >
+        _scrollController.position.pixels);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        title: Text(
+          '${widget.car.Nom}',
+          style: TextStyle(fontSize: 25),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -224,6 +252,7 @@ class _DetailsCarState extends State<DetailsCar> {
       ),
       body: SlidingUpPanel(
         controller: _pc,
+        parallaxOffset: .5,
         backdropOpacity: .5,
         backdropColor: Colors.black,
         borderRadius: BorderRadius.circular(20),
@@ -247,16 +276,19 @@ class _DetailsCarState extends State<DetailsCar> {
           ],
         ),
         body: ListView(
+          controller: _scrollController,
           physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.only(bottom: 20),
           children: [
-            Hero(
-                tag: widget.car.id,
-                child: Image.asset(
-                  "assets/epa.jpg",
-                  fit: BoxFit.cover,
-                  height: Get.height * .3,
-                  width: Get.width,
-                )),
+            SizedBox(width: Get.width, height: Get.height * .4, child: PageV()),
+            // Hero(
+            //     tag: widget.car.id,
+            //     child: Image.asset(
+            //       "assets/epa.jpg",
+            //       fit: BoxFit.cover,
+            //       height: Get.height * .3,
+            //       width: Get.width,
+            //     )),
             Container(
                 // color: Colors.blue,
                 height: 250,
@@ -273,9 +305,20 @@ class _DetailsCarState extends State<DetailsCar> {
                           onTap: () {},
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisSize: MainAxisSize.max,
                             children: [
                               // Text('$index'),
-                              Text(entry.key),
+                              Container(
+                                // color: Colors.red,
+                                child: Center(
+                                  child: Text(
+                                    entry.key,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
                               Text(entry.value)
                             ],
                           ),
@@ -287,10 +330,13 @@ class _DetailsCarState extends State<DetailsCar> {
             ExpansionPanelList(
               animationDuration: Duration(milliseconds: 1000),
               dividerColor: HexColor.fromHex("#000"),
+              expandedHeaderPadding: EdgeInsets.all(0),
+              elevation: 0,
               children: [
                 ...list
                     .map((e) => ExpansionPanel(
                           isExpanded: e["isExpanded"],
+                          canTapOnHeader: true,
                           body: actions(context, e['value']["file"]! as String),
                           backgroundColor:
                               e["isExpanded"] ? Colors.blue[50] : Colors.white,
@@ -301,6 +347,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                 ? Colors.blue[50]
                                 : Colors.white,
                             onTap: () {
+                              handlechange();
                               setState(() {
                                 e["isExpanded"] = !e["isExpanded"];
                               });
@@ -312,9 +359,7 @@ class _DetailsCarState extends State<DetailsCar> {
                     .toList(),
               ],
               expansionCallback: (int item, bool status) {
-                setState(() {
-                  print('LE monde est beau');
-                });
+                print('LE monde est beau');
               },
             )
           ],
