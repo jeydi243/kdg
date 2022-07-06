@@ -25,6 +25,7 @@ class _DetailsCarState extends State<DetailsCar> {
     "Brand": "Audi Q5",
     "Model": "Quatttro 2.0",
     "Year": "2009",
+    "Type carburant": "Essence",
     "Price": "\$\$\$",
   };
   List<Map<String, dynamic>> messages = [
@@ -132,7 +133,7 @@ class _DetailsCarState extends State<DetailsCar> {
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                     image:
-                        DecorationImage(image: AssetImage("assets/chat.png")),
+                        DecorationImage(image: AssetImage("assets/deux.jpg")),
                     borderRadius: BorderRadius.circular(5)),
                 height: 35,
                 child: Text(comment))
@@ -327,6 +328,20 @@ class _DetailsCarState extends State<DetailsCar> {
                     }),
                   ],
                 )),
+            Container(
+              padding: EdgeInsets.only(left: 10, bottom: 10),
+              child: Row(
+                children: [
+                  Text(
+                    "Documents",
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
             ExpansionPanelList(
               animationDuration: Duration(milliseconds: 1000),
               dividerColor: HexColor.fromHex("#000"),

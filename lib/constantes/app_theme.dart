@@ -59,6 +59,15 @@ class KDGTheme {
           dataRowColor: MaterialStateProperty.all(Colors.red),
           headingRowColor: MaterialStateProperty.all(AppColors.textDark)),
       textTheme: GoogleFonts.k2dTextTheme().copyWith(
+        bodyText1: TextStyle(
+          color: AppColors.textDark,
+        ),
+        bodyText2: TextStyle(
+          color: AppColors.textDark,
+        ),
+        subtitle1: TextStyle(
+          color: AppColors.textDark,
+        ),
         headline1: TextStyle(
             fontWeight: FontWeight.w100,
             color: AppColors.textDark,
