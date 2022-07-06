@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:swipe_deck/swipe_deck.dart';
-import 'package:vector_math/vector_math.dart' as math;
 
 class DetailsHouse extends StatefulWidget {
   DetailsHouse(
@@ -48,16 +46,6 @@ class _DetailsHouseState extends State<DetailsHouse> {
                         ))
                   ],
                 ),
-              );
-              return ClassicGeneralDialogWidget(
-                titleText: 'Title',
-                contentText: 'content',
-                onPositiveClick: () {
-                  Navigator.of(context).pop();
-                },
-                onNegativeClick: () {
-                  Navigator.of(context).pop();
-                },
               );
             },
             animationType: DialogTransitionType.size,

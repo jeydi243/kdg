@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/animations/fadein_fromleft.dart';
 import 'package:kdg/components/custom_grid.dart';
 import 'package:kdg/services/user_service.dart';

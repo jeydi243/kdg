@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kdg/components/blur.dart';
 import 'dart:math';
 
 class PageV extends StatefulWidget {

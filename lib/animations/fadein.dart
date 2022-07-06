@@ -29,7 +29,7 @@ class _FadeInState extends State<FadeIn> {
     return PlayAnimation<MultiTweenValues<AniProps>>(
         tween: tween,
         duration: tween.duration,
-        delay: widget.delay!.seconds,
+        delay: widget.delay.seconds,
         builder: (context, childe, value) {
           return Transform.translate(
               offset: value.get(AniProps.offset),

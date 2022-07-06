@@ -157,7 +157,8 @@ class UserService extends GetxController {
   Future<Map<String, dynamic>?> signInWithEmailAndPassword(
       String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
     } on FirebaseException catch (e, r) {
       return catchException(e, r);
     } finally {

@@ -27,7 +27,7 @@ class _FadeInLeftState extends State<FadeInLeft> {
     return PlayAnimation<MultiTweenValues<Props>>(
         tween: tween,
         duration: tween.duration,
-        delay: widget.delay!.seconds,
+        delay: widget.delay.seconds,
         builder: (context, childe, value) {
           return Transform.translate(
               offset: value.get(Props.offset),
