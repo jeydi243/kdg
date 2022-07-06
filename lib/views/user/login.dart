@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/constantes/helper.dart';
 import 'package:kdg/services/user_service.dart';
@@ -54,12 +55,20 @@ class _LoginState extends State<Login> {
                       FadeIn(
                         Text(
                           "Bienvenue",
-                          style: Get.textTheme.headline1,
+                          style: GoogleFonts.k2dTextTheme()
+                              .displayLarge!
+                              .copyWith(
+                                  color: Color.fromARGB(255, 0, 26, 46),
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.w700),
                         ),
                       ),
                       FadeIn(
                         Text("Ravis de te revoir",
-                            style: Get.textTheme.headline3),
+                            style: GoogleFonts.k2dTextTheme()
+                                .displayLarge!
+                                .copyWith(
+                                    fontSize: 30, fontWeight: FontWeight.w400)),
                       ),
                     ],
                   ),
@@ -170,7 +179,7 @@ class _LoginState extends State<Login> {
                                       // await userService.signInWithEmailAndPassword(
                                       //     email: _map['email'] as String,
                                       //     password: _map['password'] as String);
-                                      Get.to(Home());
+                                      Get.to(() => Home());
                                     } catch (e) {
                                       setState(() {
                                         isConnecting = !isConnecting;

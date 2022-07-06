@@ -1,12 +1,15 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/car.dart';
 import 'package:kdg/views/cars/details.dart';
 
 class CarItem extends StatefulWidget {
-  CarItem({Key? key, required this.item}) : super(key: key);
+  CarItem({Key? key, required this.item, this.color = Colors.white})
+      : super(key: key);
   final Car item;
+  Color color;
   @override
   _CarItemState createState() => _CarItemState();
 }
@@ -17,10 +20,10 @@ class _CarItemState extends State<CarItem> {
   void initState() {
     Car car = widget.item;
     list = [
-      {"doc": 'assurance', "value": car.assurance},
-      {"doc": 'controle', "value": car.assurance},
-      {"doc": 'vignette', "value": car.assurance},
-      {"doc": 'stationnement', "value": car.assurance},
+      {"doc": 'assurance', "value": car.defaultAssurance},
+      {"doc": 'controle', "value": car.defaultControle},
+      {"doc": 'vignette', "value": car.defaultVignette},
+      {"doc": 'stationnement', "value": car.defaultStationnement},
     ];
     super.initState();
   }
@@ -30,39 +33,51 @@ class _CarItemState extends State<CarItem> {
     Car car = widget.item;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Container(
-        // height: Get.height * .18,
-        // width: Get.width * .8,
-        child: ListTile(
+      child: OpenContainer(
+        transitionDuration: 1.seconds,
+        closedElevation: 0,
+        openBuilder: (context, action) {
+          return DetailsCar(car, action);
+          // return DetailsCar(car, action);
+        },
+        closedBuilder: (ctx, action) => ListTile(
           enableFeedback: true,
-          contentPadding: EdgeInsets.all(0),
-          leading: SizedBox(
-            height: Get.height * .07,
-            width: Get.height * .07,
-            child: OpenContainer(
-              transitionDuration: 1.seconds,
-              closedBuilder: (context, action) {
-                return Hero(
-                  tag: car.id,
-                  child: Image.asset(
-                    "assets/epa.jpg",
-                    fit: BoxFit.cover,
-                  ),
-                );
-              },
-              openBuilder: (context, action) {
-                return IndexCar(car);
-              },
-            ),
+          contentPadding: EdgeInsets.only(left: 10),
+          style: ListTileStyle.list,
+          tileColor: widget.color,
+          onTap: () {
+            action();
+          },
+          // leading: SizedBox(
+          //     height: Get.height * .07,
+          //     width: Get.height * .07,
+          //     child: Hero(
+          //       tag: car.id,
+          //       child: Image.asset(
+          //         "assets/epa.jpg",
+          //         fit: BoxFit.cover,
+          //       ),
+          //     )),
+          title: Text(
+            car.Nom.capitalizeFirst!,
+            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
           ),
-          title: Text(car.Nom.capitalizeFirst!),
-          trailing: IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert)),
+          subtitle: Text("Type carburant: ${car.type_carburant}"),
+          trailing: Column(
+            children: [
+              IconButton(
+                  onPressed: () => 1,
+                  icon: Icon(
+                    FontAwesomeIcons.check,
+                    color: Colors.green,
+                  )),
+              // Text(
+              //   'Ok',
+              //   style: TextStyle(fontSize: 10),
+              // )
+            ],
+          ),
         ),
-        // padding: EdgeInsets.only(left: 10, top: 10),
-        decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.white,
-            border: Border(left: BorderSide(color: Colors.amber, width: 2))),
       ),
     );
   }

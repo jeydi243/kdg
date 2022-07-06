@@ -20,6 +20,8 @@ class _ProfileState extends State<Profile> {
         extendBodyBehindAppBar: true,
         extendBody: true,
         appBar: AppBar(
+          foregroundColor: Colors.transparent,
+
           actions: [
             // DropdownButton(items: items, onChanged: onChanged),
             Padding(
@@ -48,6 +50,8 @@ class _ProfileState extends State<Profile> {
             ),
           ],
           backgroundColor: Colors.transparent,
+          elevation: 0,
+
         ),
         body: Column(
           children: [
@@ -56,21 +60,28 @@ class _ProfileState extends State<Profile> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage("assets/epa.jpg"),
-                    radius: 60,
-                    // child: DropdownButton(
-                    //     items: ['Modifier le Profil']
-                    //         .map<DropdownMenuItem<String>>((String value) {
-                    //   return DropdownMenuItem<String>(
-                    //     value: value,
-                    //     child: Text(value),
-                    //   );
-                    // }).toList()),
+                  Hero(
+                    tag: "Profil",
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage("assets/epa.jpg"),
+                      radius: 60,
+                      // child: DropdownButton(
+                      //     items: ['Modifier le Profil']
+                      //         .map<DropdownMenuItem<String>>((String value) {
+                      //   return DropdownMenuItem<String>(
+                      //     value: value,
+                      //     child: Text(value),
+                      //   );
+                      // }).toList()),
+                    ),
                   ),
                   Text(
                     'Kadiongo ilunga',
                     style: Get.textTheme.titleLarge,
+                  ),
+                  Text(
+                    '@_.jeydi',
+                    style: Get.textTheme.bodyText1,
                   ),
                   Row(
                     children: [

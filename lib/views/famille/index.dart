@@ -24,80 +24,82 @@ class _IndexFamilleState extends State<IndexFamille> {
     ];
     return Scaffold(
       backgroundColor: HexColor.fromHex("FDF8F8"),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: Get.height * .4,
-              actions: [
-                IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
-              ],
-              stretch: true,
-              backgroundColor: HexColor.fromHex("FDF8F8"),
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: Get.height * .4,
+            actions: [
+              IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
+            ],
+            stretch: true,
+            backgroundColor: HexColor.fromHex("FDF8F8"),
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              title: Hero(
+                transitionOnUserGestures: true,
+                tag: "title${widget.item['text']}",
+                child: Text(
                     "${(widget.item['collection'] as String).capitalizeFirst}"),
-                stretchModes: [
-                  StretchMode.blurBackground,
-                  StretchMode.fadeTitle
-                ],
-                background: GestureDetector(
-                  onVerticalDragEnd: (gf) {
-                    Logger().i(gf);
-                    Navigator.pop(context);
-                  },
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                    child: Stack(children: [
-                      Hero(
-                        tag: widget.item['imgsrc'],
-                        child: Image.asset(
-                          widget.item['imgsrc'],
-                          fit: BoxFit.cover,
-                          height: Get.height * .45,
-                          width: double.infinity,
-                        ),
+              ),
+              stretchModes: [
+                StretchMode.blurBackground,
+                StretchMode.fadeTitle
+              ],
+              background: GestureDetector(
+                onVerticalDragEnd: (gf) {
+                  Logger().i(gf);
+                  Navigator.pop(context);
+                },
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                  child: Stack(children: [
+                    Hero(
+                      tag: widget.item['imgsrc'],
+                      child: Image.asset(
+                        widget.item['imgsrc'],
+                        fit: BoxFit.cover,
+                        height: Get.height * .45,
+                        width: double.infinity,
                       ),
-                      Align(
-                        alignment: Alignment(0, 1),
-                        child: Container(
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment(0, 1),
-                                  end: Alignment(0, -1),
-                                  colors: [
-                                Colors.blue.withOpacity(0.2),
-                                Colors.transparent
-                              ])),
-                        ),
+                    ),
+                    Align(
+                      alignment: Alignment(0, 1),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment(0, 1),
+                                end: Alignment(0, -1),
+                                colors: [
+                              Colors.blue.withOpacity(0.2),
+                              Colors.transparent
+                            ])),
                       ),
-                    ]),
-                  ),
+                    ),
+                  ]),
                 ),
               ),
             ),
-            SliverAnimatedList(
-              // delegate: SliverChildBuilderDelegate(
-              //   (ctx, index) {
-              //     print(listVehicules);
-              //     return CarItem(item: listVehicules[index]);
-              //   },
-              //   childCount: listVehicules.length,
-              // ),
-              initialItemCount: map.length,
-              itemBuilder: (ctx, int index, Animation<double> animation) {
-                return CardItem(
-                  animation: animation,
-                  item: index,
-                );
-              },
-            )
-          ],
-        ),
+          ),
+          SliverAnimatedList(
+            // delegate: SliverChildBuilderDelegate(
+            //   (ctx, index) {
+            //     print(listVehicules);
+            //     return CarItem(item: listVehicules[index]);
+            //   },
+            //   childCount: listVehicules.length,
+            // ),
+            initialItemCount: map.length,
+            itemBuilder: (ctx, int index, Animation<double> animation) {
+              return CardItem(
+                animation: animation,
+                item: index,
+              );
+            },
+          )
+        ],
       ),
     );
   }

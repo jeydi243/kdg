@@ -6,10 +6,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
 import 'package:kdg/views/user/login.dart';
-
+import 'package:palette_generator/palette_generator.dart';
+import '../models/car.dart';
 import '../models/rapport.dart';
 import '../views/home.dart';
 
@@ -155,12 +157,20 @@ class UserService extends GetxController {
   Future<Map<String, dynamic>?> signInWithEmailAndPassword(
       String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
     } on FirebaseException catch (e, r) {
       return catchException(e, r);
     } finally {
       update();
     }
+  }
+
+  ff() async {
+    final ref = firestore.collection("cities").doc("LA").withConverter(
+          fromFirestore: Car.fromFirestore,
+          toFirestore: (Car car, _) => car.toFirestore(),
+        );
   }
 
   void showSnackBar(String title, {required String message}) {
@@ -264,6 +274,13 @@ class UserService extends GetxController {
     } on FirebaseException catch (e, r) {
       return catchException(e, r);
     }
+  }
+
+  Future<Color> domColor(String path) async {
+    var paletteGenerator = await PaletteGenerator.fromImageProvider(
+      Image.asset(path).image,
+    );
+    return paletteGenerator.dominantColor!.color;
   }
 
   Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> form) async {

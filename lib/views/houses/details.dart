@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:swipe_deck/swipe_deck.dart';
-import 'package:vector_math/vector_math.dart' as math;
 
 class DetailsHouse extends StatefulWidget {
   DetailsHouse(
@@ -20,6 +18,8 @@ class _DetailsHouseState extends State<DetailsHouse> {
 
   @override
   Widget build(BuildContext context) {
+    BoxDecoration _rowsdecoration = BoxDecoration(
+        border: Border(right: BorderSide(color: Colors.amber, width: 2)));
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -33,6 +33,7 @@ class _DetailsHouseState extends State<DetailsHouse> {
                 borderRadius: BorderRadius.circular(5),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                         decoration: BoxDecoration(
@@ -46,16 +47,6 @@ class _DetailsHouseState extends State<DetailsHouse> {
                   ],
                 ),
               );
-              return ClassicGeneralDialogWidget(
-                titleText: 'Title',
-                contentText: 'content',
-                onPositiveClick: () {
-                  Navigator.of(context).pop();
-                },
-                onNegativeClick: () {
-                  Navigator.of(context).pop();
-                },
-              );
             },
             animationType: DialogTransitionType.size,
             curve: Curves.fastOutSlowIn,
@@ -64,42 +55,53 @@ class _DetailsHouseState extends State<DetailsHouse> {
         },
         child: Icon(Icons.add),
       ),
-      body: Column(children: [
-        SwipeDeck(
-          // aspectRatio: 16 / 9,
-          widgets: [
-            ...images
-                .map<Widget>((name) => ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.asset(
-                      name,
-                      fit: BoxFit.contain,
-                      height: 200,
-                      width: 100,
-                    )))
-                .toList()
-          ],
-        ),
-        Table(
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TableRow(
-                decoration: BoxDecoration(
-                    border: Border(
-                        left: BorderSide(color: Colors.amber, width: 3))),
-                children: [Text('Locataire'), Text('Le mondes')]),
-            TableRow(
-                decoration: BoxDecoration(
-                    border: Border(
-                        left: BorderSide(color: Colors.amber, width: 3))),
-                children: [Text('Locataire'), Text('Le mondes')]),
-            TableRow(
-                decoration: BoxDecoration(
-                    border: Border(
-                        left: BorderSide(color: Colors.amber, width: 3))),
-                children: [Text('Locataire'), Text('Le mondes')]),
-          ],
-        )
-      ]),
+            SwipeDeck(
+              cardSpreadInDegrees: 10,
+              emptyIndicator: Container(),
+              aspectRatio: 1,
+              widgets: [
+                ...images
+                    .map<Widget>((name) => ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: SizedBox(
+                          height: 200,
+                          width: 70,
+                          child: Image.asset(
+                            name,
+                            fit: BoxFit.cover,
+                            height: 200,
+                            width: 70,
+                          ),
+                        )))
+                    .toList()
+              ],
+            ),
+            Table(
+              border: TableBorder(right: BorderSide(color: Colors.black26)),
+              children: [
+                TableRow(children: [
+                  TableCell(child: Text('Locataire')),
+                  TableCell(child: Text('Le mondes'))
+                ]),
+                TableRow(children: [
+                  TableCell(child: Text('Last payed')),
+                  TableCell(child: Text('Janvier'))
+                ]),
+                TableRow(children: [
+                  TableCell(child: Text('Adresse')),
+                  TableCell(child: Text('Le mondes'))
+                ]),
+                TableRow(children: [
+                  TableCell(child: Text('Facts')),
+                  TableCell(child: Text('Le mondes'))
+                ]),
+              ],
+            )
+          ]),
     );
   }
 }

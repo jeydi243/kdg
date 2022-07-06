@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kdg/components/viewerpdf.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/cars/item.dart';
 import 'package:logger/logger.dart';
+import '../../models/car.dart';
 
 class IndexCar extends StatefulWidget {
   IndexCar({Key? key, required this.item}) : super(key: key);
@@ -14,10 +16,11 @@ class IndexCar extends StatefulWidget {
 
 class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
   late AnimationController controller;
-
+  CarService carservice = Get.find();
   @override
   void initState() {
     controller = AnimationController(vsync: this, duration: 1.seconds);
+
     super.initState();
   }
 
@@ -29,18 +32,30 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    CarService carservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex("FDF8F8"),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Get.dialog(Center(
+            //     child: SizedBox(
+            //         height: 20,
+            //         width: 20,
+            //         child: CircularProgressIndicator(
+            //           strokeWidth: 2,
+            //         ))));
+            Get.to(() => ViewerPDF());
+          },
+          child: Icon(Icons.add)),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
             expandedHeight: Get.height * .4,
+            toolbarHeight: Get.height * .05,
             actions: [
               IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
             ],
             stretch: true,
-            collapsedHeight: Get.height * .35,
+            collapsedHeight: Get.height * .05,
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
@@ -91,12 +106,26 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
           ),
           SliverAnimatedList(
             initialItemCount: carservice.cars.length,
-            itemBuilder: (BuildContext context, int i, Animation<double> an) {
+            itemBuilder: (ctx, int i, Animation<double> an) {
+              // if (10) {
+              // return Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              //   child: Container(
+              //     width: Get.width * .8,
+              //     height: 60,
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(10),
+              //       color: Colors.accents[i % Colors.accents.length],
+              //     ),
+              //     child: Text('$i '),
+              //   ),
+              // );
+              // }
               return CarItem(
                 item: carservice.cars[i],
               );
             },
-          )
+          ),
         ],
       ),
     );
