@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/components/pageV.dart';
@@ -7,6 +11,7 @@ import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.car, this.action, {Key? key}) : super(key: key);
@@ -19,6 +24,7 @@ class DetailsCar extends StatefulWidget {
 class _DetailsCarState extends State<DetailsCar> {
   late List<Map<String, dynamic>> list;
   late ScrollController _scrollController;
+  final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
   PanelController _pc = new PanelController();
   Map<String, dynamic> infos = {
     "Color": "Brown",
@@ -28,87 +34,87 @@ class _DetailsCarState extends State<DetailsCar> {
     "Type carburant": "Essence",
     "Price": "\$\$\$",
   };
-  List<Map<String, dynamic>> messages = [
-    {
-      "sender": "KDG19",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Jeydi243",
-      "comment":
-          "Hello, how are you? Nostrud dolor adipisicing fugiat ut officia laboris tempor aliqua pariatur ex ea nostrud ipsum irure.",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Logan Bowen",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now(),
-      "img": null
-    },
-    {
-      "sender": "Randall Harris",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Sadie Dean",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now(),
-      "link": "http://gesal.no/kufufhet"
-    },
-    {
-      "sender": "Tony Jones",
-      "comment": "Hello, how are you?",
-      "img": "assets/rapport.jpg",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Violet Atkins",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Olivia Daniel",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Bernard Ingram",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Mildred Marshall",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Josephine Foster",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Adelaide Turner",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Charlie Thomas",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    },
-    {
-      "sender": "Jerry Griffith",
-      "comment": "Hello, how are you?",
-      "date": DateTime.now()
-    }
+  List<types.Message> messages = [
+    // {
+    //   "sender": "KDG19",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Jeydi243",
+    //   "comment":
+    //       "Hello, how are you? Nostrud dolor adipisicing fugiat ut officia laboris tempor aliqua pariatur ex ea nostrud ipsum irure.",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Logan Bowen",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now(),
+    //   "img": null
+    // },
+    // {
+    //   "sender": "Randall Harris",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Sadie Dean",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now(),
+    //   "link": "http://gesal.no/kufufhet"
+    // },
+    // {
+    //   "sender": "Tony Jones",
+    //   "comment": "Hello, how are you?",
+    //   "img": "assets/rapport.jpg",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Violet Atkins",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Olivia Daniel",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Bernard Ingram",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Mildred Marshall",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Josephine Foster",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Adelaide Turner",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Charlie Thomas",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // },
+    // {
+    //   "sender": "Jerry Griffith",
+    //   "comment": "Hello, how are you?",
+    //   "date": DateTime.now()
+    // }
   ];
   Widget chat(String sender, String comment, DateTime date,
       {String? img, String? link}) {
     return Container(
       width: Get.width,
-      height: 60,
+      height: img == null ? 60 : 160,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -131,12 +137,12 @@ class _DetailsCarState extends State<DetailsCar> {
                 margin: EdgeInsets.only(left: 5),
                 width: Get.width,
                 padding: EdgeInsets.only(left: 5),
-                decoration: BoxDecoration(
-                    image:
-                        DecorationImage(image: AssetImage("assets/deux.jpg")),
-                    borderRadius: BorderRadius.circular(5)),
                 height: 35,
-                child: Text(comment))
+                child: Column(
+                  children: [
+                    Text(comment),
+                  ],
+                ))
           ]),
     );
   }
@@ -198,6 +204,12 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
+  String randomString() {
+    final random = Random.secure();
+    final values = List<int>.generate(16, (i) => random.nextInt(255));
+    return base64UrlEncode(values);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -230,6 +242,23 @@ class _DetailsCarState extends State<DetailsCar> {
   handlechange() {
     print(_scrollController.position.maxScrollExtent >
         _scrollController.position.pixels);
+  }
+
+  void _addMessage(types.Message message) {
+    setState(() {
+      messages.insert(0, message);
+    });
+  }
+
+  void _handleSendPressed(types.PartialText message) {
+    final textMessage = types.TextMessage(
+      author: _user,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: randomString(),
+      text: message.text,
+    );
+
+    _addMessage(textMessage);
   }
 
   @override
@@ -271,9 +300,17 @@ class _DetailsCarState extends State<DetailsCar> {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           children: [
             Text("This is the sliding Widget"),
-            ...messages
-                .map<Widget>((e) => chat(e['sender'], e['comment'], e['date']))
-                .toList()
+            Expanded(
+              child: Chat(
+                hideBackgroundOnEmojiMessages: true,
+                messages: messages,
+                onSendPressed: _handleSendPressed,
+                user: _user,
+              ),
+            ),
+            // ...messages
+            //     .map<Widget>((e) => chat(e['sender'], e['comment'], e['date']))
+            //     .toList()
           ],
         ),
         body: ListView(
