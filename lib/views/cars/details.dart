@@ -6,6 +6,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/components/pageV.dart';
+import 'package:kdg/constantes/values.dart';
 import 'package:kdg/models/car.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
@@ -331,26 +332,33 @@ class _DetailsCarState extends State<DetailsCar> {
                         .mapIndexed<Widget>((index, entry) {
                       return Container(
                         height: 35,
-                        color: index % 2 == 0 ? Colors.white : Colors.blue[50],
+                        color: index % 2 == 0
+                            ? Colors.transparent
+                            : Colors.blue[50],
                         child: InkWell(
                           onTap: () {},
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              // Text('$index'),
-                              Container(
-                                // color: Colors.red,
-                                child: Center(
-                                  child: Text(
-                                    entry.key,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
-                                  ),
-                                ),
+                              Text(
+                                entry.key,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: index % 2 != 0
+                                        ? AppColors.textDark
+                                        : Colors.blue[50],
+                                    fontSize: 15),
                               ),
-                              Text(entry.value)
+                              Text(
+                                entry.value,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: index % 2 != 0
+                                        ? AppColors.textDark
+                                        : Colors.blue[50],
+                                    fontSize: 15),
+                              )
                             ],
                           ),
                         ),
@@ -372,40 +380,45 @@ class _DetailsCarState extends State<DetailsCar> {
                 ],
               ),
             ),
-            ExpansionPanelList(
-              animationDuration: Duration(milliseconds: 1000),
-              dividerColor: HexColor.fromHex("#000"),
-              expandedHeaderPadding: EdgeInsets.all(0),
-              elevation: 0,
-              children: [
-                ...list
-                    .map((e) => ExpansionPanel(
-                          isExpanded: e["isExpanded"],
-                          canTapOnHeader: true,
-                          body: actions(context, e['value']["file"]! as String),
-                          backgroundColor:
-                              e["isExpanded"] ? Colors.blue[50] : Colors.white,
-                          headerBuilder: (ctx, bool isExpanded) => ListTile(
-                            enableFeedback: true,
-                            iconColor: Colors.blue,
-                            tileColor: e["isExpanded"]
+            Container(
+              padding: EdgeInsets.only(bottom: 250),
+              child: ExpansionPanelList(
+                animationDuration: Duration(milliseconds: 1000),
+                dividerColor: HexColor.fromHex("#000"),
+                expandedHeaderPadding: EdgeInsets.all(0),
+                elevation: 0,
+                children: [
+                  ...list
+                      .map((e) => ExpansionPanel(
+                            isExpanded: e["isExpanded"],
+                            canTapOnHeader: true,
+                            body:
+                                actions(context, e['value']["file"]! as String),
+                            backgroundColor: e["isExpanded"]
                                 ? Colors.blue[50]
-                                : Colors.white,
-                            onTap: () {
-                              handlechange();
-                              setState(() {
-                                e["isExpanded"] = !e["isExpanded"];
-                              });
-                            },
-                            title:
-                                Text("${(e['doc'] as String).capitalizeFirst}"),
-                          ),
-                        ))
-                    .toList(),
-              ],
-              expansionCallback: (int item, bool status) {
-                print('LE monde est beau');
-              },
+                                : Colors.transparent,
+                            headerBuilder: (ctx, bool isExpanded) => ListTile(
+                              enableFeedback: true,
+                              iconColor: Colors.blue,
+                              tileColor: e["isExpanded"]
+                                  ? Colors.blue[50]
+                                  : Colors.transparent,
+                              onTap: () {
+                                handlechange();
+                                setState(() {
+                                  e["isExpanded"] = !e["isExpanded"];
+                                });
+                              },
+                              title: Text(
+                                  "${(e['doc'] as String).capitalizeFirst}"),
+                            ),
+                          ))
+                      .toList(),
+                ],
+                expansionCallback: (int item, bool status) {
+                  Get.snackbar("Title $item", "Message $status");
+                },
+              ),
             )
           ],
         ),

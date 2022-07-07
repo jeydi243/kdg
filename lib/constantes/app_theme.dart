@@ -130,8 +130,14 @@ class KDGTheme {
           secondary: AppColors.accent,
           error: AppColors.error,
           primary: AppColors.primary,
+          surface: Colors.limeAccent,
+          onPrimary: Colors.white,
+          background: Colors.amber,
+          primaryContainer: AppColors.backgroundDark,
+
+          onSurface: Colors.white,
           shadow: Color.fromARGB(255, 252, 252, 252),
-          brightness: Brightness.dark),
+          brightness: Brightness.light),
       primaryColorDark: AppColors.primary[900],
       tabBarTheme: TabBarTheme(
           indicatorSize: TabBarIndicatorSize.tab,
@@ -146,10 +152,13 @@ class KDGTheme {
       dividerColor: AppColors.primary,
       inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: AppColors.accent,
-          focusColor: AppColors.accent,
+          fillColor: Colors.amber[50]!.withOpacity(.3),
+          // focusColor: AppColors.accent,
           isDense: true,
-          labelStyle: TextStyle(color: AppColors.textDark),
+          contentPadding: EdgeInsets.all(5),
+          alignLabelWithHint: true,
+          labelStyle:
+              TextStyle(color: AppColors.text, fontStyle: FontStyle.italic),
           hintStyle: GoogleFonts.k2d(color: AppColors.textDark),
           helperStyle: TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
           focusedErrorBorder: UnderlineInputBorder(
@@ -200,12 +209,15 @@ class KDGTheme {
             color: AppColors.primary,
             fontWeight: FontWeight.normal),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: AppColors.backgroundDark, elevation: 10),
       buttonTheme: theme.buttonTheme.copyWith(
         minWidth: 50,
+        textTheme: ButtonTextTheme.primary,
+        disabledColor: HexColor.fromHex("#1CBFE2"),
         buttonColor: AppColors.primary,
       ),
-      iconTheme:
-          theme.iconTheme.copyWith(color: AppColors.backgroundDark, size: 24),
+      iconTheme: theme.iconTheme.copyWith(color: AppColors.accent, size: 24),
       primaryIconTheme: IconThemeData(color: AppColors.accent, size: 24),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(

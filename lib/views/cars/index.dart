@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/components/viewerpdf.dart';
+import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/cars/item.dart';
 import 'package:logger/logger.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:supercharged/supercharged.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class IndexCar extends StatefulWidget {
   IndexCar({Key? key, required this.item}) : super(key: key);
@@ -49,7 +52,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
         controller: _pc,
         // parallaxOffset: .5,
         backdropOpacity: .5,
-        backdropColor: Colors.black,
+        backdropColor: Colors.white,
         borderRadius: BorderRadius.circular(20),
         defaultPanelState: PanelState.CLOSED,
         backdropTapClosesPanel: true,
@@ -59,25 +62,168 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
         isDraggable: true,
         minHeight: 0,
         backdropEnabled: true,
-        panel: ListView(padding: EdgeInsets.all(0), children: [
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        panel: SafeArea(
+          child: Container(
+            color: AppColors.backgroundDark,
+            child: ListView(padding: EdgeInsets.all(0), children: [
+              Container(
+                padding: EdgeInsets.only(left: 10),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Ajouter un véhicule',
+                        style: Get.textTheme.headline3!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            _pc.close();
+                          },
+                          icon: Icon(Icons.close))
+                    ]),
+              ),
+              Form(
+                  child: Column(
                 children: [
-                  Text(
-                    'Ajouter un véhicule',
-                    style: Get.textTheme.headline3!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        _pc.close();
+                  Container(
+                    width: Get.width * .95,
+                    padding: EdgeInsets.only(bottom: 5),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Nom',
+                      ),
+                      onChanged: (value) {
+                        var e = value;
                       },
-                      icon: Icon(Icons.close))
-                ]),
-          )
-        ]),
+                    ),
+                  ),
+                  Container(
+                    width: Get.width * .95,
+                    padding: EdgeInsets.only(bottom: 5),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Model',
+                      ),
+                      onChanged: (value) {
+                        var e = value;
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: Get.width * .95,
+                    padding: EdgeInsets.only(bottom: 5),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Type de carburant',
+                      ),
+                      onChanged: (value) {
+                        var e = value;
+                      },
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      DateTime? echeanceAssurance = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate:
+                              DateTime.now().subtract(Duration(days: 60)),
+                          lastDate: DateTime.now().add(Duration(days: 365)));
+                    },
+                    child: Container(
+                      width: Get.width * .95,
+                      padding: EdgeInsets.only(bottom: 5),
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.calendar_month),
+                          labelText: 'Date echance Assurance',
+                        ),
+                        onChanged: (value) {
+                          var e = value;
+                        },
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      DateTime? echeanceControleTech = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate:
+                              DateTime.now().subtract(Duration(days: 60)),
+                          lastDate: DateTime.now().add(Duration(days: 365)));
+                    },
+                    child: Container(
+                      width: Get.width * .95,
+                      padding: EdgeInsets.only(bottom: 5),
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.calendar_month),
+                          labelText: 'Date echance Controle Technique',
+                        ),
+                        onChanged: (value) {
+                          var e = value;
+                        },
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      DateTime? echeanceControleTech = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate:
+                              DateTime.now().subtract(Duration(days: 60)),
+                          lastDate: DateTime.now().add(Duration(days: 365)));
+                    },
+                    child: Container(
+                      width: Get.width * .95,
+                      padding: EdgeInsets.only(bottom: 5),
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.calendar_month),
+                          labelText: 'Date echéance Stationnement',
+                        ),
+                        onChanged: (value) {
+                          var e = value;
+                        },
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      DateTime? echeanceVignette = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate:
+                              DateTime.now().subtract(Duration(days: 60)),
+                          lastDate: DateTime.now().add(Duration(days: 365)));
+                    },
+                    child: Container(
+                      width: Get.width * .95,
+                      padding: EdgeInsets.only(bottom: 5),
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.calendar_month),
+                          labelText: 'Date echéance Vignette',
+                        ),
+                        onChanged: (value) {
+                          var e = value;
+                        },
+                      ),
+                    ),
+                  ),
+                  // SfDateRangePicker()
+                ],
+              ))
+            ]),
+          ),
+        ),
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(

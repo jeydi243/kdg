@@ -121,9 +121,9 @@ class _IndexHouseState extends State<IndexHouse> {
                     },
                     closedBuilder: (context, void Function() action) {
                       return Container(
-                        margin: EdgeInsets.symmetric(vertical: 15),
+                        padding: EdgeInsets.symmetric(vertical: 15),
                         width: Get.width * .70,
-                        color: Colors.teal,
+                        color: Colors.blue[50],
                         height: 45,
                         child: InkWell(
                           onTap: action,

@@ -88,13 +88,9 @@ class _LoginState extends State<Login> {
                               onSaved: (newValue) => _map['email'] = newValue!,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                  hintText: "Email@email.com",
-                                  
-                                  labelText: "Email",
-                                  alignLabelWithHint: true,
-                                  focusColor: Colors.grey[200],
-                                  filled: true,
-                                  fillColor: Colors.grey[200]),
+                                hintText: "Email@email.com",
+                                labelText: "Email",
+                              ),
                             ),
                           ),
                         ),
@@ -117,22 +113,18 @@ class _LoginState extends State<Login> {
                               onSaved: (newValue) =>
                                   _map['password'] = newValue!,
                               decoration: InputDecoration(
-                                  isDense: true,
-                                  hintText: "********",
-                                  labelText: "Mot de passe",
-                                  alignLabelWithHint: true,
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _obscureText = !_obscureText;
-                                        });
-                                      },
-                                      icon: Icon(_obscureText
-                                          ? Icons.lock
-                                          : Icons.lock_open)),
-                                  focusColor: Colors.grey[200],
-                                  filled: true,
-                                  fillColor: Colors.grey[200]),
+                                hintText: "********",
+                                labelText: "Mot de passe",
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText;
+                                      });
+                                    },
+                                    icon: Icon(_obscureText
+                                        ? Icons.lock
+                                        : Icons.lock_open)),
+                              ),
                               obscureText: _obscureText,
                             ),
                           ),
@@ -155,9 +147,8 @@ class _LoginState extends State<Login> {
                           MaterialButton(
                               minWidth: Get.width * .9,
                               color: HexColor.fromHex("#1CBFE2"),
-                              textColor: Colors.white,
+                              
                               highlightElevation: 5,
-                              disabledColor: HexColor.fromHex("#1CBFE2"),
                               elevation: 10,
                               onPressed: () async {
                                 setState(() {
