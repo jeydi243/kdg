@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:kdg/animations/fadein_fromleft.dart';
 import 'package:kdg/components/custom_grid.dart';
 import 'package:kdg/services/user_service.dart';
+import 'package:secure_application/secure_gate.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -19,25 +20,20 @@ class _HomeState extends State<Home> {
         extendBodyBehindAppBar: false,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
           centerTitle: false,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FadeInLeft(
-                Text("Hi, ${us.userKDG?.nom ?? 'Kadiongo Ilunga'}",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
+                Text(
+                  "Hi, ${us.userKDG?.nom ?? 'Kadiongo Ilunga'}",
+                ),
                 delay: .3,
               ),
               FadeInLeft(
-                Text(us.currentUser?.email ?? 'ilungakadiongo@gmail.com',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal)),
+                Text(
+                  us.currentUser?.email ?? 'ilungakadiongo@gmail.com',
+                ),
                 delay: .6,
               )
             ],
@@ -69,6 +65,22 @@ class _HomeState extends State<Home> {
                 delay: .9)
           ],
         ),
-        body: CustomGrid());
+        body: SecureGate(
+            blurr: 10,
+            lockedBuilder: (context, secure) => Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                      child: Text('UNLOCK'),
+                      onPressed: () => secure?.authSuccess(unlock: true),
+                    ),
+                    ElevatedButton(
+                      child: Text('FAIL AUTHENTICATION'),
+                      onPressed: () => secure?.authFailed(unlock: true),
+                    ),
+                  ],
+                )),
+            child: CustomGrid()));
   }
 }

@@ -29,7 +29,7 @@ class _DetailsCarState extends State<DetailsCar> {
   Map<String, dynamic> infos = {
     "Color": "Brown",
     "Brand": "Audi Q5",
-    "Model": "Quatttro 2.0",
+    "Model": "Quattro 2.0",
     "Year": "2009",
     "Type carburant": "Essence",
     "Price": "\$\$\$",
@@ -267,7 +267,7 @@ class _DetailsCarState extends State<DetailsCar> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          '${widget.car.Nom}',
+          '${widget.car.Nom.capitalizeFirst}',
           style: TextStyle(fontSize: 25),
         ),
       ),
@@ -294,39 +294,32 @@ class _DetailsCarState extends State<DetailsCar> {
         isDraggable: true,
         minHeight: 0,
         backdropEnabled: true,
-        panel: ListView(
-          physics: BouncingScrollPhysics(),
-          cacheExtent: 150,
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          children: [
-            Text("This is the sliding Widget"),
-            Expanded(
-              child: Chat(
-                hideBackgroundOnEmojiMessages: true,
-                messages: messages,
-                onSendPressed: _handleSendPressed,
-                user: _user,
-              ),
-            ),
-            // ...messages
-            //     .map<Widget>((e) => chat(e['sender'], e['comment'], e['date']))
-            //     .toList()
-          ],
+        panel: Chat(
+          hideBackgroundOnEmojiMessages: true,
+          messages: messages,
+          onSendPressed: _handleSendPressed,
+          user: _user,
         ),
         body: ListView(
           controller: _scrollController,
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(bottom: 20),
           children: [
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: Row(
+                children: [
+                  Text(
+                    "Gallerie",
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(width: Get.width, height: Get.height * .4, child: PageV()),
-            // Hero(
-            //     tag: widget.car.id,
-            //     child: Image.asset(
-            //       "assets/epa.jpg",
-            //       fit: BoxFit.cover,
-            //       height: Get.height * .3,
-            //       width: Get.width,
-            //     )),
             Container(
                 // color: Colors.blue,
                 height: 250,

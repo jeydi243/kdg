@@ -51,8 +51,7 @@ class _PageVState extends State<PageV> {
 
           return Container(
             height: double.infinity,
-            padding:
-                EdgeInsets.only(right: 20.0, top: 40 - scale * 5, bottom: 20),
+            padding: EdgeInsets.only(right: 20.0, bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: SizedBox(

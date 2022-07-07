@@ -146,6 +146,11 @@ class KDGTheme {
       dividerColor: AppColors.primary,
       inputDecorationTheme: InputDecorationTheme(
           filled: true,
+          fillColor: AppColors.accent,
+          focusColor: AppColors.accent,
+          isDense: true,
+          labelStyle: TextStyle(color: AppColors.textDark),
+          hintStyle: GoogleFonts.k2d(color: AppColors.textDark),
           helperStyle: TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
           focusedErrorBorder: UnderlineInputBorder(
               borderSide:
@@ -155,16 +160,31 @@ class KDGTheme {
                   BorderSide(style: BorderStyle.solid, color: AppColors.error)),
           errorStyle: TextStyle(color: AppColors.error, fontSize: 10)),
       appBarTheme: theme.appBarTheme.copyWith(
-        color: AppColors.text,
-        iconTheme: IconThemeData(color: Colors.black),
+        color: AppColors.backgroundDark,
+        // backgroundColor: AppColors.backgroundDark,
+        iconTheme: IconThemeData(color: AppColors.accent),
         titleTextStyle: GoogleFonts.k2d(
           color: AppColors.primary,
-          fontSize: 19,
+          fontSize: 15,
         ),
       ),
       textTheme: GoogleFonts.k2dTextTheme().copyWith(
-        headline1: TextStyle(
-            fontWeight: FontWeight.w100, color: AppColors.text, fontSize: 30),
+        bodyText1: TextStyle(
+          color: AppColors.text,
+        ),
+        bodyText2: TextStyle(
+          color: AppColors.text,
+        ),
+        subtitle1: TextStyle(
+          color: AppColors.text,
+        ),
+        subtitle2: TextStyle(
+          color: AppColors.text,
+        ),
+        headline1: GoogleFonts.k2d(
+            fontWeight: FontWeight.w100,
+            color: AppColors.primary,
+            fontSize: 30),
         headline2: TextStyle(
             fontWeight: FontWeight.w200, color: AppColors.text, fontSize: 26),
         headline3: TextStyle(

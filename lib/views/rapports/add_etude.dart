@@ -75,7 +75,9 @@ class _AddEtudeState extends State<AddEtude> {
                           children: [
                             TableRow(decoration: BoxDecoration(), children: [
                               Container(
-                                  height: 35, child: Text("Nom de l'étude")),
+                                  // color: Colors.red,
+                                  height: 35,
+                                  child: Text("Nom")),
                               Container(
                                 // width: Get.width * .8,
                                 height: 35,
@@ -120,6 +122,7 @@ class _AddEtudeState extends State<AddEtude> {
                       },
                       minWidth: Get.width * .9,
                       textColor: Colors.blue,
+                      enableFeedback: true,
                       color: AppColors.backgroundDark,
                       child: Text('Ajouter'),
                     )

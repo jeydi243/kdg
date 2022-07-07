@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/custom_image.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:logger/logger.dart';
 

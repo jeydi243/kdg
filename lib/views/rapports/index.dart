@@ -116,7 +116,7 @@ class _IndexRapportState extends State<IndexRapport> {
                       child: Image.asset(
                         widget.item['imgsrc'],
                         fit: BoxFit.cover,
-                        height: Get.height * .45,
+                        height: Get.height * .40,
                         width: double.infinity,
                       ),
                     ),

@@ -55,20 +55,14 @@ class _LoginState extends State<Login> {
                       FadeIn(
                         Text(
                           "Bienvenue",
-                          style: GoogleFonts.k2dTextTheme()
-                              .displayLarge!
-                              .copyWith(
-                                  color: Color.fromARGB(255, 0, 26, 46),
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.w700),
+                          style: Get.textTheme.headline1!.copyWith(
+                              fontSize: 40, fontWeight: FontWeight.bold),
                         ),
                       ),
                       FadeIn(
                         Text("Ravis de te revoir",
-                            style: GoogleFonts.k2dTextTheme()
-                                .displayLarge!
-                                .copyWith(
-                                    fontSize: 30, fontWeight: FontWeight.w400)),
+                            style: Get.textTheme.headline2!
+                                .copyWith(fontWeight: FontWeight.w300)),
                       ),
                     ],
                   ),
@@ -95,7 +89,7 @@ class _LoginState extends State<Login> {
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                   hintText: "Email@email.com",
-                                  isDense: true,
+                                  
                                   labelText: "Email",
                                   alignLabelWithHint: true,
                                   focusColor: Colors.grey[200],

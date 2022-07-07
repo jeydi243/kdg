@@ -25,21 +25,28 @@ class _ViewerPDFState extends State<ViewerPDF> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
+        // extendBody: true,
+        extendBodyBehindAppBar: true,
         body: SafeArea(
-      child: SfPdfViewer.network(
-        'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
-        canShowScrollStatus: true,
-        currentSearchTextHighlightColor: Color.fromARGB(255, 252, 248, 249),
-        onDocumentLoaded: (detailsLoaded) {
-          carservice.stopLoading();
-        },
-        onDocumentLoadFailed: (details) {
-          carservice.onDocumentLoadFailed(details.description);
-        },
-        controller: _controller,
-        canShowPasswordDialog: true,
-        enableDoubleTapZooming: true,
-      ),
-    ));
+          child: SfPdfViewer.network(
+            'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
+            canShowScrollStatus: true,
+            currentSearchTextHighlightColor: Color.fromARGB(255, 252, 248, 249),
+            onDocumentLoaded: (detailsLoaded) {
+              carservice.stopLoading();
+            },
+            onDocumentLoadFailed: (details) {
+              carservice.onDocumentLoadFailed(details.description);
+            },
+            controller: _controller,
+            canShowPasswordDialog: true,
+            enableDoubleTapZooming: true,
+          ),
+        ));
   }
 }
