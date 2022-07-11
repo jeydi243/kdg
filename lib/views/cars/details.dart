@@ -2,17 +2,21 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/components/pageV.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/models/car.dart';
+import 'package:kdg/services/car_service.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:collection/collection.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.car, this.action, {Key? key}) : super(key: key);
@@ -23,10 +27,20 @@ class DetailsCar extends StatefulWidget {
 }
 
 class _DetailsCarState extends State<DetailsCar> {
+  CarService carservice = Get.find();
   late List<Map<String, dynamic>> list;
-  late ScrollController _scrollController;
+	TextEditingController start_date = TextEditingController();
+	TextEditingController end_date = TextEditingController();
+  late ScrollController _sc;
+  late PdfViewerController _pdfcontroller;
   final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
   PanelController _pc = new PanelController();
+  List<Map> actionsDialog = [
+    {'text': "Modifier", 'icon': Icons.edit},
+    {'text': "Supprimer", 'icon': Icons.voicemail_rounded},
+    {'text': "Voir", 'icon': Icons.edit},
+    {'text': "Supprimer", 'icon': Icons.delete},
+  ];
   Map<String, dynamic> infos = {
     "Color": "Brown",
     "Brand": "Audi Q5",
@@ -35,6 +49,7 @@ class _DetailsCarState extends State<DetailsCar> {
     "Type carburant": "Essence",
     "Price": "\$\$\$",
   };
+
   List<types.Message> messages = [
     // {
     //   "sender": "KDG19",
@@ -156,26 +171,114 @@ class _DetailsCarState extends State<DetailsCar> {
         // padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
-            Text(
-              'Actions',
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextButton(
                       onPressed: () {},
                       child: Text("Activer les notifications d'echéance")),
-                  TextButton(onPressed: () {}, child: Text('Voir le document')),
                   TextButton(
                       onPressed: () {
-                        Get.dialog(
-                          connaissance(context),
-                          transitionDuration: 500.milliseconds,
-                          useSafeArea: true,
-                        );
+                        showGeneralDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            transitionDuration: 1.seconds,
+                            barrierLabel: "Okay",
+                            pageBuilder: (g, n, j) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: FractionallySizedBox(
+                                  alignment: Alignment.center,
+                                  widthFactor: .8,
+                                  heightFactor: .8,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: SfPdfViewer.network(
+                                          'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
+                                          canShowScrollStatus: true,
+                                          currentSearchTextHighlightColor:
+                                              Color.fromARGB(
+                                                  255, 252, 248, 249),
+                                          onDocumentLoaded: (detailsLoaded) {},
+                                          onDocumentLoadFailed: (details) {
+                                            carservice.onDocumentLoadFailed(
+                                                details.description);
+                                          },
+                                          controller: _pdfcontroller,
+                                          canShowPasswordDialog: true,
+                                          enableDoubleTapZooming: true,
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Share.share(
+                                                      'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf');
+                                                },
+                                                child: Text("Partager")),
+                                            ElevatedButton(
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.red)),
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                                child: Text("Fermer")),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
                       },
-                      child: Text('Ajouter une connaissance')),
+                      child: Container(child: Text('Voir le document'))),
+                  TextButton(
+                      onPressed: () {
+                        showGeneralDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            transitionDuration: 1.seconds,
+                            barrierLabel: "Okay",
+                            pageBuilder: (g, n, j) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: FractionallySizedBox(
+                                  alignment: Alignment.center,
+                                  widthFactor: .8,
+                                  heightFactor: .8,
+                                  child: Form(
+                                    child: Column(
+                                      children: [
+                                        TextFormField(
+                                          controller: start_date,
+                                          decoration: InputDecoration(
+                                              label: Text("Debut de l")),
+                                        ),
+                                        TextFormField(
+                                          controller: end_date,
+                                          decoration: InputDecoration(
+                                              label: Text("Nom")),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                      child: Text('Mettre à jour le document')),
                 ],
               ),
             ),
@@ -214,10 +317,11 @@ class _DetailsCarState extends State<DetailsCar> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
+    _sc = ScrollController();
+    _pdfcontroller = PdfViewerController();
+    _sc.addListener(() {
       if (1 == 1) {}
-      if (_scrollController.position.pixels == 0) {
+      if (_sc.position.pixels == 0) {
         print("top");
       } else {
         print("bottom");
@@ -241,8 +345,13 @@ class _DetailsCarState extends State<DetailsCar> {
   }
 
   handlechange() {
-    print(_scrollController.position.maxScrollExtent >
-        _scrollController.position.pixels);
+    if (_sc.position.maxScrollExtent > _sc.position.pixels) {
+      _sc.animateTo(
+        _sc.position.maxScrollExtent,
+        duration: 1.seconds,
+        curve: Curves.easeOutBack,
+      );
+    }
   }
 
   void _addMessage(types.Message message) {
@@ -302,7 +411,7 @@ class _DetailsCarState extends State<DetailsCar> {
           user: _user,
         ),
         body: ListView(
-          controller: _scrollController,
+          controller: _sc,
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(bottom: 20),
           children: [
@@ -381,42 +490,83 @@ class _DetailsCarState extends State<DetailsCar> {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(bottom: 250),
+              padding: EdgeInsets.only(bottom: 200),
               child: ExpansionPanelList(
-                animationDuration: Duration(milliseconds: 1000),
+                animationDuration: 1.seconds,
                 dividerColor: HexColor.fromHex("#000"),
                 expandedHeaderPadding: EdgeInsets.all(0),
                 elevation: 0,
                 children: [
                   ...list
-                      .map((e) => ExpansionPanel(
+                      .mapIndexed((i, e) => ExpansionPanel(
                             isExpanded: e["isExpanded"],
-                            canTapOnHeader: true,
+                            backgroundColor: Color.fromARGB(255, 1, 48, 105),
                             body:
                                 actions(context, e['value']["file"]! as String),
-                            backgroundColor: e["isExpanded"]
-                                ? Colors.blue[50]
-                                : Colors.transparent,
                             headerBuilder: (ctx, bool isExpanded) => ListTile(
-                              enableFeedback: true,
-                              iconColor: Colors.blue,
-                              tileColor: e["isExpanded"]
-                                  ? Colors.blue[50]
-                                  : Colors.transparent,
+                              tileColor: isExpanded
+                                  ? Color.fromARGB(255, 1, 67, 148)
+                                  : Color.fromARGB(255, 1, 48, 105),
                               onTap: () {
                                 handlechange();
                                 setState(() {
                                   e["isExpanded"] = !e["isExpanded"];
                                 });
                               },
-                              title: Text(
-                                  "${(e['doc'] as String).capitalizeFirst}"),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${(e['doc'] as String).capitalizeFirst}",
+                                    style: Get.textTheme.headline4!
+                                        .copyWith(color: AppColors.accent),
+                                  ),
+                                  Text(
+                                    'Expire dans : ${20 + i} jours',
+                                    style: Get.textTheme.bodyText2,
+                                  ),
+                                ],
+                              ),
                             ),
                           ))
                       .toList(),
                 ],
                 expansionCallback: (int item, bool status) {
-                  Get.snackbar("Title $item", "Message $status");
+                  // Get.snackbar("Title $item", "Message $status");
+                  showAnimatedDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    axis: Axis.vertical,
+                    alignment: Alignment.center,
+                    builder: (BuildContext context) {
+                      return Container(
+                        width: Get.width,
+                        child: FractionallySizedBox(
+                          heightFactor: 0.5,
+                          widthFactor: .8,
+                          alignment: Alignment.center,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10),
+                            child: ListView(
+                              children: [
+                                ...actionsDialog
+                                    .map((e) => ListTile(
+                                          onTap: () {
+                                            print('Le ');
+                                          },
+                                          title: Text(e['text']),
+                                        ))
+                                    .toList()
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    animationType: DialogTransitionType.size,
+                    curve: Curves.fastOutSlowIn,
+                    duration: Duration(seconds: 1),
+                  );
                 },
               ),
             )

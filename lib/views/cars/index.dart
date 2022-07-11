@@ -1,3 +1,5 @@
+import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/components/viewerpdf.dart';
@@ -20,6 +22,7 @@ class IndexCar extends StatefulWidget {
 class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
   late AnimationController controller;
   late PanelController _pc;
+  bool isPanelOpen = false;
   CarService carservice = Get.find();
   @override
   void initState() {
@@ -38,16 +41,25 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor.fromHex("FDF8F8"),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_pc.isPanelOpen) {
-            _pc.close();
-          } else {
-            _pc.open();
-          }
-        },
-      ),
+      // backgroundColor: HexColor.fromHex("FDF8F8"),
+      floatingActionButton: isPanelOpen
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                if (isPanelOpen) {
+                  _pc.close();
+                  setState(() {
+                    isPanelOpen = false;
+                  });
+                } else {
+                  _pc.open();
+                  setState(() {
+                    isPanelOpen = true;
+                  });
+                }
+              },
+            ),
       body: SlidingUpPanel(
         controller: _pc,
         // parallaxOffset: .5,
@@ -173,6 +185,11 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                   InkWell(
                     onTap: () async {
                       DateTime? echeanceControleTech = await showDatePicker(
+                          locale: Get.locale,
+                          confirmText: "Choisir",
+                          keyboardType: TextInputType.datetime,
+                          initialDatePickerMode: DatePickerMode.day,
+                          fieldLabelText: "Date d'achat",
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate:
@@ -219,6 +236,27 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                     ),
                   ),
                   // SfDateRangePicker()
+                  InkWell(
+                    onTap: () async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles();
+                      if (result != null) {
+                        PlatformFile? e = result.files[0];
+                      }
+                    },
+                    child: DottedBorder(
+                      color: AppColors.accent,
+                      radius: Radius.circular(10),
+                      child: Container(
+                        height: 40,
+                        width: Get.width * .95,
+                        child: Icon(Icons.add, color: AppColors.accent),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)),
+                        // color: Colors.lime,
+                      ),
+                    ),
+                  )
                 ],
               ))
             ]),
@@ -288,20 +326,6 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
             SliverAnimatedList(
               initialItemCount: carservice.cars.length,
               itemBuilder: (ctx, int i, Animation<double> an) {
-                // if (10) {
-                // return Padding(
-                //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                //   child: Container(
-                //     width: Get.width * .8,
-                //     height: 60,
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(10),
-                //       color: Colors.accents[i % Colors.accents.length],
-                //     ),
-                //     child: Text('$i '),
-                //   ),
-                // );
-                // }
                 return CarItem(
                   item: carservice.cars[i],
                 );

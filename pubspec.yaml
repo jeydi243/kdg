@@ -15,6 +15,7 @@ dependencies:
   cloud_functions: ^3.2.13
   dotted_border: null
   fab_circular_menu: ^1.0.0
+  file_picker: ^4.6.1
   firebase_auth: ^3.3.16
   firebase_core: ^1.15.0
   firebase_crashlytics: ^2.7.2
@@ -45,7 +46,7 @@ dependencies:
   pigment: ^1.0.3
   provider: ^6.0.2
   secure_application: ^3.8.0
-  share_plus: null
+  share_plus: ^4.0.10
   simple_animations: ^4.0.2
   sliding_up_panel: ^2.0.0+1
   slimy_card: ^1.0.4

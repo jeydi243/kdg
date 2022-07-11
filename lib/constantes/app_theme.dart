@@ -126,6 +126,13 @@ class KDGTheme {
       scaffoldBackgroundColor: AppColors.backgroundDark,
       errorColor: AppColors.error,
       dividerTheme: DividerThemeData(color: AppColors.accent),
+      expansionTileTheme: ExpansionTileThemeData(
+          tilePadding: EdgeInsets.all(0),
+          backgroundColor: Colors.transparent,
+          iconColor: AppColors.primary,
+          collapsedIconColor: AppColors.primary,
+          collapsedTextColor: AppColors.accent,
+          collapsedBackgroundColor: Colors.transparent),
       colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: AppColors.accent,
           error: AppColors.error,
@@ -134,8 +141,7 @@ class KDGTheme {
           onPrimary: Colors.white,
           background: Colors.amber,
           primaryContainer: AppColors.backgroundDark,
-
-          onSurface: Colors.white,
+          onSurface: Color.fromARGB(255, 0, 255, 47),
           shadow: Color.fromARGB(255, 252, 252, 252),
           brightness: Brightness.light),
       primaryColorDark: AppColors.primary[900],
