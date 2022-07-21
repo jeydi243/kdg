@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -245,11 +246,21 @@ class _DetailsCarState extends State<DetailsCar> {
                       },
                       child: Container(child: Text('Voir le document'))),
                   TextButton(
-                      onPressed: () {
-                        showGeneralDialog(
+                      onPressed: () async {
+                        await showGeneralDialog(
                             context: context,
                             barrierDismissible: false,
-                            transitionDuration: 1.seconds,
+                            transitionDuration: 500.milliseconds,
+                            transitionBuilder: (ctx, anim1, anim2, child) =>
+                                BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                      sigmaX: 4 * anim1.value,
+                                      sigmaY: 4 * anim1.value),
+                                  child: FadeTransition(
+                                    child: child,
+                                    opacity: anim1,
+                                  ),
+                                ),
                             pageBuilder: (g, n, j) {
                               return StatefulBuilder(
                                 builder: (context, setState) {
@@ -263,13 +274,28 @@ class _DetailsCarState extends State<DetailsCar> {
                                       heightFactor: .5,
                                       child: Material(
                                         borderRadius: BorderRadius.circular(10),
+                                        color: AppColors.backgroundDark,
                                         child: Column(
                                           children: [
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Text("document:2"),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 10),
+                                                  child: Text(
+                                                    "${(e['doc'] as String).capitalizeFirst}",
+                                                    style: Get.textTheme
+                                                        .displayMedium!
+                                                        .copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                  ),
+                                                ),
                                                 InkWell(
                                                   onTap: () {
                                                     Get.back();
@@ -565,6 +591,7 @@ class _DetailsCarState extends State<DetailsCar> {
                     builder: (BuildContext context) {
                       return Container(
                         width: Get.width,
+                        color: AppColors.backgroundDark,
                         child: FractionallySizedBox(
                           heightFactor: 0.5,
                           widthFactor: .8,

@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/car_service.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class AddDocument extends GetView<CarService> {
   const AddDocument({Key? key}) : super(key: key);
@@ -56,11 +60,27 @@ class AddDocument extends GetView<CarService> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: TextFormField(
-                    enabled: false,
-                    decoration: InputDecoration(label: Text("Fichier PDF")),
+                  child: InkWell(
+                    onTap: () async {
+                      FilePickerResult? result = await FilePicker.platform
+                          .pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['pdf', "docx", "doc"]);
+                      if (result != null) {
+                        File file = File(result.files.single.path ?? "");
+// controller.ge();
+                        Get.snackbar("File picked", "Path ${file.path}");
+                      } else {
+                        // User canceled the picker
+                      }
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      decoration: InputDecoration(label: Text("Fichier PDF")),
+                    ),
                   ),
                 ),
+               
               ],
             ),
             TextButton(
