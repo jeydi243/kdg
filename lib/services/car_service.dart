@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,9 @@ class CarService extends GetxController {
   Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
   List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   RxBool isLoadingDocument = RxBool(true);
-
+  final start_date = TextEditingController().obs;
+  final end_date = TextEditingController().obs;
+  final file = Rx<File>;
   @override
   void onReady() {
     carservice.getCars().then((value) => null);
@@ -52,12 +56,22 @@ class CarService extends GetxController {
 
   List<Car> get cars => _cars.value;
 
+  set endDate(DateTime? value) {
+    end_date.value.text = value!.toLocal().toIso8601String();
+    update();
+  }
+
+  set startDate(DateTime? value) {
+    start_date.value.text = value!.toLocal().toIso8601String();
+    update();
+  }
+
   Future<List<Document>?> getCarDocs({required String id}) async {
     List<Document> cardocs = <Document>[];
     try {
       QuerySnapshot f = await docsRef
           .where('idCar', isEqualTo: id)
-          .where("startValidity", isLessThanOrEqualTo: DateTime.now())
+          .where("start_date", isLessThanOrEqualTo: DateTime.now())
           .get();
       for (QueryDocumentSnapshot doc in f.docs) {
         cardocs.add(new Document.fromMap(doc, doc.id));
@@ -95,4 +109,11 @@ class CarService extends GetxController {
     isLoadingDocument.value = false;
     update();
   }
+
+  void reset() {
+    start_date.value.text = "";
+    end_date.value.text = "";
+  }
+
+  void updateCarDocument() {}
 }

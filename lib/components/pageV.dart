@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+
 
 class PageV extends StatefulWidget {
   PageV({
@@ -46,9 +46,6 @@ class _PageVState extends State<PageV> {
         controller: _controller,
         itemCount: _list.length,
         itemBuilder: (context, index) {
-          double scale =
-              max(myFraction!, (1 - (pageOffset! - index).abs()) + myFraction!);
-
           return Container(
             height: double.infinity,
             padding: EdgeInsets.only(right: 20.0, bottom: 20),

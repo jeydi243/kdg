@@ -18,6 +18,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+import 'add_document.dart';
+
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.car, this.action, {Key? key}) : super(key: key);
   final Car car;
@@ -29,8 +31,7 @@ class DetailsCar extends StatefulWidget {
 class _DetailsCarState extends State<DetailsCar> {
   CarService carservice = Get.find();
   late List<Map<String, dynamic>> list;
-	TextEditingController start_date = TextEditingController();
-	TextEditingController end_date = TextEditingController();
+
   late ScrollController _sc;
   late PdfViewerController _pdfcontroller;
   final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
@@ -163,7 +164,7 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
-  Widget actions(BuildContext ctx, String link) {
+  Widget actions(BuildContext ctx, Map<String, dynamic> e) {
     UserService userService = Get.find();
     return Container(
         height: Get.height * .3,
@@ -247,34 +248,58 @@ class _DetailsCarState extends State<DetailsCar> {
                       onPressed: () {
                         showGeneralDialog(
                             context: context,
-                            barrierDismissible: true,
+                            barrierDismissible: false,
                             transitionDuration: 1.seconds,
-                            barrierLabel: "Okay",
                             pageBuilder: (g, n, j) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: FractionallySizedBox(
-                                  alignment: Alignment.center,
-                                  widthFactor: .8,
-                                  heightFactor: .8,
-                                  child: Form(
-                                    child: Column(
-                                      children: [
-                                        TextFormField(
-                                          controller: start_date,
-                                          decoration: InputDecoration(
-                                              label: Text("Debut de l")),
+                              return StatefulBuilder(
+                                builder: (context, setState) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: FractionallySizedBox(
+                                      alignment: Alignment.center,
+                                      widthFactor: .8,
+                                      heightFactor: .5,
+                                      child: Material(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Text("document:2"),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Get.back();
+                                                  },
+                                                  child: Container(
+                                                    height: 35,
+                                                    width: 35,
+                                                    child: Icon(Icons.close),
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.red,
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        10))),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: AddDocument(),
+                                            ),
+                                          ],
                                         ),
-                                        TextFormField(
-                                          controller: end_date,
-                                          decoration: InputDecoration(
-                                              label: Text("Nom")),
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               );
                             });
                       },
@@ -501,8 +526,7 @@ class _DetailsCarState extends State<DetailsCar> {
                       .mapIndexed((i, e) => ExpansionPanel(
                             isExpanded: e["isExpanded"],
                             backgroundColor: Color.fromARGB(255, 1, 48, 105),
-                            body:
-                                actions(context, e['value']["file"]! as String),
+                            body: actions(context, e),
                             headerBuilder: (ctx, bool isExpanded) => ListTile(
                               tileColor: isExpanded
                                   ? Color.fromARGB(255, 1, 67, 148)

@@ -225,13 +225,18 @@ class KDGTheme {
       ),
       iconTheme: theme.iconTheme.copyWith(color: AppColors.accent, size: 24),
       primaryIconTheme: IconThemeData(color: AppColors.accent, size: 24),
+      dialogBackgroundColor: AppColors.backgroundDark,
+      dialogTheme: DialogTheme(
+          backgroundColor: AppColors.backgroundDark,
+          titleTextStyle: GoogleFonts.k2d(),
+          alignment: Alignment.center),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
             enableFeedback: true,
             backgroundColor: MaterialStateProperty.all<Color?>(
                 Colors.teal[50]?.withOpacity(.2)),
             minimumSize: MaterialStateProperty.all<Size>(
-                Size(Get.width / 4, Get.height * .02)),
+                Size(Get.width, Get.height * .02)),
             textStyle: MaterialStateProperty.all<TextStyle>(
                 TextStyle(color: AppColors.text))),
       ),

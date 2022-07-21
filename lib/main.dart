@@ -2,6 +2,7 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
 import 'package:local_auth/local_auth.dart';
@@ -19,6 +20,12 @@ import 'package:local_auth/error_codes.dart' as auth_error;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ErrorWidget.builder = (FlutterErrorDetails details) => Material(
+        child: Container(
+            child: Center(
+                child: Text('Error: ${details.exceptionAsString}',
+                    style: GoogleFonts.k2d(fontSize: 25)))),
+      );
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -73,7 +80,7 @@ class Kdg extends StatelessWidget {
                 secure?.open();
               }
             } on PlatformException catch (e) {
-              print('EROROROROROROROROROROROR');
+              print('$e');
               if (e.code == auth_error.notEnrolled) {
                 // Add handling of no hardware here.
               } else if (e.code == auth_error.lockedOut ||

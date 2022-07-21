@@ -105,9 +105,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                       decoration: InputDecoration(
                         labelText: 'Nom',
                       ),
-                      onChanged: (value) {
-                        var e = value;
-                      },
+                      onChanged: (value) {},
                     ),
                   ),
                   Container(
@@ -118,7 +116,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                         labelText: 'Model',
                       ),
                       onChanged: (value) {
-                        var e = value;
+                       
                       },
                     ),
                   ),
@@ -239,7 +237,13 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                   InkWell(
                     onTap: () async {
                       FilePickerResult? result =
-                          await FilePicker.platform.pickFiles();
+                          await FilePicker.platform.pickFiles(
+                              allowedExtensions: ['pdf', 'doc', "docx"],
+                              allowMultiple: false,
+                              onFileLoading: (FilePickerStatus status) {
+                                status;
+                              });
+
                       if (result != null) {
                         PlatformFile? e = result.files[0];
                       }

@@ -3,21 +3,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Document {
   String? id;
   late String name;
-  late DateTime startValidity;
-  late DateTime endValidity;
+  late DateTime startDate;
+  late DateTime endDate;
   late String description;
-  late String linkFile;
+  late String file;
   String? idCar;
 
   Document(
     this.name,
-    this.startValidity,
+    this.startDate,
   );
   Document.fromMap(QueryDocumentSnapshot snapshot, this.id) {
-    startValidity = snapshot['startValidity'] ?? null;
-    endValidity = snapshot['endValidity'] ?? null;
+    startDate = snapshot['startDate'] ?? null;
+    endDate = snapshot['endDate'] ?? null;
     description = snapshot['description'] ?? '';
-    linkFile = snapshot['linkFile'] ?? '';
+    file = snapshot['file'] ?? '';
     idCar = snapshot['idCar'];
     name = snapshot.get('name') ?? '';
     id = id;
@@ -29,35 +29,35 @@ class Document {
     id = snapshot.id;
     name = snapshot.get('name') ?? '';
     idCar = snapshot.get('idCar') ?? '';
-    linkFile = snapshot['linkFile'] ?? '';
-    endValidity = snapshot['endValidity'] ?? null;
+    file = snapshot['file'] ?? '';
+    endDate = snapshot['endDate'] ?? null;
     description = snapshot['description'] ?? '';
-    startValidity = snapshot['startValidity'] ?? null;
+    startDate = snapshot['startDate'] ?? null;
   }
 
   toFirestore() {
     return {
-      "startValidity": startValidity,
-      "endValidity": endValidity,
+      "startDate": startDate,
+      "endDate": endDate,
       "description": description,
-      "linkFile": linkFile,
+      "file": file,
       "idCar": idCar,
       "name": name,
     };
   }
 
   bool isValid() {
-    if (endValidity.isAfter(DateTime.now()) ||
-        endValidity.isAtSameMomentAs(DateTime.now())) {
+    if (endDate.isAfter(DateTime.now()) ||
+        endDate.isAtSameMomentAs(DateTime.now())) {
       return true;
     }
     return false;
   }
 
   int timeRemaining() {
-    if (endValidity.isAfter(DateTime.now()) ||
-        endValidity.isAtSameMomentAs(DateTime.now())) {
-      return endValidity.difference(DateTime.now()).inDays;
+    if (endDate.isAfter(DateTime.now()) ||
+        endDate.isAtSameMomentAs(DateTime.now())) {
+      return endDate.difference(DateTime.now()).inDays;
     }
     return 0;
   }
