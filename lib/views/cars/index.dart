@@ -128,7 +128,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                         labelText: 'Type de carburant',
                       ),
                       onChanged: (value) {
-                        var e = value;
+                     
                       },
                     ),
                   ),
@@ -151,7 +151,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           labelText: 'Date echance Assurance',
                         ),
                         onChanged: (value) {
-                          var e = value;
+                      
                         },
                       ),
                     ),
@@ -175,7 +175,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           labelText: 'Date echance Controle Technique',
                         ),
                         onChanged: (value) {
-                          var e = value;
+                         
                         },
                       ),
                     ),
@@ -204,7 +204,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           labelText: 'Date echéance Stationnement',
                         ),
                         onChanged: (value) {
-                          var e = value;
+                      
                         },
                       ),
                     ),
@@ -228,7 +228,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           labelText: 'Date echéance Vignette',
                         ),
                         onChanged: (value) {
-                          var e = value;
+                       
                         },
                       ),
                     ),

@@ -1,15 +1,11 @@
-import 'dart:io';
 import 'dart:ui';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:get/get.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-import '../../models/car.dart';
 
 class AddDocument extends GetView<CarService> {
   String id;
@@ -130,7 +126,7 @@ class AddDocument extends GetView<CarService> {
                             padding: EdgeInsets.all(5),
                             child: Row(
                               children: [
-                                Text("${controller.fileg!.value!.path}",
+                                Text("${controller.fileg.value!.path}",
                                     overflow: TextOverflow.ellipsis),
                                 TextButton(
                                   onPressed: () {},

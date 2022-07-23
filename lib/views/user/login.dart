@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/constantes/helper.dart';
 import 'package:kdg/services/user_service.dart';
