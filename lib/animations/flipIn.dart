@@ -5,7 +5,6 @@ import 'package:supercharged/supercharged.dart';
 import 'dart:math' as math;
 
 enum AniProps { opacity, deg, x }
-
 class FlipIn extends StatelessWidget {
   FlipIn({this.dur, required this.child});
   double? dur;

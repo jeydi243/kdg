@@ -14,11 +14,6 @@ class IndexHouse extends StatefulWidget {
 
 class _IndexHouseState extends State<IndexHouse> {
   PanelController _pc = new PanelController();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/viewerpdf.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
@@ -10,7 +9,6 @@ import 'package:kdg/views/cars/item.dart';
 import 'package:logger/logger.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class IndexCar extends StatefulWidget {
   IndexCar({Key? key, required this.item}) : super(key: key);
@@ -134,12 +132,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                   ),
                   InkWell(
                     onTap: () async {
-                      DateTime? echeanceAssurance = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate:
-                              DateTime.now().subtract(Duration(days: 60)),
-                          lastDate: DateTime.now().add(Duration(days: 365)));
+
                     },
                     child: Container(
                       width: Get.width * .95,
@@ -243,10 +236,6 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                               onFileLoading: (FilePickerStatus status) {
                                 status;
                               });
-
-                      if (result != null) {
-                        PlatformFile? e = result.files[0];
-                      }
                     },
                     child: DottedBorder(
                       color: AppColors.accent,

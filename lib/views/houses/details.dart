@@ -18,8 +18,6 @@ class _DetailsHouseState extends State<DetailsHouse> {
 
   @override
   Widget build(BuildContext context) {
-    BoxDecoration _rowsdecoration = BoxDecoration(
-        border: Border(right: BorderSide(color: Colors.amber, width: 2)));
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {

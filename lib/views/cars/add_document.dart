@@ -6,11 +6,10 @@ import 'package:get/get.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
 
-
 class AddDocument extends GetView<CarService> {
-  String id;
+  String id_car;
   String namedoc;
-  AddDocument(this.id, this.namedoc, {Key? key}) : super(key: key);
+  AddDocument(this.id_car, this.namedoc, {Key? key}) : super(key: key);
   //formKey
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 //submit form
@@ -18,26 +17,27 @@ class AddDocument extends GetView<CarService> {
     Get.back();
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      await controller.updateCar(id, namedoc);
+      await controller.updateCarStep1(id_car, namedoc);
 
-      Get.dialog(StatefulBuilder(
-          builder: (context, setState) => Center(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: Material(
-                    child: Row(
-                      children: [
-                        CircularProgressIndicator(
-                          value: controller.file_upload_progress.value,
-                          color: AppColors.accent,
-                        ),
-                        Text(
-                            'Uploading.. ${controller.file_upload_progress.value}%')
-                      ],
+      await Get.dialog(Dialog(
+        child: StatefulBuilder(
+            builder: (context, setState) => Center(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: Material(
+                      child: Row(
+                        children: [
+                          CircularProgressIndicator(
+                            value: controller.progress,
+                            color: AppColors.accent,
+                          ),
+                          Text('Uploading..${controller.progress}%')
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )));
+                )),
+      ));
       if (1 == 1) {
         Get.snackbar("Update Card", "La mise a  jour a reussi");
       } else {

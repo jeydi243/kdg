@@ -11,7 +11,6 @@ import 'package:kdg/components/pageV.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/models/car.dart';
 import 'package:kdg/services/car_service.dart';
-import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:share_plus/share_plus.dart';
@@ -166,7 +165,6 @@ class _DetailsCarState extends State<DetailsCar> {
   }
 
   Widget actions(BuildContext ctx, Map<String, dynamic> e) {
-    UserService userService = Get.find();
     return Container(
         height: Get.height * .3,
         width: Get.width * .9,

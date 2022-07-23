@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,23 +15,23 @@ class CarService extends GetxController {
 
   late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
-  late final CollectionReference<Document> docsRef;
-  late final CollectionReference<Car> carsRef;
-  late final CollectionReference<Maison> housesRef;
+  late CollectionReference<Document> docsRef;
+  late CollectionReference<Car> carsRef;
+  late CollectionReference<Maison> housesRef;
 
-  Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
-  Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
-  Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
-  List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
-  RxBool isLoadingDocument = RxBool(true);
   final start_date = TextEditingController().obs;
   final end_date = TextEditingController().obs;
   final file_upload_progress = 0.0.obs;
   final file_upload_state = false.obs;
   final downloadurl = "".obs;
   final file = Rx<File>;
-  Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
+  RxBool isLoadingDocument = RxBool(true);
   RxBool filepicked = false.obs;
+  Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
+  Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
+  Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
+  List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
+  Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
 
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
@@ -46,7 +45,9 @@ class CarService extends GetxController {
     });
     ever(exception, onFirebaseException);
     ever(downloadurl, (String value) {
-      continuer(id, value);
+      if (value != "") {
+        updateCarStep2(id, value);
+      }
     });
     super.onReady();
   }
@@ -73,7 +74,7 @@ class CarService extends GetxController {
   }
 
   List<Car> get cars => _cars.value;
-
+  double get progress => file_upload_progress.value;
   set endDate(DateTime? value) {
     end_date.value.text = value!.toLocal().toIso8601String();
     update();
@@ -88,12 +89,6 @@ class CarService extends GetxController {
   set startDate(DateTime? value) {
     start_date.value.text = value!.toLocal().toIso8601String();
     update();
-  }
-
-  void prepareUpdateCar() {
-    updatedCar.value['start_date'] = start_date.value.text;
-    updatedCar.value['end_date'] = end_date.value.text;
-    updatedCar.value['file'] = File(fileg.value!.path ?? "");
   }
 
   Future<List<Document>?> getCarDocs({required String id}) async {
@@ -123,10 +118,10 @@ class CarService extends GetxController {
     }
   }
 
-  Future<Color> getImagePalette(ImageProvider imageProvider) async {
-    final PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(imageProvider);
-    return paletteGenerator.dominantColor!.color;
+  void prepareUpdateCar() {
+    updatedCar.value['start_date'] = start_date.value.text;
+    updatedCar.value['end_date'] = end_date.value.text;
+    updatedCar.value['file'] = File(fileg.value!.path ?? "");
   }
 
   void onDocumentLoadFailed(String description) {
@@ -224,7 +219,13 @@ class CarService extends GetxController {
     Get.snackbar("Firebase", "${map[e!.code]}");
   }
 
-  Future<void> updateCar(String id, String namedoc) async {
+  Future<Color> getImagePalette(ImageProvider imageProvider) async {
+    final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(imageProvider);
+    return paletteGenerator.dominantColor!.color;
+  }
+
+  Future<void> updateCarStep1(String id, String namedoc) async {
     try {
       prepareUpdateCar();
       storefile(namedoc, id, updatedCar.value['file'] as File);
@@ -234,7 +235,7 @@ class CarService extends GetxController {
     }
   }
 
-  Future<bool> continuer(String id, String linktofile) async {
+  Future<bool> updateCarStep2(String id, String linktofile) async {
     try {
       await carsRef.doc(id).collection("documents").add(updatedCar.value);
       await carsRef.doc(id).update(updatedCar.value);
