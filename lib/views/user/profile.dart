@@ -21,7 +21,6 @@ class _ProfileState extends State<Profile> {
         extendBody: true,
         appBar: AppBar(
           foregroundColor: Colors.transparent,
-
           actions: [
             // DropdownButton(items: items, onChanged: onChanged),
             Padding(
@@ -51,7 +50,6 @@ class _ProfileState extends State<Profile> {
           ],
           backgroundColor: Colors.transparent,
           elevation: 0,
-
         ),
         body: Column(
           children: [
@@ -95,10 +93,6 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ),
-            Container(
-              height: Get.height * .60,
-              color: Colors.grey[200],
-            )
           ],
         ),
       ),

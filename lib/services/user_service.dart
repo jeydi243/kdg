@@ -11,7 +11,6 @@ import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
 import 'package:kdg/views/user/login.dart';
 import 'package:palette_generator/palette_generator.dart';
-import '../models/car.dart';
 import '../models/rapport.dart';
 import '../views/home.dart';
 
@@ -30,8 +29,14 @@ class UserService extends GetxController {
   Rx<User?> firebaseUser = Rx<User?>(null);
   Rx<List<Rapport>> _rapports = Rx<List<Rapport>>(<Rapport>[]);
   Rx<DocumentReference?> userDocRef = Rx<DocumentReference?>(null);
+  Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
+  Rx<PlatformException?> pl_exception = Rx<PlatformException?>(null);
+  late CollectionReference usersRef;
 
   UserKDG? _user;
+  User? get currentUser => firebaseUser.value;
+  UserKDG? get userKDG => _user;
+  FirebaseAuth get auth => _auth;
 
   @override
   void onInit() {
@@ -50,25 +55,82 @@ class UserService extends GetxController {
   @override
   void onReady() {
     userDocRef.value = firestore.collection('users').doc(currentUser?.uid);
+    usersRef = firestore.collection('users');
     ever(firebaseUser, onUserChange);
+    ever(exception, onFirebaseException);
+    ever(pl_exception, onPlatformException);
   }
 
-  Future<Map<String, dynamic>> signup(
-      String email, String password, String nom) async {
+  onFirebaseException(FirebaseException? e) {
+    Map<String, String> map = {
+      "storage/unknown": "Une erreur inconnue est survenue.",
+      "storage/object-not-found":
+          "	Aucun objet n'existe à la référence souhaitée",
+      "storage/bucket-not-found":
+          "Aucun bucket n'est configuré pour Cloud Storage",
+      "storage/project-not-found":
+          "Aucun projet n'est configuré pour Cloud Storage",
+      "storage/quota-exceeded":
+          "Le quota de votre bucket Cloud Storage a été dépassé. ,Si vous êtes sur le niveau gratuit, passez à un plan payant. Si vous avez un forfait payant, contactez l'assistance Firebase.",
+      "storage/unauthenticated":
+          "L'utilisateur n'est pas authentifié, veuillez vous authentifier et réessayer.",
+      "storage/unauthorized":
+          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
+      "firebase_storage/unauthorized":
+          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
+      "storage/retry-limit-exceeded":
+          "Le délai maximum d'une opération (téléchargement, téléchargement, suppression, etc.) a été dépassé. Essayez de télécharger à nouveau.",
+      "storage/invalid-checksum":
+          "Le fichier sur le client ne correspond pas à la somme de contrôle du fichier reçu par le serveur. Essayez de télécharger à nouveau.",
+      "storage/canceled": "L'utilisateur a annulé l'opération",
+      "storage/invalid-event-name":
+          "Nom d'événement fourni non valide. Doit être l'un des [ running , progress , pause ]",
+      "storage/invalid-url":
+          "URL non valide fournie à refFromURL() . Doit être au format : gs://bucket/object ou https://firebasestorage.googleapis.com/v0/b/bucket/o/object?token=<TOKEN>",
+      "storage/invalid-argument":
+          "L'argument passé à put() doit être File , Blob ou UInt8 Array. L'argument passé à putString() doit être une chaîne raw, Base64 ou Base64URL .",
+      "storage/no-default-bucket":
+          "Aucun compartiment n'a été défini dans la propriété storageBucket de votre configuration.",
+      "storage/cannot-slice-blob":
+          "Se produit généralement lorsque le fichier local a été modifié (supprimé, enregistré à nouveau, etc.). Réessayez de télécharger après avoir vérifié que le fichier n'a pas changé.",
+      "storage/server-file-wrong-size":
+          "Le fichier sur le client ne correspond pas à la taille du fichier reçu par le serveur. Essayez de télécharger à nouveau.",
+      "user-not-found": "L'utilisateur n'existe pas ou a été supprimé",
+      "wrong-password": "Le mot de passe est incorrect",
+      "requires-recent-login": "L'utilisateur doit se connecter récemment",
+      "user-disabled": "L'utilisateur a été désactivé",
+      "invalid-email": "L'adresse email est invalide",
+      "email-already-in-use": "L'adresse email est déjà utilisée",
+      "weak-password": "Le mot de passe est trop faible",
+      "too-many-requests":
+          "Trop de requêtes ont été envoyées. Essayez de nouveau dans quelques minutes.",
+      "operation-not-allowed": "L'opération n'est pas autorisée pour ce compte",
+    };
+    Get.snackbar("Firebase", "${map[e!.code]}");
+  }
+
+  onPlatformException(PlatformException? e) {
+    Get.snackbar("Erreur", "${e!.message}");
+  }
+
+  Future<Map<String, dynamic>?> signup(String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       return {'message': "L'utilisateur a bien été enregistré", "state": true};
-    } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+    } on FirebaseException catch (e) {
+      exception.value = e;
     }
   }
 
   onUserChange(User? user) async {
     if (user != null) {
-      log.i("There is user");
-      await setUserKDG();
-      await getDeviceToken();
+      DocumentSnapshot v = await usersRef.doc(user.uid).get();
+      if (v.exists) {
+        await setUserKDG();
+        Get.snackbar("Authentication", "Successfull login");
+        await getDeviceToken();
+      } else {}
       Get.offAll(Home());
     } else {
       log.i("No user, redirect to Login");
@@ -80,97 +142,35 @@ class UserService extends GetxController {
     try {
       await gsign?.signOut();
       await _auth.signOut();
-    } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+    } on FirebaseException catch (e) {
+      exception.value = e;
     } finally {
       update();
     }
   }
-
-  User? get currentUser => firebaseUser.value;
-  UserKDG? get userKDG => _user;
-  FirebaseAuth get auth => _auth;
 
   Future<Map<String, dynamic>?> setUserKDG() async {
     try {
-      DocumentSnapshot user = await userDocRef.value!.get();
-      _user = UserKDG.fromFirebase2(user, user.id);
-    } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+      DocumentSnapshot snap = await usersRef.doc(currentUser?.uid).get();
+      _user = UserKDG.fromFirebase2(snap, snap.id);
+    } on FirebaseException catch (e) {
+      exception.value = e;
     } finally {
       update();
     }
   }
 
-  Map<String, dynamic> catchException(e, r) {
-    log.e("${e.code} : ${e.message}: $r");
-    switch (e.code) {
-      case "user-not-found":
-        showSnackBar("Authentification",
-            message: "L'utilisateur n'existe pas ou a été supprimé");
-        return {
-          "state": false,
-          "message": "L'utilisateur n'existe pas ou a été supprimé"
-        };
-
-      case "wrong-password":
-        showSnackBar("Authentification",
-            message: "Le mot de passe est incorrect");
-        return {"state": false, "message": "Le mot de passe est incorrect"};
-      case "requires-recent-login":
-        showSnackBar("Authentification",
-            message:
-                "Vous devez vous reconnecter avant d'effectuer cette action");
-        return {
-          "state": false,
-          "message":
-              "Vous devez vous reconnecter avant d'effectuer cette action"
-        };
-      case "invalid-email":
-        showSnackBar("Authentification", message: "L'email est invalide");
-        return {"state": false, "message": "L'email est invalide"};
-      case "email-already-in-use":
-        showSnackBar("Authentification",
-            message: "Cette email est deja utilisé");
-        return {"state": false, "message": "Cette email est deja utilisé"};
-      case "operation-not-allowed":
-        showSnackBar("Authentification",
-            message: "La méthode de connexion n'est pas permise");
-        return {
-          "state": false,
-          "message": "La méthode de connexion n'est pas permise"
-        };
-      case "weak-password":
-        showSnackBar("Authentification",
-            message: "Le mot de passe n'est pas suffisament fort");
-        return {
-          "state": false,
-          "message": "Le mot de passe n'est pas suffisament fort"
-        };
-      default:
-        showSnackBar("Authentification",
-            message: "Une erreur inconnue est survenu");
-        return {"state": false, "message": "Une erreur inconnue est survenu"};
-    }
-  }
-
-  Future<Map<String, dynamic>?> signInWithEmailAndPassword(
-      String email, String password) async {
+  Future<Map<String, dynamic>?> signInWithEmailAndPassword(Map info) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+          email: info['email'], password: info['password']);
+    } on FirebaseException catch (e) {
+      exception.value = e;
+    } on PlatformException catch (e) {
+      pl_exception.value = e;
     } finally {
       update();
     }
-  }
-
-  ff() async {
-    final ref = firestore.collection("cities").doc("LA").withConverter(
-          fromFirestore: Car.fromFirestore,
-          toFirestore: (Car car, _) => car.toFirestore(),
-        );
   }
 
   void showSnackBar(String title, {required String message}) {
@@ -194,10 +194,10 @@ class UserService extends GetxController {
       );
 
       await _auth.signInWithCredential(credential);
-    } on PlatformException catch (e, r) {
-      return catchException(e, r);
-    } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+    } on PlatformException catch (e) {
+      pl_exception.value = e;
+    } on FirebaseException catch (e) {
+      exception.value = e;
     }
   }
 
@@ -206,7 +206,7 @@ class UserService extends GetxController {
       await currentUser?.delete();
       return {"state": true, "message": "L'utilisateur a bien été supprimé"};
     } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+      exception.value = e;
     } finally {
       update();
     }
@@ -217,7 +217,7 @@ class UserService extends GetxController {
       token.value = await _fcm.getToken();
       await userDocRef.value!.update({'token': token});
     } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+      exception.value = e;
     } finally {
       update();
     }
@@ -247,7 +247,7 @@ class UserService extends GetxController {
         });
       }
     } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+      exception.value = e;
     } finally {
       update();
     }
@@ -257,13 +257,13 @@ class UserService extends GetxController {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+      exception.value = e;
     } finally {
       update();
     }
   }
 
-  Future<Map<String, dynamic>> updatePassword(String newPassword) async {
+  Future<Map<String, dynamic>?> updatePassword(String newPassword) async {
     try {
       await currentUser?.updatePassword(newPassword);
       return {
@@ -272,7 +272,7 @@ class UserService extends GetxController {
         'shouldBack': true
       };
     } on FirebaseException catch (e, r) {
-      return catchException(e, r);
+      exception.value = e;
     }
   }
 
@@ -283,7 +283,7 @@ class UserService extends GetxController {
     return paletteGenerator.dominantColor!.color;
   }
 
-  Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> form) async {
+  Future<Map<String, dynamic>?> updateProfile(Map<String, dynamic> form) async {
     try {
       var userRef = firestore.collection("users").doc(currentUser!.uid);
       var user = await userRef.get();
@@ -323,7 +323,7 @@ class UserService extends GetxController {
         'shouldBack': true
       };
     } on FirebaseException catch (e, stack) {
-      return catchException(e, stack);
+      exception.value = e;
     } finally {
       update();
     }

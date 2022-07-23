@@ -154,7 +154,7 @@ class _LoginState extends State<Login> {
                                 setState(() {
                                   isConnecting = !isConnecting;
                                 });
-                                Future.delayed(2.seconds, () {
+                                Future.delayed(1.seconds, () {
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState!.save();
                                     setState(() {

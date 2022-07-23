@@ -47,8 +47,8 @@ class UserKDG implements Type {
     _creation = map['creation'];
   }
 
-  UserKDG.fromFirebase(QueryDocumentSnapshot map,String id) {
-    _id =id;
+  UserKDG.fromFirebase(QueryDocumentSnapshot map, String id) {
+    _id = id;
     _name = map['name'];
     _imgsrc = map['imgsrc'];
     _email = map['email'];
@@ -56,14 +56,14 @@ class UserKDG implements Type {
     _provider = map['provider'];
     _creation = map['creation'];
   }
-  UserKDG.fromFirebase2(DocumentSnapshot map,String id) {
-    _id =id;
-    _name = map['name'];
-    _imgsrc = map['imgsrc'];
-    _email = map['email'];
-    _telephone = map['telephone'];
-    _provider = map['provider'];
-    _creation = map['creation'];
+  UserKDG.fromFirebase2(DocumentSnapshot map, String id) {
+    _id = id;
+    _name = map.get("name");
+    _imgsrc = map.get("imgsrc");
+    _email = map.get("email");
+    _telephone = map.get("telephone");
+    _provider = map.get("provider");
+    _creation = map.get("creation");
   }
   Map<String, dynamic> toMap() {
     return {
@@ -72,7 +72,7 @@ class UserKDG implements Type {
       'email': _email,
       'imgsrc': imgsrc,
       'provider': _provider,
-			'creation': _creation,
+      'creation': _creation,
     };
   }
 }

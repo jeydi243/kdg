@@ -182,16 +182,28 @@ class _DetailsCarState extends State<DetailsCar> {
                       onPressed: () {},
                       child: Text("Activer les notifications d'echéance")),
                   TextButton(
-                      onPressed: () {
-                        showGeneralDialog(
+                      onPressed: () async {
+                        await showGeneralDialog(
                             context: context,
                             barrierDismissible: true,
-                            transitionDuration: 1.seconds,
-                            barrierLabel: "Okay",
+                            transitionDuration: 500.milliseconds,
+                            barrierLabel: "",
+                            transitionBuilder: (ctx, anim1, anim2, child) =>
+                                BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                      sigmaX: 4 * anim1.value,
+                                      sigmaY: 4 * anim1.value),
+                                  child: FadeTransition(
+                                    child: child,
+                                    opacity: anim1,
+                                  ),
+                                ),
                             pageBuilder: (g, n, j) {
                               return Container(
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10)),
+                                  shape: BoxShape.circle,
+                                  // borderRadius: BorderRadius.circular(10)
+                                ),
                                 child: FractionallySizedBox(
                                   alignment: Alignment.center,
                                   widthFactor: .8,
@@ -271,7 +283,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                     child: FractionallySizedBox(
                                       alignment: Alignment.center,
                                       widthFactor: .8,
-                                      heightFactor: .5,
+                                      heightFactor: .55,
                                       child: Material(
                                         borderRadius: BorderRadius.circular(10),
                                         color: AppColors.backgroundDark,
@@ -318,7 +330,8 @@ class _DetailsCarState extends State<DetailsCar> {
                                             Padding(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 10),
-                                              child: AddDocument(),
+                                              child: AddDocument(widget.car.id,
+                                                  e['doc'] as String),
                                             ),
                                           ],
                                         ),
