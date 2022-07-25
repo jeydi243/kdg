@@ -406,7 +406,7 @@ class _DetailsCarState extends State<DetailsCar> {
     ];
   }
 
-  handlechange() {
+  void handlechange() {
     if (_sc.position.maxScrollExtent > _sc.position.pixels) {
       _sc.animateTo(
         _sc.position.maxScrollExtent,
@@ -447,8 +447,10 @@ class _DetailsCarState extends State<DetailsCar> {
         onPressed: () {
           if (_pc.isPanelOpen) {
             _pc.close();
+            setState(() {});
           } else {
             _pc.open();
+            setState(() {});
           }
         },
       ),
@@ -466,11 +468,20 @@ class _DetailsCarState extends State<DetailsCar> {
         isDraggable: true,
         minHeight: 0,
         backdropEnabled: true,
-        panel: Chat(
-          hideBackgroundOnEmojiMessages: true,
-          messages: messages,
-          onSendPressed: _handleSendPressed,
-          user: _user,
+        panel: Column(
+          children: [
+            Text("Ni mambo"),
+            Expanded(
+              child: Chat(
+                hideBackgroundOnEmojiMessages: true,
+                messages: messages,
+
+                // theme: ChatTheme(),
+                onSendPressed: _handleSendPressed,
+                user: _user,
+              ),
+            ),
+          ],
         ),
         body: ListView(
           controller: _sc,

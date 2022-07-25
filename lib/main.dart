@@ -3,6 +3,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
 import 'package:local_auth/local_auth.dart';
@@ -48,8 +49,6 @@ class Kdg extends StatelessWidget {
       title: 'Kdg',
       routes: {
         '/profile': (context) => Profile(),
-        // '/about': (context) => Profile(),
-        // '/rapport': (context) => Profile(),
       },
       darkTheme: KDGTheme.dark(context),
       theme: KDGTheme.light(context),
@@ -99,43 +98,12 @@ class Kdg extends StatelessWidget {
           onAuthenticationSucceed: () async {
             print('auth success');
           },
-          child: child ?? Container()),
+          child: child ??
+              Container(
+                child: Center(child: Text('Did you bind Widget ?')),
+              )),
       home: Login(),
-      // customTransition: CircleTrans(),
-      // home: LayoutBuilder(
-      //   builder: (context, constraints) {
-      //     if (constraints.maxHeight == Get.height) {
-      //       return StreamBuilder<User>(
-      //         stream: FirebaseAuth.instance.authStateChanges(),
-      //         builder: (context, snapshot) {
-      //           if (snapshot.hasData && snapshot.data is User) {
-      //             return SplashScreen(
-      //               nextPage: Home(),
-      //             );
-      //           } else {
-      //             return SplashScreen(
-      //               nextPage: Login(
-      //                 title: '55',
-      //               ),
-      //             );
-      //           }
-      //         },
-      //       );
-      //     }
-      //     return StreamBuilder<User>(
-      //       stream: FirebaseAuth.instance.onAuthStateChanged,
-      //       builder: (context, snapshot) {
-      //         if (snapshot.hasData && snapshot.data is User) {
-      //           return Home();
-      //         } else {
-      //           return Login(
-      //             title: '52',
-      //           );
-      //         }
-      //       },
-      //     );
-      //   },
-      // )
+      customTransition: CircleTrans(),
     );
   }
 }

@@ -19,25 +19,25 @@ class AddDocument extends GetView<CarService> {
       formKey.currentState!.save();
       await controller.updateCarStep1(id_car, namedoc);
 
-      await Get.dialog(Dialog(
-        child: StatefulBuilder(
-            builder: (context, setState) => Center(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: Material(
-                      child: Row(
-                        children: [
-                          CircularProgressIndicator(
-                            value: controller.progress,
-                            color: AppColors.accent,
-                          ),
-                          Text('Uploading..${controller.progress}%')
-                        ],
-                      ),
+      await Get.dialog(StatefulBuilder(
+          builder: (context, setState) => Center(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Container(
+                    height: Get.height * .2,
+                    width: Get.width * .8,
+                    child: Row(
+                      children: [
+                        CircularProgressIndicator(
+                          value: controller.progress,
+                          color: AppColors.accent,
+                        ),
+                        Text('Uploading..${controller.progress}%')
+                      ],
                     ),
                   ),
-                )),
-      ));
+                ),
+              )));
       if (1 == 1) {
         Get.snackbar("Update Card", "La mise a  jour a reussi");
       } else {

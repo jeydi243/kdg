@@ -42,12 +42,13 @@ class _CarItemState extends State<CarItem> {
         closedElevation: 0,
         transitionType: ContainerTransitionType.fade,
         middleColor: Color.fromARGB(255, 1, 48, 105),
+        closedColor: Color.fromARGB(255, 1, 48, 105),
         openBuilder: (context, action) {
           return DetailsCar(car, action);
           // return DetailsCar(car, action);
         },
         closedBuilder: (ctx, action) => ListTile(
-          onLongPress: ()async {
+          onLongPress: () async {
             await HapticFeedback.heavyImpact();
           },
           enableFeedback: true,

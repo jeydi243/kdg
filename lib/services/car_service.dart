@@ -33,6 +33,7 @@ class CarService extends GetxController {
   List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
+  Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
 
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
   final storageRef = FirebaseStorage.instance.ref();
@@ -46,7 +47,8 @@ class CarService extends GetxController {
     ever(exception, onFirebaseException);
     ever(downloadurl, (String value) {
       if (value != "") {
-        updateCarStep2(id, value);
+        updateCarStep2(ref_ref.value!.id, value);
+        print('File downloaded at: $value');
       }
     });
     super.onReady();
@@ -163,6 +165,7 @@ class CarService extends GetxController {
           case TaskState.success:
             file_upload_state.value = true;
             snapshot.ref.getDownloadURL().then((value) {
+              print('File downloaded at: $value');
               downloadurl.value = value;
             });
             update();
@@ -171,7 +174,7 @@ class CarService extends GetxController {
             // ...
             break;
           case TaskState.error:
-            // ...
+           Get.snackbar('Misa à jour $namedoc',"Erreur lors de la mise à jour de la vignette");
             break;
         }
       });
@@ -225,22 +228,30 @@ class CarService extends GetxController {
     return paletteGenerator.dominantColor!.color;
   }
 
-  Future<void> updateCarStep1(String id, String namedoc) async {
+  Future<void> updateCarStep1(String idcard, String namedoc) async {
     try {
       prepareUpdateCar();
-      storefile(namedoc, id, updatedCar.value['file'] as File);
+      ref_ref.value = firestore
+          .collection('cars')
+          .doc(idcard)
+          .collection('documents')
+          .doc();
+      update();
+      storefile(namedoc, idcard, updatedCar.value['file'] as File);
     } catch (e, s) {
       print("$e, $s");
       return;
     }
   }
 
-  Future<bool> updateCarStep2(String id, String linktofile) async {
+  Future<bool> updateCarStep2(String? iddoc, String linktofile) async {
     try {
-      await carsRef.doc(id).collection("documents").add(updatedCar.value);
-      await carsRef.doc(id).update(updatedCar.value);
+      updatedCar.value['file'] = linktofile;
+      await ref_ref.value!.set(updatedCar.value);
+      Get.snackbar("Update Car", "Car document at id $iddoc");
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }
