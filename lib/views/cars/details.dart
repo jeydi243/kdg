@@ -170,13 +170,13 @@ class _DetailsCarState extends State<DetailsCar> {
     return Container(
         height: Get.height * .3,
         width: Get.width * .9,
-        // padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextButton(
                       onPressed: () {},
@@ -274,69 +274,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                   ),
                                 ),
                             pageBuilder: (g, n, j) {
-                              return StatefulBuilder(
-                                builder: (context, setState) {
-                                  return FractionallySizedBox(
-                                    alignment: Alignment.center,
-                                    widthFactor: .8,
-                                    heightFactor: .50,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.teal,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Material(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: AppColors.backgroundDark,
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 10),
-                                                  child: Text(
-                                                    "${(e["doc_name"] as String).capitalizeFirst}",
-                                                    style: Get.textTheme
-                                                        .displayMedium!
-                                                        .copyWith(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                  ),
-                                                ),
-                                                InkWell(
-                                                  onTap: () {
-                                                    Get.back();
-                                                  },
-                                                  child: Container(
-                                                    height: 35,
-                                                    width: 35,
-                                                    child: Icon(Icons.close),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.red,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        10))),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            AddDocument(widget.car.id,
-                                                e["doc_name"] as String),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
+                              return AddDocument(widget.car.id, e);
                             });
                       },
                       child: Text('Mettre à jour le document')),
@@ -392,52 +330,25 @@ class _DetailsCarState extends State<DetailsCar> {
     list = [
       {
         "doc_name": 'assurance',
-        "value": car.defaultAssurance,
+        "doc_id": car.defaultAssurance,
         "isExpanded": false
       },
       {
         "doc_name": 'controle_technique',
-        "value": car.defaultControle,
+        "doc_id": car.defaultControle,
         "isExpanded": false
       },
       {
         "doc_name": 'vignette',
-        "value": car.defaultVignette,
+        "doc_id": car.defaultVignette,
         "isExpanded": false
       },
       {
         "doc_name": 'stationnement',
-        "value": car.defaultStationnement,
+        "doc_id": car.defaultStationnement,
         "isExpanded": false
       },
     ];
-  }
-
-  void handlechange() {
-    if (_sc.position.maxScrollExtent > _sc.position.pixels) {
-      _sc.animateTo(
-        _sc.position.maxScrollExtent,
-        duration: 1.seconds,
-        curve: Curves.easeOutBack,
-      );
-    }
-  }
-
-  void _addMessage(types.Message message) {
-    setState(() {
-      messages.insert(0, message);
-    });
-  }
-
-  void _handleSendPressed(types.PartialText message) {
-    final textMessage = types.TextMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: randomString(),
-      text: message.text,
-    );
-
-    _addMessage(textMessage);
   }
 
   @override
@@ -494,14 +405,6 @@ class _DetailsCarState extends State<DetailsCar> {
         panel: Column(
           children: [
             Text("Ni mambo"),
-            Expanded(
-              child: Chat(
-                hideBackgroundOnEmojiMessages: true,
-                messages: messages,
-                onSendPressed: _handleSendPressed,
-                user: _user,
-              ),
-            ),
           ],
         ),
         body: SmartRefresher(
@@ -618,7 +521,6 @@ class _DetailsCarState extends State<DetailsCar> {
                                     ? Color.fromARGB(255, 1, 67, 148)
                                     : Color.fromARGB(255, 1, 48, 105),
                                 onTap: () {
-                                  handlechange();
                                   setState(() {
                                     e["isExpanded"] = !e["isExpanded"];
                                   });
@@ -632,7 +534,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                           .copyWith(color: AppColors.accent),
                                     ),
                                     Text(
-                                      'Expire dans : ${20 + i} jours',
+                                      'Expire dans ${20 + Random().nextInt(30)} jours',
                                       style: Get.textTheme.bodyText2,
                                     ),
                                   ],

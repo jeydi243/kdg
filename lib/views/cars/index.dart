@@ -19,15 +19,12 @@ class IndexCar extends StatefulWidget {
 
 class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
   late AnimationController controller;
-  // RefreshController _refresh = RefreshController(initialRefresh: false);
   late PanelController _pc;
   bool isPanelOpen = false;
-  CarService carservice = Get.find();
   @override
   void initState() {
     _pc = new PanelController();
     controller = AnimationController(vsync: this, duration: 1.seconds);
-
     super.initState();
   }
 
@@ -324,10 +321,10 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                 ),
               ),
               SliverAnimatedList(
-                initialItemCount: carservice.cars.length,
+                initialItemCount: controller.cars.length,
                 itemBuilder: (ctx, int i, Animation<double> an) {
                   return CarItem(
-                    item: carservice.cars[i],
+                    item: controller.cars[i],
                   );
                 },
               ),

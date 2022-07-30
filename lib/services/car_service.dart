@@ -251,6 +251,7 @@ class CarService extends GetxController {
       await ref_ref.value!.set(updatedCar.value);
 
       Get.snackbar("Update Car", "Car document at id $iddoc");
+      resetForm();
       return true;
     } catch (e) {
       print(e);

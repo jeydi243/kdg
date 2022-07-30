@@ -48,6 +48,7 @@ class Kdg extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(Get.isDarkMode
         ? SystemUiOverlayStyle.light
         : SystemUiOverlayStyle.dark);
+
     return GetMaterialApp(
       title: 'Kdg',
       routes: {
@@ -108,5 +109,6 @@ class Kdg extends StatelessWidget {
       home: Login(),
       customTransition: CircleTrans(),
     );
+
   }
 }
