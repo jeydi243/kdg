@@ -5,6 +5,8 @@ class Car {
   String model;
   String nom;
   String type_carburant;
+  String color;
+  String brand;
   Document? assurance;
   Document? controle_technique;
   Document? stationnement;
@@ -21,7 +23,9 @@ class Car {
   String get Nom => nom;
   Car({
     required this.model,
+    required this.brand,
     required this.nom,
+    required this.color,
     required this.id,
     required this.defaultAssurance,
     required this.defaultControle,
@@ -33,7 +37,9 @@ class Car {
       : id = snapshot['id'] ?? '',
         nom = snapshot['name'] ?? '',
         type_carburant = snapshot['type_carburant'] ?? '',
-        model = snapshot['model'] ?? '',
+        model = snapshot['model'],
+        brand = snapshot['brand'],
+        color = snapshot['color'],
         defaultControle = snapshot['controle_technique'],
         defaultVignette = snapshot['vignette'],
         defaultAssurance = snapshot['assurance'] ?? "",
@@ -44,7 +50,9 @@ class Car {
     SnapshotOptions? options,
   )   : nom = snapshot.data()?["nom"],
         id = snapshot.id,
-        model = snapshot.data()?["model"],
+        model = snapshot.get("model"),
+        color = snapshot.get('color'),
+        brand = snapshot.get('brand'),
         type_carburant = snapshot.data()?["type_carburant"],
         defaultControle = snapshot.get("controle_technique"),
         defaultVignette = snapshot.get('vignette'),

@@ -42,7 +42,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
     CarService controller = Get.find();
 
     return Scaffold(
-      // backgroundColor: HexColor.fromHex("FDF8F8"),
+      backgroundColor: AppColors.backgroundDark,
       floatingActionButton: isPanelOpen
           ? null
           : FloatingActionButton(
@@ -254,7 +254,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.close, color: Colors.red),
-                  Text("Failed to update car")
+                  Text("Failed to update")
                 ],
               )),
               completeDuration: 2.seconds),
@@ -264,14 +264,14 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                expandedHeight: Get.height * .35,
+                expandedHeight: Get.height * .3,
                 toolbarHeight: Get.height * .04,
                 actions: [
                   IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
                 ],
                 stretch: true,
                 collapsedHeight: Get.height * .05,
-                backgroundColor: HexColor.fromHex("FDF8F8"),
+                backgroundColor: AppColors.backgroundDark,
                 flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
                   collapseMode: CollapseMode.parallax,
@@ -282,8 +282,8 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           "${(widget.item['collection'] as String).capitalizeFirst}",
                           style: TextStyle(fontSize: 25, color: Colors.white))),
                   stretchModes: [
-                    StretchMode.blurBackground,
                     StretchMode.zoomBackground,
+                    StretchMode.blurBackground,
                     StretchMode.fadeTitle
                   ],
                   background: GestureDetector(
@@ -292,15 +292,15 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                     },
                     child: ClipRRect(
                       borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(20)),
+                          BorderRadius.vertical(bottom: Radius.circular(10)),
                       child: Stack(children: [
                         Hero(
                           tag: widget.item['imgsrc'],
                           child: Image.asset(
                             widget.item['imgsrc'],
                             fit: BoxFit.cover,
-                            // height: Get.height * .40,
-                            // width: double.infinity,
+                            height: Get.height * .45,
+                            width: double.infinity,
                           ),
                         ),
                         Align(

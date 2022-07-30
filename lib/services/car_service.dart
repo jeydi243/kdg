@@ -28,22 +28,23 @@ class CarService extends GetxController {
   final downloadurl = "".obs;
   final file = Rx<File>;
   final storageRef = FirebaseStorage.instance.ref();
+  RxBool filepicked = RxBool(false);
   RxBool isLoadingDocument = RxBool(true);
-  RxBool filepicked = false.obs;
+  Rx<Car?> currentCar = Rx<Car?>(null);
+  Rx<String> currentCarId = Rx<String>("");
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
+  Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
   Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
-  List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
-  Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
   Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
-  Rx<String> currentCarId = Rx<String>("");
-  Rx<Car?> currentCar = Rx<Car?>(null);
+  List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   RefreshController refreshc = RefreshController(initialRefresh: false);
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
   Rx<InternetConnectionStatus> connectionStatus =
       Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
+
   @override
   void onReady() {
     ever(file_upload_state, (bool value) {
@@ -101,6 +102,7 @@ class CarService extends GetxController {
 
   List<Car> get cars => _cars.value;
   double get progress => file_upload_progress.value;
+
   set endDate(DateTime? value) {
     end_date.value.text = value!.toLocal().toIso8601String();
     update();
@@ -115,33 +117,6 @@ class CarService extends GetxController {
   set startDate(DateTime? value) {
     start_date.value.text = value!.toLocal().toIso8601String();
     update();
-  }
-
-  Future<List<Document>?> getCarDocs({required String id}) async {
-    List<Document> cardocs = <Document>[];
-    try {
-      QuerySnapshot f = await docsRef
-          .where('idCar', isEqualTo: id)
-          .where("start_date", isLessThanOrEqualTo: DateTime.now())
-          .get();
-      for (QueryDocumentSnapshot doc in f.docs) {
-        cardocs.add(new Document.fromMap(doc, doc.id));
-      }
-      return cardocs;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<void> getCars() async {
-    try {
-      QuerySnapshot f = await carsRef.get();
-      for (var i = 0; i < f.size; i++) {
-        _cars.value.add(f.docs[i].data() as Car);
-      }
-    } catch (e, s) {
-      Get.snackbar("CARS", "Can't retrive car $e: $s", duration: 50.seconds);
-    }
   }
 
   void prepareUpdateCar() {
@@ -210,6 +185,23 @@ class CarService extends GetxController {
     }
   }
 
+  Future<List<Document>?> getCarDocs({required String id}) async {
+    List<Document> cardocs = <Document>[];
+    try {
+      QuerySnapshot f = await docsRef
+          .where('idCar', isEqualTo: id)
+          .where("start_date", isLessThanOrEqualTo: DateTime.now())
+          .get();
+      for (QueryDocumentSnapshot doc in f.docs) {
+        cardocs.add(new Document.fromMap(doc, doc.id));
+      }
+      return cardocs;
+    } on StateError catch (e) {
+      Get.snackbar("State Error", e.message);
+      return null;
+    }
+  }
+
   Future<Color> getImagePalette(ImageProvider imageProvider) async {
     final PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(imageProvider);
@@ -220,6 +212,17 @@ class CarService extends GetxController {
     return carsRef.snapshots().map<List<Car>>((event) {
       return event.docs.map((e) => e.data()).toList();
     });
+  }
+
+  Future<void> getCars() async {
+    try {
+      QuerySnapshot f = await carsRef.get();
+      for (var i = 0; i < f.size; i++) {
+        _cars.value.add(f.docs[i].data() as Car);
+      }
+    } catch (e, s) {
+      Get.snackbar("CARS", "Can't retrive car $e: $s", duration: 50.seconds);
+    }
   }
 
   Future<void> updateCarStep1(String idcard, String namedoc) async {
@@ -236,8 +239,8 @@ class CarService extends GetxController {
 
       await car_ref.update({namedoc: "${ref_ref.value!.id}"});
       storefile(namedoc, idcard, updatedCar.value['file'] as File);
-    } catch (e, s) {
-      print("$e, $s");
+    } on FirebaseException catch (e, s) {
+      exception.value = e;
       return;
     }
   }
@@ -317,11 +320,11 @@ class CarService extends GetxController {
     currentCar.bindStream(carsRef.doc(idCar).snapshots().cast<Car>());
   }
 
-  void onLoading() {
+  onLoading() {
     print('On loading');
   }
 
-  void onLoadingDetails() {
+  onLoadingDetails() {
     print('On loading details of car');
   }
 
