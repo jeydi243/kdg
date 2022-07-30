@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/components/pageV.dart';
@@ -13,6 +14,7 @@ import 'package:kdg/models/car.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:collection/collection.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -164,7 +166,7 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
-  Widget actions(BuildContext ctx, Map<String, dynamic> e) {
+  Widget Actions(BuildContext ctx, Map<String, dynamic> e) {
     return Container(
         height: Get.height * .3,
         width: Get.width * .9,
@@ -274,14 +276,15 @@ class _DetailsCarState extends State<DetailsCar> {
                             pageBuilder: (g, n, j) {
                               return StatefulBuilder(
                                 builder: (context, setState) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: FractionallySizedBox(
-                                      alignment: Alignment.center,
-                                      widthFactor: .8,
-                                      heightFactor: .55,
+                                  return FractionallySizedBox(
+                                    alignment: Alignment.center,
+                                    widthFactor: .8,
+                                    heightFactor: .50,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.teal,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
                                       child: Material(
                                         borderRadius: BorderRadius.circular(10),
                                         color: AppColors.backgroundDark,
@@ -297,7 +300,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                                       const EdgeInsets.only(
                                                           left: 10),
                                                   child: Text(
-                                                    "${(e['doc'] as String).capitalizeFirst}",
+                                                    "${(e["doc_name"] as String).capitalizeFirst}",
                                                     style: Get.textTheme
                                                         .displayMedium!
                                                         .copyWith(
@@ -325,12 +328,8 @@ class _DetailsCarState extends State<DetailsCar> {
                                                 )
                                               ],
                                             ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              child: AddDocument(widget.car.id,
-                                                  e['doc'] as String),
-                                            ),
+                                            AddDocument(widget.car.id,
+                                                e["doc_name"] as String),
                                           ],
                                         ),
                                       ),
@@ -391,15 +390,23 @@ class _DetailsCarState extends State<DetailsCar> {
     });
     Car car = widget.car;
     list = [
-      {"doc": 'assurance', "value": car.defaultAssurance, "isExpanded": false},
       {
-        "doc": 'controle technique',
+        "doc_name": 'assurance',
+        "value": car.defaultAssurance,
+        "isExpanded": false
+      },
+      {
+        "doc_name": 'controle_technique',
         "value": car.defaultControle,
         "isExpanded": false
       },
-      {"doc": 'vignette', "value": car.defaultVignette, "isExpanded": false},
       {
-        "doc": 'stationnement',
+        "doc_name": 'vignette',
+        "value": car.defaultVignette,
+        "isExpanded": false
+      },
+      {
+        "doc_name": 'stationnement',
         "value": car.defaultStationnement,
         "isExpanded": false
       },
@@ -435,12 +442,28 @@ class _DetailsCarState extends State<DetailsCar> {
 
   @override
   Widget build(BuildContext context) {
+    CarService controller = Get.find();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(
-          '${widget.car.Nom.capitalizeFirst}',
-          style: TextStyle(fontSize: 25),
+        actions: [
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.bell, size: 20),
+            onPressed: () {
+              showDialog(context: context, builder: (ctx) => connaissance(ctx));
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
+          ),
+        ],
+        title: Hero(
+          tag: widget.car.id,
+          child: Text(
+            '${widget.car.Nom.capitalizeFirst}',
+            style: TextStyle(fontSize: 25),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -475,175 +498,191 @@ class _DetailsCarState extends State<DetailsCar> {
               child: Chat(
                 hideBackgroundOnEmojiMessages: true,
                 messages: messages,
-
-                // theme: ChatTheme(),
                 onSendPressed: _handleSendPressed,
                 user: _user,
               ),
             ),
           ],
         ),
-        body: ListView(
-          controller: _sc,
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.only(bottom: 20),
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 10),
-              child: Row(
+        body: SmartRefresher(
+          header: WaterDropHeader(
+              waterDropColor: AppColors.accent,
+              complete: Text('Updated...'),
+              failed: Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Gallerie",
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  Icon(Icons.close, color: Colors.red),
+                  Text("Failed to update")
                 ],
-              ),
-            ),
-            SizedBox(width: Get.width, height: Get.height * .4, child: PageV()),
-            Container(
-                // color: Colors.blue,
-                height: 250,
-                width: 150,
-                child: Column(
+              )),
+              completeDuration: 2.seconds),
+          controller: controller.refreshc2,
+          onRefresh: controller.onRefreshDetails,
+          onLoading: controller.onLoadingDetails,
+          child: ListView(
+            controller: _sc,
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.only(bottom: 20),
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 10),
+                child: Row(
                   children: [
-                    ...infos.entries
-                        .toList()
-                        .mapIndexed<Widget>((index, entry) {
-                      return Container(
-                        height: 35,
-                        color: index % 2 == 0
-                            ? Colors.transparent
-                            : Colors.blue[50],
-                        child: InkWell(
-                          onTap: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                entry.key,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: index % 2 != 0
-                                        ? AppColors.textDark
-                                        : Colors.blue[50],
-                                    fontSize: 15),
-                              ),
-                              Text(
-                                entry.value,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: index % 2 != 0
-                                        ? AppColors.textDark
-                                        : Colors.blue[50],
-                                    fontSize: 15),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+                    Text(
+                      "Gallerie",
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ],
-                )),
-            Container(
-              padding: EdgeInsets.only(left: 10, bottom: 10),
-              child: Row(
-                children: [
-                  Text(
-                    "Documents",
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 200),
-              child: ExpansionPanelList(
-                animationDuration: 1.seconds,
-                dividerColor: HexColor.fromHex("#000"),
-                expandedHeaderPadding: EdgeInsets.all(0),
-                elevation: 0,
-                children: [
-                  ...list
-                      .mapIndexed((i, e) => ExpansionPanel(
-                            isExpanded: e["isExpanded"],
-                            backgroundColor: Color.fromARGB(255, 1, 48, 105),
-                            body: actions(context, e),
-                            headerBuilder: (ctx, bool isExpanded) => ListTile(
-                              tileColor: isExpanded
-                                  ? Color.fromARGB(255, 1, 67, 148)
-                                  : Color.fromARGB(255, 1, 48, 105),
-                              onTap: () {
-                                handlechange();
-                                setState(() {
-                                  e["isExpanded"] = !e["isExpanded"];
-                                });
-                              },
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "${(e['doc'] as String).capitalizeFirst}",
-                                    style: Get.textTheme.headline4!
-                                        .copyWith(color: AppColors.accent),
-                                  ),
-                                  Text(
-                                    'Expire dans : ${20 + i} jours',
-                                    style: Get.textTheme.bodyText2,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                ],
-                expansionCallback: (int item, bool status) {
-                  // Get.snackbar("Title $item", "Message $status");
-                  showAnimatedDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    axis: Axis.vertical,
-                    alignment: Alignment.center,
-                    builder: (BuildContext context) {
-                      return Container(
-                        width: Get.width,
-                        color: AppColors.backgroundDark,
-                        child: FractionallySizedBox(
-                          heightFactor: 0.5,
-                          widthFactor: .8,
-                          alignment: Alignment.center,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10),
-                            child: ListView(
+              SizedBox(
+                  width: Get.width, height: Get.height * .3, child: PageV()),
+              Container(
+                  // color: Colors.blue,
+                  height: 250,
+                  width: 150,
+                  child: Column(
+                    children: [
+                      ...infos.entries
+                          .toList()
+                          .mapIndexed<Widget>((index, entry) {
+                        return Container(
+                          height: 35,
+                          color: index % 2 == 0
+                              ? Colors.transparent
+                              : Colors.blue[50],
+                          child: InkWell(
+                            onTap: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisSize: MainAxisSize.max,
                               children: [
-                                ...actionsDialog
-                                    .map((e) => ListTile(
-                                          onTap: () {
-                                            print('Le ');
-                                          },
-                                          title: Text(e['text']),
-                                        ))
-                                    .toList()
+                                Text(
+                                  entry.key,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: index % 2 != 0
+                                          ? AppColors.textDark
+                                          : Colors.blue[50],
+                                      fontSize: 15),
+                                ),
+                                Text(
+                                  entry.value,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: index % 2 != 0
+                                          ? AppColors.textDark
+                                          : Colors.blue[50],
+                                      fontSize: 15),
+                                )
                               ],
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    animationType: DialogTransitionType.size,
-                    curve: Curves.fastOutSlowIn,
-                    duration: Duration(seconds: 1),
-                  );
-                },
+                        );
+                      }),
+                    ],
+                  )),
+              Container(
+                padding: EdgeInsets.only(left: 10, bottom: 10),
+                child: Row(
+                  children: [
+                    Text(
+                      "Documents",
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-            )
-          ],
+              Container(
+                padding: EdgeInsets.only(bottom: 200),
+                child: ExpansionPanelList(
+                  animationDuration: 1.seconds,
+                  dividerColor: HexColor.fromHex("#000"),
+                  expandedHeaderPadding: EdgeInsets.all(0),
+                  elevation: 0,
+                  children: [
+                    ...list
+                        .mapIndexed((i, e) => ExpansionPanel(
+                              isExpanded: e["isExpanded"],
+                              backgroundColor: Color.fromARGB(255, 1, 48, 105),
+                              body: Actions(context, e),
+                              headerBuilder: (ctx, bool isExpanded) => ListTile(
+                                tileColor: isExpanded
+                                    ? Color.fromARGB(255, 1, 67, 148)
+                                    : Color.fromARGB(255, 1, 48, 105),
+                                onTap: () {
+                                  handlechange();
+                                  setState(() {
+                                    e["isExpanded"] = !e["isExpanded"];
+                                  });
+                                },
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${(e["doc_name"] as String).capitalizeFirst}",
+                                      style: Get.textTheme.headline4!
+                                          .copyWith(color: AppColors.accent),
+                                    ),
+                                    Text(
+                                      'Expire dans : ${20 + i} jours',
+                                      style: Get.textTheme.bodyText2,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ],
+                  expansionCallback: (int item, bool status) {
+                    // Get.snackbar("Title $item", "Message $status");
+                    showAnimatedDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      axis: Axis.vertical,
+                      alignment: Alignment.center,
+                      builder: (BuildContext context) {
+                        return Container(
+                          width: Get.width,
+                          color: AppColors.backgroundDark,
+                          child: FractionallySizedBox(
+                            heightFactor: 0.5,
+                            widthFactor: .8,
+                            alignment: Alignment.center,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(10),
+                              child: ListView(
+                                children: [
+                                  ...actionsDialog
+                                      .map((e) => ListTile(
+                                            onTap: () {
+                                              print('Le ');
+                                            },
+                                            title: Text(e['text']),
+                                          ))
+                                      .toList()
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      animationType: DialogTransitionType.size,
+                      curve: Curves.fastOutSlowIn,
+                      duration: Duration(seconds: 1),
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

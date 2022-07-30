@@ -120,6 +120,7 @@ class UserService extends GetxController {
       return {'message': "L'utilisateur a bien été enregistré", "state": true};
     } on FirebaseException catch (e) {
       exception.value = e;
+      return null;
     }
   }
 
@@ -146,6 +147,7 @@ class UserService extends GetxController {
       exception.value = e;
     } finally {
       update();
+      return null;
     }
   }
 
@@ -216,7 +218,7 @@ class UserService extends GetxController {
     try {
       token.value = await _fcm.getToken();
       await userDocRef.value!.update({'token': token});
-    } on FirebaseException catch (e, r) {
+    } on FirebaseException catch (e) {
       exception.value = e;
     } finally {
       update();
@@ -246,7 +248,7 @@ class UserService extends GetxController {
           'token': token
         });
       }
-    } on FirebaseException catch (e, r) {
+    } on FirebaseException catch (e) {
       exception.value = e;
     } finally {
       update();
@@ -256,7 +258,7 @@ class UserService extends GetxController {
   Future<Map<String, dynamic>?> resetPassByEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-    } on FirebaseException catch (e, r) {
+    } on FirebaseException catch (e) {
       exception.value = e;
     } finally {
       update();
@@ -271,7 +273,7 @@ class UserService extends GetxController {
         'message': "Le mot de passe a été modifié avec succes!",
         'shouldBack': true
       };
-    } on FirebaseException catch (e, r) {
+    } on FirebaseException catch (e) {
       exception.value = e;
     }
   }

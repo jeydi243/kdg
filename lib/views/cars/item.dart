@@ -58,9 +58,12 @@ class _CarItemState extends State<CarItem> {
           onTap: () {
             action();
           },
-          title: Text(
-            car.Nom.capitalizeFirst!,
-            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+          title: Hero(
+            tag: car.id,
+            child: Text(
+              car.Nom.capitalizeFirst!,
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            ),
           ),
           subtitle: Text("Type carburant: ${car.type_carburant}"),
           trailing: Column(

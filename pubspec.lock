@@ -548,6 +548,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  internet_connection_checker:
+    dependency: "direct main"
+    description:
+      name: internet_connection_checker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+4"
   intl:
     dependency: transitive
     description:
@@ -849,6 +856,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.0.2"
+  pull_to_refresh:
+    dependency: "direct main"
+    description:
+      name: pull_to_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   quiver:
     dependency: transitive
     description:
@@ -1196,7 +1210,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.1"
+    version: "6.1.0"
 sdks:
   dart: ">=2.17.0 <3.0.0"
   flutter: ">=3.0.0"

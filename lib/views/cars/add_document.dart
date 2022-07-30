@@ -49,9 +49,8 @@ class AddDocument extends GetView<CarService> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      // color: Colors.red,
+    return FractionallySizedBox(
+      alignment: Alignment.center,
       child: Form(
         key: formKey,
         child: Column(
@@ -112,9 +111,12 @@ class AddDocument extends GetView<CarService> {
                     child: !controller.filepicked.value
                         ? DottedBorder(
                             color: AppColors.accentDark,
+                            radius: Radius.circular(15),
                             child: Container(
-                              height: 150,
+                              height: 40,
                               padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15)),
                               child: Row(
                                 children: [
                                   Text("Choisis un Fichier PDF ou Docx"),
@@ -142,7 +144,7 @@ class AddDocument extends GetView<CarService> {
             TextButton(onPressed: submitForm, child: Text('Mettre à jour')),
             TextButton(
                 onPressed: () {
-                  controller.reset();
+                  controller.resetForm();
                   Get.back();
                 },
                 child: Text('Annuler'),

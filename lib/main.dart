@@ -45,6 +45,9 @@ class Kdg extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(Get.isDarkMode
+        ? SystemUiOverlayStyle.light
+        : SystemUiOverlayStyle.dark);
     return GetMaterialApp(
       title: 'Kdg',
       routes: {

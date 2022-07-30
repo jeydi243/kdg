@@ -91,48 +91,47 @@ class _CustomGridState extends State<CustomGrid> {
                   child: Stack(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            await HapticFeedback.vibrate();
-                            switch (list[index]['collection']) {
-                              case 'cars':
-                                Get.to(() => IndexCar(item: list[index]));
-                                break;
-                              case 'houses':
-                                Get.to(() => IndexHouse(item: list[index]));
-                                break;
-                              case 'rapports':
-                                Get.to(() => IndexRapport(item: list[index]));
-                                break;
-                              case 'familles':
-                                Get.to(() => IndexFamille(item: list[index]));
-                                break;
-                              case 'projets':
-                                Get.to(() => IndexProjet(item: list[index]));
-                                break;
-                              default:
-                                Get.to(() => IndexBdd(item: list[index]));
-                                break;
-                            }
-                          },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Hero(
-                              tag: list[index]['imgsrc'],
-                              child: Image.asset(
-                                list[index]['imgsrc'],
-                                fit: BoxFit.cover,
-                                alignment: Alignment.topCenter,
-                                height: Get.height * .2,
-                                width: Get.height * .9,
+                          padding: EdgeInsets.only(bottom: 8.0),
+                          child: GestureDetector(
+                            onTap: () async {
+                              await HapticFeedback.vibrate();
+                              switch (list[index]['collection']) {
+                                case 'cars':
+                                  Get.to(() => IndexCar(item: list[index]));
+                                  break;
+                                case 'houses':
+                                  Get.to(() => IndexHouse(item: list[index]));
+                                  break;
+                                case 'rapports':
+                                  Get.to(() => IndexRapport(item: list[index]));
+                                  break;
+                                case 'familles':
+                                  Get.to(() => IndexFamille(item: list[index]));
+                                  break;
+                                case 'projets':
+                                  Get.to(() => IndexProjet(item: list[index]));
+                                  break;
+                                default:
+                                  Get.to(() => IndexBdd(item: list[index]));
+                                  break;
+                              }
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Hero(
+                                tag: list[index]['imgsrc'],
+                                child: Image.asset(
+                                  list[index]['imgsrc'],
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.topCenter,
+                                  height: Get.height * .2,
+                                  width: Get.height * .9,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
+                          )),
                       Align(
-                        alignment: Alignment(-0.9, 1.0),
+                        alignment: Alignment(-0.9, .8),
                         child: Container(
                           child: Hero(
                             tag: "title${list[index]['text']}",
@@ -145,7 +144,7 @@ class _CustomGridState extends State<CustomGrid> {
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          height: 50,
+                          // height: 50,
                         ),
                       ),
                     ],

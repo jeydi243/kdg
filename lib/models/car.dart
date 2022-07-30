@@ -5,19 +5,19 @@ class Car {
   String model;
   String nom;
   String type_carburant;
-  late String id;
   Document? assurance;
-  Document? controle;
+  Document? controle_technique;
   Document? stationnement;
   Document? vignette;
 
-  late Map<String, dynamic> defaultControle;
-  late Map<String, dynamic> defaultAssurance;
-  late Map<String, dynamic> defaultStationnement;
-  late Map<String, dynamic> defaultVignette;
+  late String id;
+  late String defaultControle;
+  late String defaultAssurance;
+  late String defaultStationnement;
+  late String defaultVignette;
 
   List<Document?> get listDocuments =>
-      [assurance, controle, stationnement, vignette];
+      [assurance, controle_technique, stationnement, vignette];
   String get Nom => nom;
   Car({
     required this.model,
@@ -34,23 +34,22 @@ class Car {
         nom = snapshot['name'] ?? '',
         type_carburant = snapshot['type_carburant'] ?? '',
         model = snapshot['model'] ?? '',
-        defaultControle = snapshot['controle'] ?? <String, dynamic>{},
-        defaultVignette = snapshot['vignette'] ?? <String, dynamic>{},
-        defaultAssurance = snapshot['assurance'] ?? <String, dynamic>{},
+        defaultControle = snapshot['controle_technique'],
+        defaultVignette = snapshot['vignette'],
+        defaultAssurance = snapshot['assurance'] ?? "",
         defaultStationnement = snapshot['stationnement'] ?? <String, dynamic>{};
 
   Car.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   )   : nom = snapshot.data()?["nom"],
-        type_carburant = snapshot.data()?["type_carburant"],
         id = snapshot.id,
         model = snapshot.data()?["model"],
-        defaultControle = snapshot.data()?['controle'] ?? <String, dynamic>{},
-        defaultVignette = snapshot.data()?['vignette'] ?? <String, dynamic>{},
-        defaultAssurance = snapshot.data()?['assurance'] ?? <String, dynamic>{},
-        defaultStationnement =
-            snapshot.data()?['stationnement'] ?? <String, dynamic>{};
+        type_carburant = snapshot.data()?["type_carburant"],
+        defaultControle = snapshot.get("controle_technique"),
+        defaultVignette = snapshot.get('vignette'),
+        defaultAssurance = snapshot.get('assurance'),
+        defaultStationnement = snapshot.get('stationnement');
 
   toFirestore() {
     return {
@@ -58,7 +57,7 @@ class Car {
       'model': model,
       'typeCarburant': type_carburant,
       'assurance': defaultAssurance,
-      'controle': defaultControle,
+      'controle_technique': defaultControle,
       'stationnement': defaultStationnement,
       'vignette': defaultVignette
     };

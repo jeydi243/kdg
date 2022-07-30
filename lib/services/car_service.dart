@@ -5,9 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:kdg/models/car.dart';
 import 'package:kdg/models/document.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../models/maison.dart';
 
 class CarService extends GetxController {
@@ -25,6 +27,7 @@ class CarService extends GetxController {
   final file_upload_state = false.obs;
   final downloadurl = "".obs;
   final file = Rx<File>;
+  final storageRef = FirebaseStorage.instance.ref();
   RxBool isLoadingDocument = RxBool(true);
   RxBool filepicked = false.obs;
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
@@ -34,17 +37,36 @@ class CarService extends GetxController {
   Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
   Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
-
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
-  final storageRef = FirebaseStorage.instance.ref();
-
+  Rx<String> currentCarId = Rx<String>("");
+  Rx<Car?> currentCar = Rx<Car?>(null);
+  RefreshController refreshc = RefreshController(initialRefresh: false);
+  RefreshController refreshc2 = RefreshController(initialRefresh: false);
+  Rx<InternetConnectionStatus> connectionStatus =
+      Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
   @override
   void onReady() {
-    carservice.getCars().then((value) => null);
     ever(file_upload_state, (bool value) {
       if (value && Get.isDialogOpen == true) Get.back();
     });
     ever(exception, onFirebaseException);
+    ever(currentCarId, watchme);
+    ever(connectionStatus, (InternetConnectionStatus value) {
+      if (value == InternetConnectionStatus.disconnected) {
+        Get.snackbar(
+          "Pas de connexion internet",
+          "Veuillez vérifier votre connexion internet",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          borderRadius: 10,
+          borderColor: Colors.red,
+          borderWidth: .5,
+          margin: EdgeInsets.all(10),
+          duration: 2.seconds,
+        );
+      }
+    });
     ever(downloadurl, (String value) {
       if (value != "") {
         updateCarStep2(ref_ref.value!.id, value);
@@ -71,6 +93,8 @@ class CarService extends GetxController {
           fromFirestore: Maison.fromFirestore,
           toFirestore: (Maison house, _) => house.toFirestore(),
         );
+    _cars.bindStream(wacthCollection('cars'));
+    connectionStatus.bindStream(InternetConnectionChecker().onStatusChange);
     listDocumentsSnapshot.bindStream(docsRef.snapshots());
     super.onInit();
   }
@@ -109,14 +133,14 @@ class CarService extends GetxController {
     }
   }
 
-  getCars() async {
+  Future<void> getCars() async {
     try {
       QuerySnapshot f = await carsRef.get();
       for (var i = 0; i < f.size; i++) {
         _cars.value.add(f.docs[i].data() as Car);
       }
     } catch (e, s) {
-      Get.snackbar("CARS", "Can't retrive car $e: $s");
+      Get.snackbar("CARS", "Can't retrive car $e: $s", duration: 50.seconds);
     }
   }
 
@@ -136,7 +160,7 @@ class CarService extends GetxController {
     update();
   }
 
-  void reset() {
+  void resetForm() {
     start_date.value.text = "";
     end_date.value.text = "";
     filepicked.value = false;
@@ -160,7 +184,7 @@ class CarService extends GetxController {
             update();
             break;
           case TaskState.paused:
-            // ...
+            Get.snackbar('Misa à jour $namedoc', "Mise à jour en pause");
             break;
           case TaskState.success:
             file_upload_state.value = true;
@@ -171,16 +195,83 @@ class CarService extends GetxController {
             update();
             break;
           case TaskState.canceled:
-            // ...
+            Get.snackbar('Misa à jour $namedoc',
+                "La mise à jour de la vignette a été annulé");
             break;
           case TaskState.error:
-           Get.snackbar('Misa à jour $namedoc',"Erreur lors de la mise à jour de la vignette");
+            Get.snackbar('Misa à jour $namedoc',
+                "Erreur lors de la mise à jour de la vignette");
             break;
         }
       });
       ;
     } on FirebaseException catch (e) {
       exception.value = e;
+    }
+  }
+
+  Future<Color> getImagePalette(ImageProvider imageProvider) async {
+    final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(imageProvider);
+    return paletteGenerator.dominantColor!.color;
+  }
+
+  Stream<List<Car>> wacthCollection(String path) {
+    return carsRef.snapshots().map<List<Car>>((event) {
+      return event.docs.map((e) => e.data()).toList();
+    });
+  }
+
+  Future<void> updateCarStep1(String idcard, String namedoc) async {
+    try {
+      prepareUpdateCar();
+      DocumentReference car_ref = firestore.collection('cars').doc(idcard);
+      ref_ref.value = firestore
+          .collection('cars')
+          .doc(idcard)
+          .collection('documents')
+          .doc();
+
+      update();
+
+      await car_ref.update({namedoc: "${ref_ref.value!.id}"});
+      storefile(namedoc, idcard, updatedCar.value['file'] as File);
+    } catch (e, s) {
+      print("$e, $s");
+      return;
+    }
+  }
+
+  Future<bool> updateCarStep2(String? iddoc, String linktofile) async {
+    try {
+      updatedCar.value['file'] = linktofile;
+      await ref_ref.value!.set(updatedCar.value);
+
+      Get.snackbar("Update Car", "Car document at id $iddoc");
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  onRefresh() async {
+    await Future.delayed(1.seconds);
+    // getCars();
+    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
+      refreshc.refreshFailed();
+    } else {
+      refreshc.refreshCompleted();
+    }
+  }
+
+  onRefreshDetails() async {
+    await Future.delayed(1.seconds);
+    // updateCar();
+    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
+      refreshc2.refreshFailed();
+    } else {
+      refreshc2.refreshCompleted();
     }
   }
 
@@ -222,37 +313,17 @@ class CarService extends GetxController {
     Get.snackbar("Firebase", "${map[e!.code]}");
   }
 
-  Future<Color> getImagePalette(ImageProvider imageProvider) async {
-    final PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(imageProvider);
-    return paletteGenerator.dominantColor!.color;
+  watchme(String idCar) {
+    currentCar.bindStream(carsRef.doc(idCar).snapshots().cast<Car>());
   }
 
-  Future<void> updateCarStep1(String idcard, String namedoc) async {
-    try {
-      prepareUpdateCar();
-      ref_ref.value = firestore
-          .collection('cars')
-          .doc(idcard)
-          .collection('documents')
-          .doc();
-      update();
-      storefile(namedoc, idcard, updatedCar.value['file'] as File);
-    } catch (e, s) {
-      print("$e, $s");
-      return;
-    }
+  void onLoading() {
+    print('On loading');
   }
 
-  Future<bool> updateCarStep2(String? iddoc, String linktofile) async {
-    try {
-      updatedCar.value['file'] = linktofile;
-      await ref_ref.value!.set(updatedCar.value);
-      Get.snackbar("Update Car", "Car document at id $iddoc");
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
-    }
+  void onLoadingDetails() {
+    print('On loading details of car');
   }
+
+  onCurrentCarId(String callback) {}
 }

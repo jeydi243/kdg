@@ -6,7 +6,7 @@ import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:kdg/views/cars/item.dart';
-import 'package:logger/logger.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -19,6 +19,7 @@ class IndexCar extends StatefulWidget {
 
 class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
   late AnimationController controller;
+  // RefreshController _refresh = RefreshController(initialRefresh: false);
   late PanelController _pc;
   bool isPanelOpen = false;
   CarService carservice = Get.find();
@@ -38,6 +39,8 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    CarService controller = Get.find();
+
     return Scaffold(
       // backgroundColor: HexColor.fromHex("FDF8F8"),
       floatingActionButton: isPanelOpen
@@ -62,7 +65,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
         controller: _pc,
         // parallaxOffset: .5,
         backdropOpacity: .5,
-        backdropColor: Colors.white,
+        backdropColor: AppColors.transparentDark,
         borderRadius: BorderRadius.circular(20),
         defaultPanelState: PanelState.CLOSED,
         backdropTapClosesPanel: true,
@@ -113,9 +116,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                       decoration: InputDecoration(
                         labelText: 'Model',
                       ),
-                      onChanged: (value) {
-                       
-                      },
+                      onChanged: (value) {},
                     ),
                   ),
                   Container(
@@ -125,15 +126,11 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                       decoration: InputDecoration(
                         labelText: 'Type de carburant',
                       ),
-                      onChanged: (value) {
-                     
-                      },
+                      onChanged: (value) {},
                     ),
                   ),
                   InkWell(
-                    onTap: () async {
-
-                    },
+                    onTap: () async {},
                     child: Container(
                       width: Get.width * .95,
                       padding: EdgeInsets.only(bottom: 5),
@@ -143,9 +140,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           suffixIcon: Icon(Icons.calendar_month),
                           labelText: 'Date echance Assurance',
                         ),
-                        onChanged: (value) {
-                      
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                   ),
@@ -167,9 +162,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           suffixIcon: Icon(Icons.calendar_month),
                           labelText: 'Date echance Controle Technique',
                         ),
-                        onChanged: (value) {
-                         
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                   ),
@@ -196,9 +189,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           suffixIcon: Icon(Icons.calendar_month),
                           labelText: 'Date echéance Stationnement',
                         ),
-                        onChanged: (value) {
-                      
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                   ),
@@ -220,9 +211,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                           suffixIcon: Icon(Icons.calendar_month),
                           labelText: 'Date echéance Vignette',
                         ),
-                        onChanged: (value) {
-                       
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                   ),
@@ -255,76 +244,95 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
             ]),
           ),
         ),
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: Get.height * .35,
-              toolbarHeight: Get.height * .04,
-              actions: [
-                IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
-              ],
-              stretch: true,
-              collapsedHeight: Get.height * .05,
-              backgroundColor: HexColor.fromHex("FDF8F8"),
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Hero(
-                    transitionOnUserGestures: true,
-                    tag: "title${widget.item['text']}",
-                    child: Text(
-                        "${(widget.item['collection'] as String).capitalizeFirst}",
-                        style: TextStyle(fontSize: 25, color: Colors.white))),
-                stretchModes: [
-                  StretchMode.blurBackground,
-                  StretchMode.fadeTitle
+        body: SmartRefresher(
+          enablePullDown: true,
+          header: WaterDropHeader(
+              waterDropColor: AppColors.accent,
+              complete: Text('Updated...'),
+              failed: Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.close, color: Colors.red),
+                  Text("Failed to update car")
                 ],
-                background: GestureDetector(
-                  onVerticalDragEnd: (gf) {
-                    Logger().i(gf);
-                    Navigator.pop(context);
-                  },
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                    child: Stack(children: [
-                      Hero(
-                        tag: widget.item['imgsrc'],
-                        child: Image.asset(
-                          widget.item['imgsrc'],
-                          fit: BoxFit.cover,
-                          height: Get.height * .40,
-                          width: double.infinity,
+              )),
+              completeDuration: 2.seconds),
+          controller: controller.refreshc,
+          onRefresh: controller.onRefresh,
+          onLoading: controller.onLoading,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                expandedHeight: Get.height * .35,
+                toolbarHeight: Get.height * .04,
+                actions: [
+                  IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
+                ],
+                stretch: true,
+                collapsedHeight: Get.height * .05,
+                backgroundColor: HexColor.fromHex("FDF8F8"),
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  collapseMode: CollapseMode.parallax,
+                  title: Hero(
+                      transitionOnUserGestures: true,
+                      tag: "title${widget.item['text']}",
+                      child: Text(
+                          "${(widget.item['collection'] as String).capitalizeFirst}",
+                          style: TextStyle(fontSize: 25, color: Colors.white))),
+                  stretchModes: [
+                    StretchMode.blurBackground,
+                    StretchMode.zoomBackground,
+                    StretchMode.fadeTitle
+                  ],
+                  background: GestureDetector(
+                    onVerticalDragEnd: (gf) {
+                      Navigator.pop(context);
+                    },
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(20)),
+                      child: Stack(children: [
+                        Hero(
+                          tag: widget.item['imgsrc'],
+                          child: Image.asset(
+                            widget.item['imgsrc'],
+                            fit: BoxFit.cover,
+                            // height: Get.height * .40,
+                            // width: double.infinity,
+                          ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment(0, 1),
-                        child: Container(
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment(0, 1),
-                                  end: Alignment(0, -1),
-                                  colors: [
-                                Colors.blue.withOpacity(0.2),
-                                Colors.transparent
-                              ])),
+                        Align(
+                          alignment: Alignment(0, 1),
+                          child: Container(
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment(0, 1),
+                                    end: Alignment(0, -1),
+                                    colors: [
+                                  Colors.blue.withOpacity(0.2),
+                                  AppColors.transparent
+                                ])),
+                          ),
                         ),
-                      ),
-                    ]),
+                      ]),
+                    ),
                   ),
                 ),
               ),
-            ),
-            SliverAnimatedList(
-              initialItemCount: carservice.cars.length,
-              itemBuilder: (ctx, int i, Animation<double> an) {
-                return CarItem(
-                  item: carservice.cars[i],
-                );
-              },
-            ),
-          ],
+              SliverAnimatedList(
+                initialItemCount: carservice.cars.length,
+                itemBuilder: (ctx, int i, Animation<double> an) {
+                  return CarItem(
+                    item: carservice.cars[i],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
