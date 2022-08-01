@@ -19,11 +19,7 @@ class _AddEtudeState extends State<AddEtude> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController nameController;
   late TextEditingController otherController;
-
-  bool _check = false;
-  bool _expanding = false;
   bool _connecting = false;
-  Map<String, String> _map = <String, String>{"name": "", "other": ""};
 
   @override
   void initState() {

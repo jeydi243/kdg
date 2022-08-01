@@ -255,11 +255,13 @@ class UserService extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>?> resetPassByEmail(String email) async {
+  Future<bool?> resetPassByEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
+      return true;
     } on FirebaseException catch (e) {
       exception.value = e;
+      return false;
     } finally {
       update();
     }
@@ -324,7 +326,7 @@ class UserService extends GetxController {
         'message': 'Votre profil a été mis à jour',
         'shouldBack': true
       };
-    } on FirebaseException catch (e, stack) {
+    } on FirebaseException catch (e) {
       exception.value = e;
     } finally {
       update();

@@ -1,13 +1,9 @@
-import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kdg/components/pageV.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/models/car.dart';
@@ -17,9 +13,7 @@ import 'package:collection/collection.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-
 import 'add_document.dart';
 
 class DetailsCar extends StatefulWidget {
@@ -33,10 +27,8 @@ class DetailsCar extends StatefulWidget {
 class _DetailsCarState extends State<DetailsCar> {
   CarService carservice = Get.find();
   late List<Map<String, dynamic>> list;
-
   late ScrollController _sc;
   late PdfViewerController _pdfcontroller;
-  final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
   PanelController _pc = new PanelController();
   List<Map> actionsDialog = [
     {'text': "Modifier", 'icon': Icons.edit},
@@ -44,127 +36,6 @@ class _DetailsCarState extends State<DetailsCar> {
     {'text': "Voir", 'icon': Icons.edit},
     {'text': "Supprimer", 'icon': Icons.delete},
   ];
-  Map<String, dynamic> infos = {
-    "Color": "Brown",
-    "Brand": "Audi Q5",
-    "Model": "Quattro 2.0",
-    "Year": "2009",
-    "Type carburant": "Essence",
-    "Price": "\$\$\$",
-  };
-
-  List<types.Message> messages = [
-    // {
-    //   "sender": "KDG19",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Jeydi243",
-    //   "comment":
-    //       "Hello, how are you? Nostrud dolor adipisicing fugiat ut officia laboris tempor aliqua pariatur ex ea nostrud ipsum irure.",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Logan Bowen",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now(),
-    //   "img": null
-    // },
-    // {
-    //   "sender": "Randall Harris",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Sadie Dean",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now(),
-    //   "link": "http://gesal.no/kufufhet"
-    // },
-    // {
-    //   "sender": "Tony Jones",
-    //   "comment": "Hello, how are you?",
-    //   "img": "assets/rapport.jpg",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Violet Atkins",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Olivia Daniel",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Bernard Ingram",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Mildred Marshall",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Josephine Foster",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Adelaide Turner",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Charlie Thomas",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // },
-    // {
-    //   "sender": "Jerry Griffith",
-    //   "comment": "Hello, how are you?",
-    //   "date": DateTime.now()
-    // }
-  ];
-  Widget chat(String sender, String comment, DateTime date,
-      {String? img, String? link}) {
-    return Container(
-      width: Get.width,
-      height: img == null ? 60 : 160,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  sender,
-                  style: GoogleFonts.courgette(
-                      color: Color.fromARGB(255, 0, 156, 57)),
-                ),
-                Text("${date.toLocal().hour}:${date.toLocal().minute}",
-                    style: GoogleFonts.courgette(
-                        fontSize: 12, color: Color.fromARGB(255, 0, 43, 64))),
-              ],
-            ),
-            Container(
-                margin: EdgeInsets.only(left: 5),
-                width: Get.width,
-                padding: EdgeInsets.only(left: 5),
-                height: 35,
-                child: Column(
-                  children: [
-                    Text(comment),
-                  ],
-                ))
-          ]),
-    );
-  }
 
   Widget Actions(BuildContext ctx, Map<String, dynamic> e) {
     return Container(
@@ -193,9 +64,10 @@ class _DetailsCarState extends State<DetailsCar> {
                                   filter: ImageFilter.blur(
                                       sigmaX: 4 * anim1.value,
                                       sigmaY: 4 * anim1.value),
-                                  child: FadeTransition(
+                                  child: SizeTransition(
+                                    sizeFactor: anim1,
                                     child: child,
-                                    opacity: anim1,
+                                    // opacity: anim1,
                                   ),
                                 ),
                             pageBuilder: (g, n, j) {
@@ -210,23 +82,28 @@ class _DetailsCarState extends State<DetailsCar> {
                                   heightFactor: .8,
                                   child: Column(
                                     children: [
-                                      Expanded(
-                                        child: SfPdfViewer.network(
-                                          'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
-                                          canShowScrollStatus: true,
-                                          currentSearchTextHighlightColor:
-                                              Color.fromARGB(
-                                                  255, 252, 248, 249),
-                                          onDocumentLoaded: (detailsLoaded) {},
-                                          onDocumentLoadFailed: (details) {
-                                            carservice.onDocumentLoadFailed(
-                                                details.description);
-                                          },
-                                          controller: _pdfcontroller,
-                                          canShowPasswordDialog: true,
-                                          enableDoubleTapZooming: true,
-                                        ),
-                                      ),
+                                      Obx(() => Expanded(
+                                            child: SfPdfViewer.network(
+                                              carservice
+                                                  .currentCar
+                                                  .value!
+                                                  .documents[e['doc_name']]!
+                                                  .file,
+                                              canShowScrollStatus: true,
+                                              currentSearchTextHighlightColor:
+                                                  Color.fromARGB(
+                                                      255, 252, 248, 249),
+                                              onDocumentLoaded:
+                                                  (detailsLoaded) {},
+                                              onDocumentLoadFailed: (details) {
+                                                carservice.onDocumentLoadFailed(
+                                                    details.description);
+                                              },
+                                              controller: _pdfcontroller,
+                                              canShowPasswordDialog: true,
+                                              enableDoubleTapZooming: true,
+                                            ),
+                                          )),
                                       Container(
                                         child: Row(
                                           mainAxisAlignment:
@@ -285,47 +162,11 @@ class _DetailsCarState extends State<DetailsCar> {
         ));
   }
 
-  Widget connaissance(
-    BuildContext ctx,
-  ) {
-    return AlertDialog(
-      insetPadding: EdgeInsets.symmetric(vertical: Get.height / 4),
-      content: Container(
-        child: Form(
-            child: Column(
-          children: [
-            TextFormField(
-              decoration: InputDecoration(hintText: "Dite quelque chose"),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: Text('Ajouter'),
-            )
-          ],
-        )),
-      ),
-    );
-  }
-
-  String randomString() {
-    final random = Random.secure();
-    final values = List<int>.generate(16, (i) => random.nextInt(255));
-    return base64UrlEncode(values);
-  }
-
   @override
   void initState() {
     super.initState();
     _sc = ScrollController();
     _pdfcontroller = PdfViewerController();
-    _sc.addListener(() {
-      if (1 == 1) {}
-      if (_sc.position.pixels == 0) {
-        print("top");
-      } else {
-        print("bottom");
-      }
-    });
     Car car = widget.car;
     list = [
       {
@@ -361,7 +202,7 @@ class _DetailsCarState extends State<DetailsCar> {
           IconButton(
             icon: FaIcon(FontAwesomeIcons.bell, size: 20),
             onPressed: () {
-              showDialog(context: context, builder: (ctx) => connaissance(ctx));
+              // showDialog(context: context, builder: (ctx) => connaissance(ctx));
             },
           ),
           IconButton(
@@ -369,11 +210,13 @@ class _DetailsCarState extends State<DetailsCar> {
             onPressed: () {},
           ),
         ],
-        title: Hero(
-          tag: widget.car.id,
-          child: Text(
-            '${widget.car.Nom.capitalizeFirst}',
-            style: TextStyle(fontSize: 25),
+        title: Obx(
+          () => Hero(
+            tag: widget.car.id,
+            child: Text(
+              '${controller.currentCar.value?.Nom.capitalizeFirst}',
+              style: TextStyle(fontSize: 25),
+            ),
           ),
         ),
       ),
@@ -450,7 +293,7 @@ class _DetailsCarState extends State<DetailsCar> {
                   width: 150,
                   child: Column(
                     children: [
-                      ...infos.entries
+                      ...controller.currentCar.value!.infos.entries
                           .toList()
                           .mapIndexed<Widget>((index, entry) {
                         return Container(
@@ -465,7 +308,7 @@ class _DetailsCarState extends State<DetailsCar> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Text(
-                                  entry.key,
+                                  "${entry.key.capitalizeFirst}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: index % 2 != 0
@@ -474,7 +317,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                       fontSize: 15),
                                 ),
                                 Text(
-                                  entry.value,
+                                  "${entry.value?.capitalizeFirst}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: index % 2 != 0

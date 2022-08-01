@@ -35,7 +35,7 @@ class CarService extends GetxController {
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
-  Rx<QuerySnapshot?> listDocumentsSnapshot = Rx<QuerySnapshot?>(null);
+  Rx<QuerySnapshot?> documentsSnapshot = Rx<QuerySnapshot?>(null);
   Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
   Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
@@ -47,11 +47,17 @@ class CarService extends GetxController {
 
   @override
   void onReady() {
+    // ever(_cars, onCar);
     ever(file_upload_state, (bool value) {
       if (value && Get.isDialogOpen == true) Get.back();
     });
     ever(exception, onFirebaseException);
     ever(currentCarId, watchme);
+    ever(currentCar, (Car? car) {
+      if (car != null) {
+        print("Car changed...");
+      }
+    });
     ever(connectionStatus, (InternetConnectionStatus value) {
       if (value == InternetConnectionStatus.disconnected) {
         Get.snackbar(
@@ -96,12 +102,19 @@ class CarService extends GetxController {
         );
     _cars.bindStream(wacthCollection('cars'));
     connectionStatus.bindStream(InternetConnectionChecker().onStatusChange);
-    listDocumentsSnapshot.bindStream(docsRef.snapshots());
+    documentsSnapshot.bindStream(docsRef.snapshots());
     super.onInit();
   }
 
   List<Car> get cars => _cars.value;
   double get progress => file_upload_progress.value;
+  set setCurrentCarId(String id) {
+    currentCarId.value = id;
+  }
+
+  // void onCar(List<Car> cars) {
+  //   currentCar.value = cars[0];
+  // }
 
   set endDate(DateTime? value) {
     end_date.value.text = value!.toLocal().toIso8601String();
@@ -185,6 +198,78 @@ class CarService extends GetxController {
     }
   }
 
+  onRefresh() async {
+    await Future.delayed(1.seconds);
+    // getCars();
+    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
+      refreshc.refreshFailed();
+    } else {
+      refreshc.refreshCompleted();
+    }
+  }
+
+  onRefreshDetails() async {
+    await Future.delayed(1.seconds);
+    // updateCar();
+    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
+      refreshc2.refreshFailed();
+    } else {
+      refreshc2.refreshCompleted();
+    }
+  }
+
+  onFirebaseException(FirebaseException? e) {
+    Map<String, String> map = {
+      "storage/unknown": "Une erreur inconnue est survenue.",
+      "storage/object-not-found":
+          "	Aucun objet n'existe à la référence souhaitée",
+      "storage/bucket-not-found":
+          "Aucun bucket n'est configuré pour Cloud Storage",
+      "storage/project-not-found":
+          "Aucun projet n'est configuré pour Cloud Storage",
+      "storage/quota-exceeded":
+          "Le quota de votre bucket Cloud Storage a été dépassé. ,Si vous êtes sur le niveau gratuit, passez à un plan payant. Si vous avez un forfait payant, contactez l'assistance Firebase.",
+      "storage/unauthenticated":
+          "L'utilisateur n'est pas authentifié, veuillez vous authentifier et réessayer.",
+      "storage/unauthorized":
+          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
+      "firebase_storage/unauthorized":
+          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
+      "storage/retry-limit-exceeded":
+          "Le délai maximum d'une opération (téléchargement, téléchargement, suppression, etc.) a été dépassé. Essayez de télécharger à nouveau.",
+      "storage/invalid-checksum":
+          "Le fichier sur le client ne correspond pas à la somme de contrôle du fichier reçu par le serveur. Essayez de télécharger à nouveau.",
+      "storage/canceled": "L'utilisateur a annulé l'opération",
+      "storage/invalid-event-name":
+          "Nom d'événement fourni non valide. Doit être l'un des [ running , progress , pause ]",
+      "storage/invalid-url":
+          "URL non valide fournie à refFromURL() . Doit être au format : gs://bucket/object ou https://firebasestorage.googleapis.com/v0/b/bucket/o/object?token=<TOKEN>",
+      "storage/invalid-argument":
+          "L'argument passé à put() doit être File , Blob ou UInt8 Array. L'argument passé à putString() doit être une chaîne raw, Base64 ou Base64URL .",
+      "storage/no-default-bucket":
+          "Aucun compartiment n'a été défini dans la propriété storageBucket de votre configuration.",
+      "storage/cannot-slice-blob":
+          "Se produit généralement lorsque le fichier local a été modifié (supprimé, enregistré à nouveau, etc.). Réessayez de télécharger après avoir vérifié que le fichier n'a pas changé.",
+      "storage/server-file-wrong-size":
+          "Le fichier sur le client ne correspond pas à la taille du fichier reçu par le serveur. Essayez de télécharger à nouveau."
+    };
+    Get.snackbar("Firebase", "${map[e!.code]}");
+  }
+
+  watchme(String idCar) {
+    print("Watched car: $idCar");
+    currentCar.bindStream(
+        carsRef.doc(idCar).snapshots().map((event) => event.data()));
+  }
+
+  onLoading() {
+    print('On loading');
+  }
+
+  onLoadingDetails() {
+    print('On loading details of car');
+  }
+
   Future<List<Document>?> getCarDocs({required String id}) async {
     List<Document> cardocs = <Document>[];
     try {
@@ -258,76 +343,4 @@ class CarService extends GetxController {
       return false;
     }
   }
-
-  onRefresh() async {
-    await Future.delayed(1.seconds);
-    // getCars();
-    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
-      refreshc.refreshFailed();
-    } else {
-      refreshc.refreshCompleted();
-    }
-  }
-
-  onRefreshDetails() async {
-    await Future.delayed(1.seconds);
-    // updateCar();
-    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
-      refreshc2.refreshFailed();
-    } else {
-      refreshc2.refreshCompleted();
-    }
-  }
-
-  onFirebaseException(FirebaseException? e) {
-    Map<String, String> map = {
-      "storage/unknown": "Une erreur inconnue est survenue.",
-      "storage/object-not-found":
-          "	Aucun objet n'existe à la référence souhaitée",
-      "storage/bucket-not-found":
-          "Aucun bucket n'est configuré pour Cloud Storage",
-      "storage/project-not-found":
-          "Aucun projet n'est configuré pour Cloud Storage",
-      "storage/quota-exceeded":
-          "Le quota de votre bucket Cloud Storage a été dépassé. ,Si vous êtes sur le niveau gratuit, passez à un plan payant. Si vous avez un forfait payant, contactez l'assistance Firebase.",
-      "storage/unauthenticated":
-          "L'utilisateur n'est pas authentifié, veuillez vous authentifier et réessayer.",
-      "storage/unauthorized":
-          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
-      "firebase_storage/unauthorized":
-          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
-      "storage/retry-limit-exceeded":
-          "Le délai maximum d'une opération (téléchargement, téléchargement, suppression, etc.) a été dépassé. Essayez de télécharger à nouveau.",
-      "storage/invalid-checksum":
-          "Le fichier sur le client ne correspond pas à la somme de contrôle du fichier reçu par le serveur. Essayez de télécharger à nouveau.",
-      "storage/canceled": "L'utilisateur a annulé l'opération",
-      "storage/invalid-event-name":
-          "Nom d'événement fourni non valide. Doit être l'un des [ running , progress , pause ]",
-      "storage/invalid-url":
-          "URL non valide fournie à refFromURL() . Doit être au format : gs://bucket/object ou https://firebasestorage.googleapis.com/v0/b/bucket/o/object?token=<TOKEN>",
-      "storage/invalid-argument":
-          "L'argument passé à put() doit être File , Blob ou UInt8 Array. L'argument passé à putString() doit être une chaîne raw, Base64 ou Base64URL .",
-      "storage/no-default-bucket":
-          "Aucun compartiment n'a été défini dans la propriété storageBucket de votre configuration.",
-      "storage/cannot-slice-blob":
-          "Se produit généralement lorsque le fichier local a été modifié (supprimé, enregistré à nouveau, etc.). Réessayez de télécharger après avoir vérifié que le fichier n'a pas changé.",
-      "storage/server-file-wrong-size":
-          "Le fichier sur le client ne correspond pas à la taille du fichier reçu par le serveur. Essayez de télécharger à nouveau."
-    };
-    Get.snackbar("Firebase", "${map[e!.code]}");
-  }
-
-  watchme(String idCar) {
-    currentCar.bindStream(carsRef.doc(idCar).snapshots().cast<Car>());
-  }
-
-  onLoading() {
-    print('On loading');
-  }
-
-  onLoadingDetails() {
-    print('On loading details of car');
-  }
-
-  onCurrentCarId(String callback) {}
 }

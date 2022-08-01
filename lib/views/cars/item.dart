@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/car.dart';
+import 'package:kdg/services/car_service.dart';
 import 'package:kdg/views/cars/details.dart';
 
 class CarItem extends StatefulWidget {
@@ -20,6 +21,7 @@ class CarItem extends StatefulWidget {
 
 class _CarItemState extends State<CarItem> {
   late List<Map<String, dynamic>> list;
+  CarService carservice = Get.find();
   @override
   void initState() {
     Car car = widget.item;
@@ -56,6 +58,7 @@ class _CarItemState extends State<CarItem> {
           style: ListTileStyle.list,
           tileColor: widget.color,
           onTap: () {
+            carservice.setCurrentCarId = car.id;
             action();
           },
           title: Hero(

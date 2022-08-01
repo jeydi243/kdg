@@ -6,7 +6,9 @@ class Car {
   String nom;
   String type_carburant;
   String color;
+  String year;
   String brand;
+  Map<String, dynamic> price;
   Document? assurance;
   Document? controle_technique;
   Document? stationnement;
@@ -20,10 +22,26 @@ class Car {
 
   List<Document?> get listDocuments =>
       [assurance, controle_technique, stationnement, vignette];
+  Map<String, Document?> get documents => {
+        "controle_technique": controle_technique,
+        "vignette": vignette,
+        "assurance": assurance,
+        "stationnement": stationnement
+      };
+  Map<String, String?> get infos => {
+        "model": model,
+        "year": year,
+        "color": color,
+        "type_carburant": type_carburant,
+        "price": price['montant']
+      };
+
   String get Nom => nom;
   Car({
     required this.model,
     required this.brand,
+    required this.price,
+    required this.year,
     required this.nom,
     required this.color,
     required this.id,
@@ -39,6 +57,8 @@ class Car {
         type_carburant = snapshot['type_carburant'] ?? '',
         model = snapshot['model'],
         brand = snapshot['brand'],
+        year = snapshot['year'],
+        price = snapshot['price'],
         color = snapshot['color'],
         defaultControle = snapshot['controle_technique'],
         defaultVignette = snapshot['vignette'],
@@ -48,12 +68,14 @@ class Car {
   Car.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
-  )   : nom = snapshot.data()?["nom"],
+  )   : nom = snapshot.get('nom'),
         id = snapshot.id,
         model = snapshot.get("model"),
         color = snapshot.get('color'),
+        year = snapshot.get('year'),
+        price = snapshot.get('price'),
         brand = snapshot.get('brand'),
-        type_carburant = snapshot.data()?["type_carburant"],
+        type_carburant = snapshot.get("type_carburant"),
         defaultControle = snapshot.get("controle_technique"),
         defaultVignette = snapshot.get('vignette'),
         defaultAssurance = snapshot.get('assurance'),
