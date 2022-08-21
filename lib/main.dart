@@ -46,8 +46,8 @@ class Kdg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(Get.isDarkMode
-        ? SystemUiOverlayStyle.light
-        : SystemUiOverlayStyle.dark);
+        ? SystemUiOverlayStyle.dark
+        : SystemUiOverlayStyle.light);
 
     return GetMaterialApp(
       title: 'Kdg',
@@ -109,6 +109,5 @@ class Kdg extends StatelessWidget {
       home: Login(),
       customTransition: CircleTrans(),
     );
-
   }
 }

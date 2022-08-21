@@ -35,10 +35,12 @@ class CarService extends GetxController {
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
+  Rx<QuerySnapshot<Car>?> qsnapcars = Rx<QuerySnapshot<Car>?>(null);
   Rx<QuerySnapshot?> documentsSnapshot = Rx<QuerySnapshot?>(null);
   Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
   Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
+  Rx<Map<String, dynamic>> ADD_CAR = Rx<Map<String, dynamic>>({});
   List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   RefreshController refreshc = RefreshController(initialRefresh: false);
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
@@ -47,15 +49,16 @@ class CarService extends GetxController {
 
   @override
   void onReady() {
-    // ever(_cars, onCar);
     ever(file_upload_state, (bool value) {
       if (value && Get.isDialogOpen == true) Get.back();
     });
     ever(exception, onFirebaseException);
     ever(currentCarId, watchme);
+    ever(qsnapcars, onCarsChange);
     ever(currentCar, (Car? car) {
       if (car != null) {
         print("Car changed...");
+        // resolveCarDoc();
       }
     });
     ever(connectionStatus, (InternetConnectionStatus value) {
@@ -83,6 +86,23 @@ class CarService extends GetxController {
     super.onReady();
   }
 
+  onCarsChange(QuerySnapshot<Car>? qs) {
+    if (qs != null) {
+      print("${qs.docChanges.length} docs changed");
+      qs.docChanges.forEach((el) {
+        if (el.type == DocumentChangeType.modified && el.doc.exists) {
+          print("Must go to change for doc id ${el.doc.id}");
+          changeCardAt(el.doc.id, el.doc.data());
+        } else if (el.type == DocumentChangeType.added && el.doc.exists) {
+          _cars.value.addAll([el.doc.data()].whereType<Car>().toList());
+        } else if (el.type == DocumentChangeType.removed) {
+          _cars.value.removeWhere((car) => car.id == el.doc.id);
+        }
+        update();
+      });
+    }
+  }
+
   @override
   void onInit() async {
     _auth = FirebaseAuth.instance;
@@ -100,7 +120,7 @@ class CarService extends GetxController {
           fromFirestore: Maison.fromFirestore,
           toFirestore: (Maison house, _) => house.toFirestore(),
         );
-    _cars.bindStream(wacthCollection('cars'));
+    qsnapcars.bindStream(carsRef.snapshots());
     connectionStatus.bindStream(InternetConnectionChecker().onStatusChange);
     documentsSnapshot.bindStream(docsRef.snapshots());
     super.onInit();
@@ -108,13 +128,10 @@ class CarService extends GetxController {
 
   List<Car> get cars => _cars.value;
   double get progress => file_upload_progress.value;
+
   set setCurrentCarId(String id) {
     currentCarId.value = id;
   }
-
-  // void onCar(List<Car> cars) {
-  //   currentCar.value = cars[0];
-  // }
 
   set endDate(DateTime? value) {
     end_date.value.text = value!.toLocal().toIso8601String();
@@ -208,6 +225,7 @@ class CarService extends GetxController {
     }
   }
 
+
   onRefreshDetails() async {
     await Future.delayed(1.seconds);
     // updateCar();
@@ -266,6 +284,15 @@ class CarService extends GetxController {
     print('On loading');
   }
 
+  changeCardAt(String idcar, Car? newcar) {
+    int index = _cars.value.indexWhere((car) => car.id == idcar);
+    if (newcar != null) {
+      print('Index for change is found: $index ${newcar.type_carburant}');
+      _cars.value[index] = newcar;
+      update();
+    }
+  }
+
   onLoadingDetails() {
     print('On loading details of car');
   }
@@ -293,7 +320,7 @@ class CarService extends GetxController {
     return paletteGenerator.dominantColor!.color;
   }
 
-  Stream<List<Car>> wacthCollection(String path) {
+  Stream<List<Car>> wacthCars() {
     return carsRef.snapshots().map<List<Car>>((event) {
       return event.docs.map((e) => e.data()).toList();
     });
@@ -302,6 +329,7 @@ class CarService extends GetxController {
   Future<void> getCars() async {
     try {
       QuerySnapshot f = await carsRef.get();
+      _cars.value = [];
       for (var i = 0; i < f.size; i++) {
         _cars.value.add(f.docs[i].data() as Car);
       }

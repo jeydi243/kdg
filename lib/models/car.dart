@@ -8,17 +8,23 @@ class Car {
   String color;
   String year;
   String brand;
-  Map<String, dynamic> price;
   Document? assurance;
   Document? controle_technique;
   Document? stationnement;
   Document? vignette;
+
+  DocumentReference? assurance_ref;
+  DocumentReference? controle_technique_ref;
+  DocumentReference? stationnement_ref;
+  DocumentReference? vignette_ref;
+  Map<String, dynamic> price;
 
   late String id;
   late String defaultControle;
   late String defaultAssurance;
   late String defaultStationnement;
   late String defaultVignette;
+  String get typeCarburant => type_carburant;
 
   List<Document?> get listDocuments =>
       [assurance, controle_technique, stationnement, vignette];
@@ -27,6 +33,12 @@ class Car {
         "vignette": vignette,
         "assurance": assurance,
         "stationnement": stationnement
+      };
+  Map<String, String?> get documentsID => {
+        "controle_technique": controle_technique?.id,
+        "vignette": vignette?.id,
+        "assurance": assurance?.id,
+        "stationnement": stationnement?.id
       };
   Map<String, String?> get infos => {
         "model": model,

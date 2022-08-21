@@ -37,6 +37,7 @@ class UserService extends GetxController {
   User? get currentUser => firebaseUser.value;
   UserKDG? get userKDG => _user;
   FirebaseAuth get auth => _auth;
+  List<Rapport> get rapports => _rapports.value;
 
   @override
   void onInit() {
@@ -51,7 +52,6 @@ class UserService extends GetxController {
     firebaseUser.bindStream(_auth.authStateChanges());
   }
 
-  List<Rapport> get rapports => _rapports.value;
   @override
   void onReady() {
     userDocRef.value = firestore.collection('users').doc(currentUser?.uid);

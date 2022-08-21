@@ -10,33 +10,27 @@ import 'package:kdg/views/cars/details.dart';
 class CarItem extends StatefulWidget {
   CarItem(
       {Key? key,
-      required this.item,
+      required this.index,
       this.color = const Color.fromARGB(255, 1, 48, 105)})
       : super(key: key);
-  final Car item;
+  final int index;
   Color color;
   @override
   _CarItemState createState() => _CarItemState();
 }
 
 class _CarItemState extends State<CarItem> {
-  late List<Map<String, dynamic>> list;
   CarService carservice = Get.find();
   @override
   void initState() {
-    Car car = widget.item;
-    list = [
-      {"doc": 'assurance', "value": car.defaultAssurance},
-      {"doc": 'controle', "value": car.defaultControle},
-      {"doc": 'vignette', "value": car.defaultVignette},
-      {"doc": 'stationnement', "value": car.defaultStationnement},
-    ];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Car car = widget.item;
+    Car car = carservice.cars[widget.index];
+    // carservice.cars.firstWhere((car) => car.id == widget.car_id);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: OpenContainer(
@@ -46,8 +40,7 @@ class _CarItemState extends State<CarItem> {
         middleColor: Color.fromARGB(255, 1, 48, 105),
         closedColor: Color.fromARGB(255, 1, 48, 105),
         openBuilder: (context, action) {
-          return DetailsCar(car, action);
-          // return DetailsCar(car, action);
+          return DetailsCar(car, car.id, action);
         },
         closedBuilder: (ctx, action) => ListTile(
           onLongPress: () async {
@@ -77,10 +70,6 @@ class _CarItemState extends State<CarItem> {
                     FontAwesomeIcons.check,
                     color: Colors.green,
                   )),
-              // Text(
-              //   'Ok',
-              //   style: TextStyle(fontSize: 10),
-              // )
             ],
           ),
         ),

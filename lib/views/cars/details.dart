@@ -16,19 +16,15 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'add_document.dart';
 
-class DetailsCar extends StatefulWidget {
-  DetailsCar(this.car, this.action, {Key? key}) : super(key: key);
-  final Car car;
-  VoidCallback action;
-  @override
-  _DetailsCarState createState() => _DetailsCarState();
-}
-
-class _DetailsCarState extends State<DetailsCar> {
-  CarService carservice = Get.find();
+class DetailsCar extends GetView<CarService> {
+  DetailsCar(this.car, this.car_id, this.action, {Key? key}) : super(key: key);
+  final car_id;
   late List<Map<String, dynamic>> list;
   late ScrollController _sc;
   late PdfViewerController _pdfcontroller;
+  VoidCallback action;
+  CarService carservice = Get.find();
+  Car car;
   PanelController _pc = new PanelController();
   List<Map> actionsDialog = [
     {'text': "Modifier", 'icon': Icons.edit},
@@ -54,8 +50,10 @@ class _DetailsCarState extends State<DetailsCar> {
                       child: Text("Activer les notifications d'echéance")),
                   TextButton(
                       onPressed: () async {
+                        print(carservice.currentCar.value?.documentsID ??
+                            "File is null");
                         await showGeneralDialog(
-                            context: context,
+                            context: ctx,
                             barrierDismissible: true,
                             transitionDuration: 500.milliseconds,
                             barrierLabel: "",
@@ -67,15 +65,12 @@ class _DetailsCarState extends State<DetailsCar> {
                                   child: SizeTransition(
                                     sizeFactor: anim1,
                                     child: child,
-                                    // opacity: anim1,
                                   ),
                                 ),
                             pageBuilder: (g, n, j) {
                               return Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  // borderRadius: BorderRadius.circular(10)
-                                ),
+                                decoration:
+                                    BoxDecoration(shape: BoxShape.circle),
                                 child: FractionallySizedBox(
                                   alignment: Alignment.center,
                                   widthFactor: .8,
@@ -90,11 +85,6 @@ class _DetailsCarState extends State<DetailsCar> {
                                                   .documents[e['doc_name']]!
                                                   .file,
                                               canShowScrollStatus: true,
-                                              currentSearchTextHighlightColor:
-                                                  Color.fromARGB(
-                                                      255, 252, 248, 249),
-                                              onDocumentLoaded:
-                                                  (detailsLoaded) {},
                                               onDocumentLoadFailed: (details) {
                                                 carservice.onDocumentLoadFailed(
                                                     details.description);
@@ -137,7 +127,7 @@ class _DetailsCarState extends State<DetailsCar> {
                   TextButton(
                       onPressed: () async {
                         await showGeneralDialog(
-                            context: context,
+                            context: ctx,
                             barrierDismissible: false,
                             transitionDuration: 500.milliseconds,
                             transitionBuilder: (ctx, anim1, anim2, child) =>
@@ -151,7 +141,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                   ),
                                 ),
                             pageBuilder: (g, n, j) {
-                              return AddDocument(widget.car.id, e);
+                              return AddDocument(car.id, e);
                             });
                       },
                       child: Text('Mettre à jour le document')),
@@ -163,11 +153,11 @@ class _DetailsCarState extends State<DetailsCar> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void onInit() {
+    // super.onInit();
     _sc = ScrollController();
     _pdfcontroller = PdfViewerController();
-    Car car = widget.car;
+
     list = [
       {
         "doc_name": 'assurance',
@@ -212,7 +202,7 @@ class _DetailsCarState extends State<DetailsCar> {
         ],
         title: Obx(
           () => Hero(
-            tag: widget.car.id,
+            tag: car.id,
             child: Text(
               '${controller.currentCar.value?.Nom.capitalizeFirst}',
               style: TextStyle(fontSize: 25),
@@ -224,10 +214,8 @@ class _DetailsCarState extends State<DetailsCar> {
         onPressed: () {
           if (_pc.isPanelOpen) {
             _pc.close();
-            setState(() {});
           } else {
             _pc.open();
-            setState(() {});
           }
         },
       ),
@@ -288,48 +276,59 @@ class _DetailsCarState extends State<DetailsCar> {
               SizedBox(
                   width: Get.width, height: Get.height * .3, child: PageV()),
               Container(
-                  // color: Colors.blue,
                   height: 250,
                   width: 150,
                   child: Column(
                     children: [
-                      ...controller.currentCar.value!.infos.entries
-                          .toList()
-                          .mapIndexed<Widget>((index, entry) {
-                        return Container(
-                          height: 35,
-                          color: index % 2 == 0
-                              ? Colors.transparent
-                              : Colors.blue[50],
-                          child: InkWell(
-                            onTap: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              mainAxisSize: MainAxisSize.max,
+                      Builder(
+                        builder: (context) {
+                          if (controller.currentCar.value != null) {
+                            return Column(
                               children: [
-                                Text(
-                                  "${entry.key.capitalizeFirst}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: index % 2 != 0
-                                          ? AppColors.textDark
-                                          : Colors.blue[50],
-                                      fontSize: 15),
-                                ),
-                                Text(
-                                  "${entry.value?.capitalizeFirst}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: index % 2 != 0
-                                          ? AppColors.textDark
-                                          : Colors.blue[50],
-                                      fontSize: 15),
-                                )
+                                ...controller.currentCar.value!.infos.entries
+                                    .toList()
+                                    .mapIndexed<Widget>((index, entry) {
+                                  return Container(
+                                    height: 35,
+                                    color: index % 2 == 0
+                                        ? Colors.transparent
+                                        : Colors.blue[50],
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Text(
+                                            "${entry.key.capitalizeFirst}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: index % 2 != 0
+                                                    ? AppColors.textDark
+                                                    : Colors.blue[50],
+                                                fontSize: 15),
+                                          ),
+                                          Text(
+                                            "${entry.value?.capitalizeFirst}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: index % 2 != 0
+                                                    ? AppColors.textDark
+                                                    : Colors.blue[50],
+                                                fontSize: 15),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                })
                               ],
-                            ),
-                          ),
-                        );
-                      }),
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
                     ],
                   )),
               Container(
@@ -364,9 +363,8 @@ class _DetailsCarState extends State<DetailsCar> {
                                     ? Color.fromARGB(255, 1, 67, 148)
                                     : Color.fromARGB(255, 1, 48, 105),
                                 onTap: () {
-                                  setState(() {
-                                    e["isExpanded"] = !e["isExpanded"];
-                                  });
+                                  e["isExpanded"] = !e["isExpanded"];
+                                  // setState(() {});
                                 },
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

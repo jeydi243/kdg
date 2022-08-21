@@ -249,5 +249,6 @@ class KDGTheme {
           selectedLabelStyle: GoogleFonts.k2d(),
           selectedItemColor: AppColors.accent),
     );
-  }
+  
+}
 }
