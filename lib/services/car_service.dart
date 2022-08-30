@@ -46,44 +46,94 @@ class CarService extends GetxController {
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
   Rx<InternetConnectionStatus> connectionStatus =
       Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
+  List list = [
+    {
+      "doc_name": 'assurance',
+      "doc_id": carservice.currentCar.value!.assurance_ref!.id,
+      "isExpanded": false
+    },
+    {
+      "doc_name": 'controle_technique',
+      "doc_id": carservice.currentCar.value!.controle_technique_ref!.id,
+      "isExpanded": false
+    },
+    {
+      "doc_name": 'vignette',
+      "doc_id": carservice.currentCar.value!.vignette_ref!.id,
+      "isExpanded": false
+    },
+    {
+      "doc_name": 'stationnement',
+      "doc_id": carservice.currentCar.value!.stationnement_ref!.id,
+      "isExpanded": false
+    },
+  ];
 
   @override
   void onReady() {
+    super.onReady();
+    ever(qsnapcars, onCarsChange);
+    ever(exception, onFirebaseException);
+    ever(currentCar, onCarChange);
+    ever(downloadurl, onDownloadUrl);
+    ever(currentCarId, watchme);
+    ever(connectionStatus, onConnectionChange);
     ever(file_upload_state, (bool value) {
       if (value && Get.isDialogOpen == true) Get.back();
     });
-    ever(exception, onFirebaseException);
-    ever(currentCarId, watchme);
-    ever(qsnapcars, onCarsChange);
-    ever(currentCar, (Car? car) {
-      if (car != null) {
-        print("Car changed...");
-        // resolveCarDoc();
-      }
-    });
-    ever(connectionStatus, (InternetConnectionStatus value) {
-      if (value == InternetConnectionStatus.disconnected) {
-        Get.snackbar(
-          "Pas de connexion internet",
-          "Veuillez vérifier votre connexion internet",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          borderRadius: 10,
-          borderColor: Colors.red,
-          borderWidth: .5,
-          margin: EdgeInsets.all(10),
-          duration: 2.seconds,
-        );
-      }
-    });
-    ever(downloadurl, (String value) {
-      if (value != "") {
-        updateCarStep2(ref_ref.value!.id, value);
-        print('File downloaded at: $value');
-      }
-    });
-    super.onReady();
+  }
+
+  onDownloadUrl(String? value) {
+    if (value != null) {
+      updateCarStep2(ref_ref.value!.id, value);
+      print('File downloaded at: $value');
+    }
+  }
+
+  onConnectionChange(InternetConnectionStatus value) {
+    if (value == InternetConnectionStatus.disconnected) {
+      Get.snackbar(
+        "Pas de connexion internet",
+        "Veuillez vérifier votre connexion internet",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        borderRadius: 10,
+        borderColor: Colors.red,
+        borderWidth: .5,
+        margin: EdgeInsets.all(10),
+        duration: 2.seconds,
+      );
+    }
+  }
+
+  onCarChange(Car? car) {
+    if (car != null) {
+      print("Car changed...");
+      // resolveCarDoc();
+      list = [
+        {
+          "doc_name": 'assurance',
+          "doc_id": currentCar.value!.assurance_ref?.id,
+          "isExpanded": false
+        },
+        {
+          "doc_name": 'controle_technique',
+          "doc_id": currentCar.value!.controle_technique_ref?.id,
+          "isExpanded": false
+        },
+        {
+          "doc_name": 'vignette',
+          "doc_id": currentCar.value!.vignette_ref?.id,
+          "isExpanded": false
+        },
+        {
+          "doc_name": 'stationnement',
+          "doc_id": currentCar.value!.stationnement_ref?.id,
+          "isExpanded": false
+        },
+      ];
+    }
   }
 
   onCarsChange(QuerySnapshot<Car>? qs) {
@@ -155,8 +205,8 @@ class CarService extends GetxController {
     updatedCar.value['file'] = File(fileg.value!.path ?? "");
   }
 
-  void onDocumentLoadFailed(String description) {
-    Get.snackbar("File", description);
+  void onLoadFailed(String description) {
+    Get.snackbar("File failed to load", description);
     update();
   }
 
@@ -224,7 +274,6 @@ class CarService extends GetxController {
       refreshc.refreshCompleted();
     }
   }
-
 
   onRefreshDetails() async {
     await Future.delayed(1.seconds);

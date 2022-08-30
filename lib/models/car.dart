@@ -20,10 +20,7 @@ class Car {
   Map<String, dynamic> price;
 
   late String id;
-  late String defaultControle;
-  late String defaultAssurance;
-  late String defaultStationnement;
-  late String defaultVignette;
+
   String get typeCarburant => type_carburant;
 
   List<Document?> get listDocuments =>
@@ -40,7 +37,7 @@ class Car {
         "assurance": assurance?.id,
         "stationnement": stationnement?.id
       };
-  Map<String, String?> get infos => {
+  Map<String, String> get infos => {
         "model": model,
         "year": year,
         "color": color,
@@ -57,10 +54,6 @@ class Car {
     required this.nom,
     required this.color,
     required this.id,
-    required this.defaultAssurance,
-    required this.defaultControle,
-    required this.defaultStationnement,
-    required this.defaultVignette,
     required this.type_carburant,
   });
   Car.fromMap(Map<String, dynamic> snapshot)
@@ -72,10 +65,10 @@ class Car {
         year = snapshot['year'],
         price = snapshot['price'],
         color = snapshot['color'],
-        defaultControle = snapshot['controle_technique'],
-        defaultVignette = snapshot['vignette'],
-        defaultAssurance = snapshot['assurance'] ?? "",
-        defaultStationnement = snapshot['stationnement'] ?? <String, dynamic>{};
+        controle_technique_ref = snapshot['controle_technique'],
+        vignette_ref = snapshot['vignette'],
+        assurance_ref = snapshot['assurance'],
+        stationnement_ref = snapshot['stationnement'];
 
   Car.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -88,20 +81,20 @@ class Car {
         price = snapshot.get('price'),
         brand = snapshot.get('brand'),
         type_carburant = snapshot.get("type_carburant"),
-        defaultControle = snapshot.get("controle_technique"),
-        defaultVignette = snapshot.get('vignette'),
-        defaultAssurance = snapshot.get('assurance'),
-        defaultStationnement = snapshot.get('stationnement');
+        controle_technique_ref = snapshot.get("controle_technique"),
+        vignette_ref = snapshot.get('vignette'),
+        assurance_ref = snapshot.get('assurance'),
+        stationnement_ref = snapshot.get('stationnement');
 
   toFirestore() {
     return {
       'name': model,
       'model': model,
       'typeCarburant': type_carburant,
-      'assurance': defaultAssurance,
-      'controle_technique': defaultControle,
-      'stationnement': defaultStationnement,
-      'vignette': defaultVignette
+      'assurance': assurance,
+      'controle_technique': controle_technique,
+      'stationnement': stationnement,
+      'vignette': vignette
     };
   }
 }

@@ -40,7 +40,7 @@ class _CarItemState extends State<CarItem> {
         middleColor: Color.fromARGB(255, 1, 48, 105),
         closedColor: Color.fromARGB(255, 1, 48, 105),
         openBuilder: (context, action) {
-          return DetailsCar(car, car.id, action);
+          return DetailsCar(action);
         },
         closedBuilder: (ctx, action) => ListTile(
           onLongPress: () async {

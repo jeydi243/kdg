@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:kdg/components/pageV.dart';
 import 'package:kdg/constantes/values.dart';
-import 'package:kdg/models/car.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:kdg/utils/utils.dart';
 import 'package:collection/collection.dart';
@@ -16,15 +15,18 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'add_document.dart';
 
-class DetailsCar extends GetView<CarService> {
-  DetailsCar(this.car, this.car_id, this.action, {Key? key}) : super(key: key);
-  final car_id;
+class DetailsCar extends StatefulWidget {
+  DetailsCar(this.action, {Key? key}) : super(key: key);
+  VoidCallback action;
+  @override
+  _DetailsCarState createState() => _DetailsCarState();
+}
+
+class _DetailsCarState extends State<DetailsCar> {
+  CarService carservice = Get.find();
   late List<Map<String, dynamic>> list;
   late ScrollController _sc;
   late PdfViewerController _pdfcontroller;
-  VoidCallback action;
-  CarService carservice = Get.find();
-  Car car;
   PanelController _pc = new PanelController();
   List<Map> actionsDialog = [
     {'text': "Modifier", 'icon': Icons.edit},
@@ -50,10 +52,8 @@ class DetailsCar extends GetView<CarService> {
                       child: Text("Activer les notifications d'echéance")),
                   TextButton(
                       onPressed: () async {
-                        print(carservice.currentCar.value?.documentsID ??
-                            "File is null");
                         await showGeneralDialog(
-                            context: ctx,
+                            context: context,
                             barrierDismissible: true,
                             transitionDuration: 500.milliseconds,
                             barrierLabel: "",
@@ -65,12 +65,15 @@ class DetailsCar extends GetView<CarService> {
                                   child: SizeTransition(
                                     sizeFactor: anim1,
                                     child: child,
+                                    // opacity: anim1,
                                   ),
                                 ),
                             pageBuilder: (g, n, j) {
                               return Container(
-                                decoration:
-                                    BoxDecoration(shape: BoxShape.circle),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  // borderRadius: BorderRadius.circular(10)
+                                ),
                                 child: FractionallySizedBox(
                                   alignment: Alignment.center,
                                   widthFactor: .8,
@@ -85,8 +88,13 @@ class DetailsCar extends GetView<CarService> {
                                                   .documents[e['doc_name']]!
                                                   .file,
                                               canShowScrollStatus: true,
+                                              currentSearchTextHighlightColor:
+                                                  Color.fromARGB(
+                                                      255, 252, 248, 249),
+                                              onDocumentLoaded:
+                                                  (detailsLoaded) {},
                                               onDocumentLoadFailed: (details) {
-                                                carservice.onDocumentLoadFailed(
+                                                carservice.onLoadFailed(
                                                     details.description);
                                               },
                                               controller: _pdfcontroller,
@@ -127,7 +135,7 @@ class DetailsCar extends GetView<CarService> {
                   TextButton(
                       onPressed: () async {
                         await showGeneralDialog(
-                            context: ctx,
+                            context: context,
                             barrierDismissible: false,
                             transitionDuration: 500.milliseconds,
                             transitionBuilder: (ctx, anim1, anim2, child) =>
@@ -141,7 +149,8 @@ class DetailsCar extends GetView<CarService> {
                                   ),
                                 ),
                             pageBuilder: (g, n, j) {
-                              return AddDocument(car.id, e);
+                              return AddDocument(
+                                  carservice.currentCar.value!.id, e);
                             });
                       },
                       child: Text('Mettre à jour le document')),
@@ -153,33 +162,12 @@ class DetailsCar extends GetView<CarService> {
   }
 
   @override
-  void onInit() {
-    // super.onInit();
+  void initState() {
+    super.initState();
     _sc = ScrollController();
     _pdfcontroller = PdfViewerController();
 
-    list = [
-      {
-        "doc_name": 'assurance',
-        "doc_id": car.defaultAssurance,
-        "isExpanded": false
-      },
-      {
-        "doc_name": 'controle_technique',
-        "doc_id": car.defaultControle,
-        "isExpanded": false
-      },
-      {
-        "doc_name": 'vignette',
-        "doc_id": car.defaultVignette,
-        "isExpanded": false
-      },
-      {
-        "doc_name": 'stationnement',
-        "doc_id": car.defaultStationnement,
-        "isExpanded": false
-      },
-    ];
+   
   }
 
   @override
@@ -202,7 +190,7 @@ class DetailsCar extends GetView<CarService> {
         ],
         title: Obx(
           () => Hero(
-            tag: car.id,
+            tag: carservice.currentCarId.value,
             child: Text(
               '${controller.currentCar.value?.Nom.capitalizeFirst}',
               style: TextStyle(fontSize: 25),
@@ -214,8 +202,10 @@ class DetailsCar extends GetView<CarService> {
         onPressed: () {
           if (_pc.isPanelOpen) {
             _pc.close();
+            setState(() {});
           } else {
             _pc.open();
+            setState(() {});
           }
         },
       ),
@@ -276,59 +266,56 @@ class DetailsCar extends GetView<CarService> {
               SizedBox(
                   width: Get.width, height: Get.height * .3, child: PageV()),
               Container(
+                  // color: Colors.blue,
                   height: 250,
                   width: 150,
                   child: Column(
                     children: [
-                      Builder(
-                        builder: (context) {
-                          if (controller.currentCar.value != null) {
-                            return Column(
-                              children: [
-                                ...controller.currentCar.value!.infos.entries
-                                    .toList()
-                                    .mapIndexed<Widget>((index, entry) {
-                                  return Container(
-                                    height: 35,
-                                    color: index % 2 == 0
-                                        ? Colors.transparent
-                                        : Colors.blue[50],
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Text(
-                                            "${entry.key.capitalizeFirst}",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: index % 2 != 0
-                                                    ? AppColors.textDark
-                                                    : Colors.blue[50],
-                                                fontSize: 15),
-                                          ),
-                                          Text(
-                                            "${entry.value?.capitalizeFirst}",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: index % 2 != 0
-                                                    ? AppColors.textDark
-                                                    : Colors.blue[50],
-                                                fontSize: 15),
-                                          )
-                                        ],
+                      Builder(builder: (context) {
+                        if (controller.currentCar.value != null) {
+                          return Column(children: <Widget>[
+                            ...controller.currentCar.value!.infos.entries
+                                .toList()
+                                .mapIndexed<Widget>((index, entry) {
+                              return Container(
+                                height: 35,
+                                color: index % 2 == 0
+                                    ? Colors.transparent
+                                    : Colors.blue[50],
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Text(
+                                        "${entry.key.capitalizeFirst}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: index % 2 != 0
+                                                ? AppColors.textDark
+                                                : Colors.blue[50],
+                                            fontSize: 15),
                                       ),
-                                    ),
-                                  );
-                                })
-                              ],
-                            );
-                          }
-                          return Container();
-                        },
-                      ),
+                                      Text(
+                                        "${entry.value?.capitalizeFirst}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: index % 2 != 0
+                                                ? AppColors.textDark
+                                                : Colors.blue[50],
+                                            fontSize: 15),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            })
+                          ]);
+                        }
+                        return Container();
+                      }),
                     ],
                   )),
               Container(
@@ -353,7 +340,7 @@ class DetailsCar extends GetView<CarService> {
                   expandedHeaderPadding: EdgeInsets.all(0),
                   elevation: 0,
                   children: [
-                    ...list
+                    ...controller.list
                         .mapIndexed((i, e) => ExpansionPanel(
                               isExpanded: e["isExpanded"],
                               backgroundColor: Color.fromARGB(255, 1, 48, 105),
@@ -363,8 +350,9 @@ class DetailsCar extends GetView<CarService> {
                                     ? Color.fromARGB(255, 1, 67, 148)
                                     : Color.fromARGB(255, 1, 48, 105),
                                 onTap: () {
-                                  e["isExpanded"] = !e["isExpanded"];
-                                  // setState(() {});
+                                  setState(() {
+                                    e["isExpanded"] = !e["isExpanded"];
+                                  });
                                 },
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

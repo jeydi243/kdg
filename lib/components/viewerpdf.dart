@@ -41,7 +41,7 @@ class _ViewerPDFState extends State<ViewerPDF> {
               carservice.stopLoading();
             },
             onDocumentLoadFailed: (details) {
-              carservice.onDocumentLoadFailed(details.description);
+              carservice.onLoadFailed(details.description);
             },
             controller: _controller,
             canShowPasswordDialog: true,
