@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kdg/models/document.dart';
 
 class Car {
   String model;
@@ -19,35 +18,51 @@ class Car {
   String get typeCarburant => type_carburant;
   Map<String, dynamic> get assurance => assurances.firstWhere(
       (doc) =>
-          (doc['debut'] as Timestamp).compareTo(
-              Timestamp.fromMillisecondsSinceEpoch(
-                  DateTime.now().millisecondsSinceEpoch)) >=
+          (doc['fin'] as Timestamp)
+              .toDate()
+              .difference(DateTime.now())
+              .inDays >=
           1,
       orElse: () => {});
   Map<String, dynamic> get vignette => vignettes.firstWhere(
       (doc) =>
-          (doc['debut'] as Timestamp).compareTo(
-              Timestamp.fromMillisecondsSinceEpoch(
-                  DateTime.now().millisecondsSinceEpoch)) >=
+          (doc['fin'] as Timestamp)
+              .toDate()
+              .difference(DateTime.now())
+              .inDays >=
           1,
       orElse: () => {});
   Map<String, dynamic> get stationnement => stationnements.firstWhere(
       (doc) =>
-          (doc['debut'] as Timestamp).compareTo(
-              Timestamp.fromMillisecondsSinceEpoch(
-                  DateTime.now().millisecondsSinceEpoch)) >=
+          (doc['fin'] as Timestamp)
+              .toDate()
+              .difference(DateTime.now())
+              .inDays >=
           1,
       orElse: () => {});
   Map<String, dynamic> get controle => controles.firstWhere(
       (doc) =>
-          (doc['debut'] as Timestamp).compareTo(
-              Timestamp.fromMillisecondsSinceEpoch(
-                  DateTime.now().millisecondsSinceEpoch)) >=
+          (doc['fin'] as Timestamp)
+              .toDate()
+              .difference(DateTime.now())
+              .inDays >=
           1,
       orElse: () => {});
 
-  List<Map<String, dynamic>?> get listDocuments =>
-      [assurance, controle, stationnement, vignette];
+  int? dayLeft(String docname) {
+    var now = DateTime.now();
+    print("FIN: ${documents[docname]!['fin']}");
+    if (documents[docname]!['fin'] != null) {
+      var fin = documents[docname]!['fin'] as Timestamp;
+      var diffDt = fin.toDate().difference(now);
+      return diffDt.inDays;
+    }
+  }
+
+  String linkDoc(String docname) {
+    return documents[docname]!['file'];
+  }
+
   Map<String, Map<String, dynamic>?> get documents => {
         "controle_technique": controle,
         "vignette": vignette,

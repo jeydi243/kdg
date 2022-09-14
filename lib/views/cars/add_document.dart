@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
@@ -7,14 +8,26 @@ import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
 
 class AddDocument extends GetView<CarService> {
+  AddDocument(this.id_car, this.item, {Key? key}) {
+    print(this.item);
+    print(controller.currentCar.value!.documents[this.item['doc_name']]);
+    start_date.text = (controller.currentCar.value!
+            .documents[this.item['doc_name']]!['debut'] as Timestamp)
+        .toString();
+    start_date.text = (controller.currentCar.value!
+            .documents[this.item['doc_name']]!['fin'] as Timestamp)
+        .toString();
+    // end_date.text = this.item['fin'];
+  }
   String id_car;
-  // String namedoc;
   Map<String, dynamic> item;
-  // AddDocument(this.id_car, this.namedoc, {Key? key}) : super(key: key);
-  AddDocument(this.id_car, this.item, {Key? key}) : super(key: key);
-  //formKey
+  Map<String, dynamic> form = {};
+  final start_date = TextEditingController();
+  final end_date = TextEditingController();
+  bool filePicked = false;
+  List<String> allowExt = ['pdf', "docx", "doc"];
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-//submit form
+
   void submitForm() async {
     Get.back();
     if (formKey.currentState!.validate()) {
@@ -55,44 +68,37 @@ class AddDocument extends GetView<CarService> {
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      heightFactor: .4,
-      widthFactor: .8,
-      alignment: Alignment.center,
-      child: Material(
-        borderRadius: BorderRadius.circular(10),
-        color: AppColors.backgroundDark,
-        type: MaterialType.card,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "${(item["doc_name"] as String).capitalizeFirst}",
+          style: Get.textTheme.displayMedium!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+      ),
+      floatingActionButton: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextButton(onPressed: submitForm, child: Text('Mettre à jour')),
+            TextButton(
+                onPressed: () {
+                  controller.resetForm();
+                  Get.back();
+                },
+                child: Text('Annuler'),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.red.withOpacity(.2)),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red)))
+          ],
+        ),
+      ),
+      body: SafeArea(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    "${(item["doc_name"] as String).capitalizeFirst}",
-                    style: Get.textTheme.displayMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: Container(
-                    height: 35,
-                    width: 35,
-                    child: Icon(Icons.close),
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            topRight: Radius.circular(10))),
-                  ),
-                )
-              ],
-            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Form(
@@ -106,15 +112,22 @@ class AddDocument extends GetView<CarService> {
                           padding: EdgeInsets.only(top: 10),
                           child: InkWell(
                             onTap: () async {
-                              controller.startDate = await showDatePicker(
+                              var value = await showDatePicker(
                                   context: context,
                                   firstDate: DateTime.now().subtract(365.days),
                                   lastDate: DateTime.now().add(365.days),
-                                  initialDate: DateTime.now());
+                                  initialDate: item['debut']);
+                              if (value != null) {
+                                start_date.text =
+                                    value.toLocal().toIso8601String();
+                              }
                             },
                             child: TextFormField(
                               enabled: false,
                               controller: controller.start_date.value,
+                              onSaved: (newValue) {
+                                item['debut'] = start_date.value.text;
+                              },
                               decoration: InputDecoration(
                                   label: Text("Debut de l'écheance")),
                             ),
@@ -124,17 +137,24 @@ class AddDocument extends GetView<CarService> {
                           padding: EdgeInsets.only(top: 10),
                           child: InkWell(
                             onTap: () async {
-                              controller.endDate = await showDatePicker(
+                              var value = await showDatePicker(
                                   context: context,
                                   firstDate: DateTime.now().subtract(365.days),
-                                  initialDate: DateTime.now(),
+                                  initialDate: item['fin'],
                                   lastDate: DateTime.now().add(365.days));
+                              if (value != null) {
+                                end_date.text =
+                                    value.toLocal().toIso8601String();
+                              }
                               print(
-                                  "${controller.start_date.value.text} - ${controller.end_date.value.text}");
+                                  "${start_date.value.text} - ${end_date.value.text}");
                             },
                             child: TextFormField(
                               enabled: false,
                               controller: controller.end_date.value,
+                              onSaved: (newValue) {
+                                item['fin'] = end_date.value.text;
+                              },
                               decoration: InputDecoration(
                                   label: Text("Fin de l'écheance")),
                             ),
@@ -147,16 +167,12 @@ class AddDocument extends GetView<CarService> {
                               FilePickerResult? result =
                                   await FilePicker.platform.pickFiles(
                                       type: FileType.custom,
-                                      allowedExtensions: [
-                                    'pdf',
-                                    "docx",
-                                    "doc"
-                                  ]);
+                                      allowedExtensions: allowExt);
                               if (result != null) {
                                 controller.setfile = result.files[0];
                               }
                             },
-                            child: !controller.filepicked.value
+                            child: !controller.isFilePicked
                                 ? DottedBorder(
                                     color: AppColors.accentDark,
                                     radius: Radius.circular(15),
@@ -174,13 +190,25 @@ class AddDocument extends GetView<CarService> {
                                       ),
                                     ))
                                 : Container(
-                                    // height: 150,
+                                    height: 40,
                                     padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(5),
+                                            topRight: Radius.circular(5)),
+                                        border:
+                                            Border.all(color: Colors.green)),
                                     child: Row(
                                       children: [
-                                        Text("${controller.fileg.value!.path}",
-                                            overflow: TextOverflow.ellipsis),
+                                        // Text("${controller.fileg.value!.path}",
+                                        //     overflow: TextOverflow.ellipsis),
+                                        Text(
+                                          'File ready to upload',
+                                          style: TextStyle(color: Colors.green),
+                                        ),
                                         TextButton(
+                                          style: TextButton.styleFrom(
+                                              maximumSize: Size(50, 30)),
                                           onPressed: () {},
                                           child: Text('Voir '),
                                         ),
@@ -191,27 +219,27 @@ class AddDocument extends GetView<CarService> {
                         ),
                       ],
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                            onPressed: submitForm,
-                            child: Text('Mettre à jour')),
-                        TextButton(
-                            onPressed: () {
-                              controller.resetForm();
-                              Get.back();
-                            },
-                            child: Text('Annuler'),
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.red.withOpacity(.2)),
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.red)))
-                      ],
-                    ),
+                    // Column(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     TextButton(
+                    //         onPressed: submitForm,
+                    //         child: Text('Mettre à jour')),
+                    //     TextButton(
+                    //         onPressed: () {
+                    //           controller.resetForm();
+                    //           Get.back();
+                    //         },
+                    //         child: Text('Annuler'),
+                    //         style: ButtonStyle(
+                    //             backgroundColor:
+                    //                 MaterialStateProperty.all<Color>(
+                    //                     Colors.red.withOpacity(.2)),
+                    //             foregroundColor:
+                    //                 MaterialStateProperty.all<Color>(
+                    //                     Colors.red)))
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

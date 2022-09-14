@@ -17,7 +17,7 @@ class FadeInRight extends StatefulWidget {
 class _FadeInLeftState extends State<FadeInRight> {
   final tween = MultiTween<Props>()
     ..add(Props.opacity, Tween<double>(begin: 0, end: 1), 2.seconds)
-    ..add(Props.offset, Tween<Offset>(begin: Offset(40, 0), end: Offset(0, 0)),
+    ..add(Props.offset, Tween<Offset>(begin: Offset(-40, 0), end: Offset(0, 0)),
         2.seconds, Curves.easeInOutCubic);
 
   @override

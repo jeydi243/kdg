@@ -13,6 +13,8 @@ class AppColors {
   static const clouds = Color(0xffecf0f1);
   static const black = Color(0xff000000);
   static const transparent = Colors.transparent;
+  static const dark1 = Color.fromARGB(255, 1, 67, 148);
+  static const dark2 = Color.fromARGB(255, 1, 48, 105);
 
   static const primaryDark = Colors.blue; // gris blue
   static const secondDark = Color(0xFFfbb02d);

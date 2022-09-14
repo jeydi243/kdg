@@ -11,6 +11,7 @@ import 'package:kdg/models/document.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../models/maison.dart';
+import 'package:uuid/uuid.dart';
 
 class CarService extends GetxController {
   late FirebaseAuth _auth;
@@ -29,6 +30,7 @@ class CarService extends GetxController {
   RxBool filepicked = RxBool(false);
   RxBool isLoadingDocument = RxBool(true);
   Rx<Car?> currentCar = Rx<Car?>(null);
+  Rx<DocumentReference?> currentCarRef = Rx<DocumentReference?>(null);
   Rx<String> currentCarId = Rx<String>("");
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
@@ -44,11 +46,13 @@ class CarService extends GetxController {
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
   Rx<InternetConnectionStatus> connectionStatus =
       Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
-  List list = [];
+  List<Map<String, dynamic>> list = [];
+  var uuid;
 
   @override
   void onReady() {
     super.onReady();
+    uuid = Uuid();
     ever(qsnapcars, onCarsChange);
     ever(exception, onFirebaseException);
     ever(currentCar, onCarChange);
@@ -87,28 +91,11 @@ class CarService extends GetxController {
   onCarChange(Car? car) async {
     if (car != null) {
       print("Car changed...${car.assurances}");
-      // resolveCarDoc();
       list = [
-        {
-          "doc_name": 'assurance',
-          "file": currentCar.value!.assurance['file'],
-          "isExpanded": false
-        },
-        {
-          "doc_name": 'controle_technique',
-          "file": currentCar.value!.controle['file'],
-          "isExpanded": false
-        },
-        {
-          "doc_name": 'vignette',
-          "file": currentCar.value!.vignette['file'],
-          "isExpanded": false
-        },
-        {
-          "doc_name": 'stationnement',
-          "file": currentCar.value!.stationnement['file'],
-          "isExpanded": false
-        },
+        {"doc_name": 'assurance', "isExpanded": false},
+        {"doc_name": 'controle_technique', "isExpanded": false},
+        {"doc_name": 'vignette', "isExpanded": false},
+        {"doc_name": 'stationnement', "isExpanded": false},
       ];
     }
   }
@@ -155,9 +142,11 @@ class CarService extends GetxController {
 
   List<Car> get cars => _cars.value;
   double get progress => file_upload_progress.value;
+  bool get isFilePicked => filepicked.value;
 
   set setCurrentCarId(String id) {
     currentCarId.value = id;
+    update();
   }
 
   set endDate(DateTime? value) {
@@ -179,7 +168,10 @@ class CarService extends GetxController {
   void prepareUpdateCar() {
     updatedCar.value['start_date'] = start_date.value.text;
     updatedCar.value['end_date'] = end_date.value.text;
-    updatedCar.value['file'] = File(fileg.value!.path ?? "");
+    if (fileg.value != null) {
+      updatedCar.value['file'] = File(fileg.value!.path ?? "");
+    }
+    update();
   }
 
   void onLoadFailed(String description) {
@@ -198,6 +190,7 @@ class CarService extends GetxController {
     filepicked.value = false;
     fileg.value = null;
     updatedCar.value = {};
+    update();
   }
 
   void storefile(String namedoc, String carid, File file) async {
@@ -217,6 +210,7 @@ class CarService extends GetxController {
             break;
           case TaskState.paused:
             Get.snackbar('Misa à jour $namedoc', "Mise à jour en pause");
+            update();
             break;
           case TaskState.success:
             file_upload_state.value = true;
@@ -229,10 +223,12 @@ class CarService extends GetxController {
           case TaskState.canceled:
             Get.snackbar('Misa à jour $namedoc',
                 "La mise à jour de la vignette a été annulé");
+            update();
             break;
           case TaskState.error:
             Get.snackbar('Misa à jour $namedoc',
                 "Erreur lors de la mise à jour de la vignette");
+            update();
             break;
         }
       });
@@ -301,9 +297,10 @@ class CarService extends GetxController {
   }
 
   watchme(String idCar) {
-    print("Watched car: $idCar");
+    currentCarRef.value = carsRef.doc(idCar);
     currentCar.bindStream(
         carsRef.doc(idCar).snapshots().map((event) => event.data()));
+    update();
   }
 
   onLoading() {
@@ -352,7 +349,7 @@ class CarService extends GetxController {
     });
   }
 
-  Future<void> getCars() async {
+  getCars() async {
     try {
       QuerySnapshot f = await carsRef.get();
       _cars.value = [];
@@ -367,18 +364,18 @@ class CarService extends GetxController {
   Future<void> updateCarStep1(String idcard, String namedoc) async {
     try {
       prepareUpdateCar();
-      DocumentReference car_ref = firestore.collection('cars').doc(idcard);
-      ref_ref.value = firestore
-          .collection('cars')
-          .doc(idcard)
-          .collection('documents')
-          .doc();
+      var gf = await currentCarRef.value!.get();
+      List<Map<String, dynamic>> gh =
+          List<Map<String, dynamic>>.from(gf.get(namedoc));
+      // await currentCarRef.value!.update({'$namedoc': FieldValue.arrayRemove(elements)});
 
+      int index = gh.indexWhere((el) => el['id'] == "idofdoc");
+      // gh[index] = updatedDoc;
       update();
-
-      await car_ref.update({namedoc: "${ref_ref.value!.id}"});
-      storefile(namedoc, idcard, updatedCar.value['file'] as File);
-    } on FirebaseException catch (e, s) {
+      if (updatedCar.value['file'] != null) {
+        storefile(namedoc, idcard, updatedCar.value['file'] as File);
+      }
+    } on FirebaseException catch (e) {
       exception.value = e;
       return;
     }

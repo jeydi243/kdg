@@ -218,7 +218,7 @@ class KDGTheme {
       bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: AppColors.backgroundDark, elevation: 10),
       buttonTheme: theme.buttonTheme.copyWith(
-        minWidth: 50,
+        minWidth: 40,
         textTheme: ButtonTextTheme.primary,
         disabledColor: HexColor.fromHex("#1CBFE2"),
         buttonColor: AppColors.primary,
