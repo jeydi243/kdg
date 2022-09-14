@@ -13,8 +13,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../models/maison.dart';
 
 class CarService extends GetxController {
-  static CarService carservice = Get.find();
-
   late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
   late CollectionReference<Document> docsRef;
@@ -46,28 +44,7 @@ class CarService extends GetxController {
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
   Rx<InternetConnectionStatus> connectionStatus =
       Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
-  List list = [
-    {
-      "doc_name": 'assurance',
-      "doc_id": carservice.currentCar.value!.assurance_ref!.id,
-      "isExpanded": false
-    },
-    {
-      "doc_name": 'controle_technique',
-      "doc_id": carservice.currentCar.value!.controle_technique_ref!.id,
-      "isExpanded": false
-    },
-    {
-      "doc_name": 'vignette',
-      "doc_id": carservice.currentCar.value!.vignette_ref!.id,
-      "isExpanded": false
-    },
-    {
-      "doc_name": 'stationnement',
-      "doc_id": carservice.currentCar.value!.stationnement_ref!.id,
-      "isExpanded": false
-    },
-  ];
+  List list = [];
 
   @override
   void onReady() {
@@ -107,29 +84,29 @@ class CarService extends GetxController {
     }
   }
 
-  onCarChange(Car? car) {
+  onCarChange(Car? car) async {
     if (car != null) {
-      print("Car changed...");
+      print("Car changed...${car.assurances}");
       // resolveCarDoc();
       list = [
         {
           "doc_name": 'assurance',
-          "doc_id": currentCar.value!.assurance_ref?.id,
+          "file": currentCar.value!.assurance['file'],
           "isExpanded": false
         },
         {
           "doc_name": 'controle_technique',
-          "doc_id": currentCar.value!.controle_technique_ref?.id,
+          "file": currentCar.value!.controle['file'],
           "isExpanded": false
         },
         {
           "doc_name": 'vignette',
-          "doc_id": currentCar.value!.vignette_ref?.id,
+          "file": currentCar.value!.vignette['file'],
           "isExpanded": false
         },
         {
           "doc_name": 'stationnement',
-          "doc_id": currentCar.value!.stationnement_ref?.id,
+          "file": currentCar.value!.stationnement['file'],
           "isExpanded": false
         },
       ];

@@ -8,35 +8,53 @@ class Car {
   String color;
   String year;
   String brand;
-  Document? assurance;
-  Document? controle_technique;
-  Document? stationnement;
-  Document? vignette;
-
-  DocumentReference? assurance_ref;
-  DocumentReference? controle_technique_ref;
-  DocumentReference? stationnement_ref;
-  DocumentReference? vignette_ref;
   Map<String, dynamic> price;
 
   late String id;
+  late List<Map<String, dynamic>> assurances;
+  late List<Map<String, dynamic>> stationnements;
+  late List<Map<String, dynamic>> vignettes;
+  late List<Map<String, dynamic>> controles;
 
   String get typeCarburant => type_carburant;
+  Map<String, dynamic> get assurance => assurances.firstWhere(
+      (doc) =>
+          (doc['debut'] as Timestamp).compareTo(
+              Timestamp.fromMillisecondsSinceEpoch(
+                  DateTime.now().millisecondsSinceEpoch)) >=
+          1,
+      orElse: () => {});
+  Map<String, dynamic> get vignette => vignettes.firstWhere(
+      (doc) =>
+          (doc['debut'] as Timestamp).compareTo(
+              Timestamp.fromMillisecondsSinceEpoch(
+                  DateTime.now().millisecondsSinceEpoch)) >=
+          1,
+      orElse: () => {});
+  Map<String, dynamic> get stationnement => stationnements.firstWhere(
+      (doc) =>
+          (doc['debut'] as Timestamp).compareTo(
+              Timestamp.fromMillisecondsSinceEpoch(
+                  DateTime.now().millisecondsSinceEpoch)) >=
+          1,
+      orElse: () => {});
+  Map<String, dynamic> get controle => controles.firstWhere(
+      (doc) =>
+          (doc['debut'] as Timestamp).compareTo(
+              Timestamp.fromMillisecondsSinceEpoch(
+                  DateTime.now().millisecondsSinceEpoch)) >=
+          1,
+      orElse: () => {});
 
-  List<Document?> get listDocuments =>
-      [assurance, controle_technique, stationnement, vignette];
-  Map<String, Document?> get documents => {
-        "controle_technique": controle_technique,
+  List<Map<String, dynamic>?> get listDocuments =>
+      [assurance, controle, stationnement, vignette];
+  Map<String, Map<String, dynamic>?> get documents => {
+        "controle_technique": controle,
         "vignette": vignette,
         "assurance": assurance,
         "stationnement": stationnement
       };
-  Map<String, String?> get documentsID => {
-        "controle_technique": controle_technique?.id,
-        "vignette": vignette?.id,
-        "assurance": assurance?.id,
-        "stationnement": stationnement?.id
-      };
+
   Map<String, String> get infos => {
         "model": model,
         "year": year,
@@ -65,10 +83,12 @@ class Car {
         year = snapshot['year'],
         price = snapshot['price'],
         color = snapshot['color'],
-        controle_technique_ref = snapshot['controle_technique'],
-        vignette_ref = snapshot['vignette'],
-        assurance_ref = snapshot['assurance'],
-        stationnement_ref = snapshot['stationnement'];
+        controles =
+            List<Map<String, dynamic>>.from(snapshot['controle_technique']),
+        vignettes = List<Map<String, dynamic>>.from(snapshot['vignette']),
+        assurances = List<Map<String, dynamic>>.from(snapshot['assurance']),
+        stationnements =
+            List<Map<String, dynamic>>.from(snapshot['stationnements']);
 
   Car.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -81,10 +101,12 @@ class Car {
         price = snapshot.get('price'),
         brand = snapshot.get('brand'),
         type_carburant = snapshot.get("type_carburant"),
-        controle_technique_ref = snapshot.get("controle_technique"),
-        vignette_ref = snapshot.get('vignette'),
-        assurance_ref = snapshot.get('assurance'),
-        stationnement_ref = snapshot.get('stationnement');
+        controles =
+            List<Map<String, dynamic>>.from(snapshot.get("controle_technique")),
+        vignettes = List<Map<String, dynamic>>.from(snapshot.get('vignette')),
+        assurances = List<Map<String, dynamic>>.from(snapshot.get('assurance')),
+        stationnements =
+            List<Map<String, dynamic>>.from(snapshot.get('stationnement'));
 
   toFirestore() {
     return {
@@ -92,9 +114,9 @@ class Car {
       'model': model,
       'typeCarburant': type_carburant,
       'assurance': assurance,
-      'controle_technique': controle_technique,
-      'stationnement': stationnement,
-      'vignette': vignette
+      'controle_technique': controles,
+      'stationnement': stationnements,
+      'vignette': vignettes
     };
   }
 }

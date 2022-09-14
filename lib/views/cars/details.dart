@@ -11,8 +11,10 @@ import 'package:kdg/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:kdg/animations/fadein.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import '../../animations/fadein_fromleft.dart';
 import 'add_document.dart';
 
 class DetailsCar extends StatefulWidget {
@@ -82,11 +84,9 @@ class _DetailsCarState extends State<DetailsCar> {
                                     children: [
                                       Obx(() => Expanded(
                                             child: SfPdfViewer.network(
-                                              carservice
-                                                  .currentCar
-                                                  .value!
-                                                  .documents[e['doc_name']]!
-                                                  .file,
+                                              carservice.currentCar.value!
+                                                      .documents[
+                                                  e['doc_name']]!['file'],
                                               canShowScrollStatus: true,
                                               currentSearchTextHighlightColor:
                                                   Color.fromARGB(
@@ -166,8 +166,6 @@ class _DetailsCarState extends State<DetailsCar> {
     super.initState();
     _sc = ScrollController();
     _pdfcontroller = PdfViewerController();
-
-   
   }
 
   @override
@@ -249,167 +247,180 @@ class _DetailsCarState extends State<DetailsCar> {
             physics: BouncingScrollPhysics(),
             padding: EdgeInsets.only(bottom: 20),
             children: [
-              Container(
-                padding: EdgeInsets.only(left: 10),
-                child: Row(
-                  children: [
-                    Text(
-                      "Gallerie",
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
+              FadeInLeft(
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Gallerie",
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(
-                  width: Get.width, height: Get.height * .3, child: PageV()),
-              Container(
-                  // color: Colors.blue,
-                  height: 250,
-                  width: 150,
-                  child: Column(
+              FadeIn(
+                SizedBox(
+                    width: Get.width, height: Get.height * .3, child: PageV()),
+              ),
+              FadeInLeft(
+                Container(
+                    // color: Colors.blue,
+                    height: 250,
+                    width: 150,
+                    child: Column(
+                      children: [
+                        Builder(builder: (context) {
+                          if (controller.currentCar.value != null) {
+                            return Column(children: <Widget>[
+                              ...controller.currentCar.value!.infos.entries
+                                  .toList()
+                                  .mapIndexed<Widget>((index, entry) {
+                                return Container(
+                                  height: 35,
+                                  color: index % 2 == 0
+                                      ? Colors.transparent
+                                      : Colors.blue[50],
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Text(
+                                          "${entry.key.capitalizeFirst}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: index % 2 != 0
+                                                  ? AppColors.textDark
+                                                  : Colors.blue[50],
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          "${entry.value.capitalizeFirst}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: index % 2 != 0
+                                                  ? AppColors.textDark
+                                                  : Colors.blue[50],
+                                              fontSize: 15),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              })
+                            ]);
+                          }
+                          return Container();
+                        }),
+                      ],
+                    )),
+              ),
+              FadeIn(
+                Container(
+                  padding: EdgeInsets.only(left: 10, bottom: 10),
+                  child: Row(
                     children: [
-                      Builder(builder: (context) {
-                        if (controller.currentCar.value != null) {
-                          return Column(children: <Widget>[
-                            ...controller.currentCar.value!.infos.entries
-                                .toList()
-                                .mapIndexed<Widget>((index, entry) {
-                              return Container(
-                                height: 35,
-                                color: index % 2 == 0
-                                    ? Colors.transparent
-                                    : Colors.blue[50],
-                                child: InkWell(
-                                  onTap: () {},
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    mainAxisSize: MainAxisSize.max,
+                      Text(
+                        "Documents",
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              FadeInLeft(
+                Container(
+                  padding: EdgeInsets.only(bottom: 200),
+                  child: ExpansionPanelList(
+                    animationDuration: 1.seconds,
+                    dividerColor: HexColor.fromHex("#000"),
+                    expandedHeaderPadding: EdgeInsets.all(0),
+                    elevation: 0,
+                    children: [
+                      ...controller.list
+                          .mapIndexed((i, e) => ExpansionPanel(
+                                isExpanded: e["isExpanded"],
+                                backgroundColor:
+                                    Color.fromARGB(255, 1, 48, 105),
+                                body: Actions(context, e),
+                                headerBuilder: (ctx, bool isExpanded) =>
+                                    ListTile(
+                                  tileColor: isExpanded
+                                      ? Color.fromARGB(255, 1, 67, 148)
+                                      : Color.fromARGB(255, 1, 48, 105),
+                                  onTap: () async {
+                                    setState(() {
+                                      e["isExpanded"] = !isExpanded;
+                                    });
+                                  },
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${entry.key.capitalizeFirst}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: index % 2 != 0
-                                                ? AppColors.textDark
-                                                : Colors.blue[50],
-                                            fontSize: 15),
+                                        "${(e["doc_name"] as String).capitalizeFirst}",
+                                        style: Get.textTheme.headline4!
+                                            .copyWith(color: AppColors.accent),
                                       ),
                                       Text(
-                                        "${entry.value?.capitalizeFirst}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: index % 2 != 0
-                                                ? AppColors.textDark
-                                                : Colors.blue[50],
-                                            fontSize: 15),
-                                      )
+                                        'Expire dans ${20 + Random().nextInt(30)} jours',
+                                        style: Get.textTheme.bodyText2,
+                                      ),
                                     ],
                                   ),
                                 ),
-                              );
-                            })
-                          ]);
-                        }
-                        return Container();
-                      }),
+                              ))
+                          .toList(),
                     ],
-                  )),
-              Container(
-                padding: EdgeInsets.only(left: 10, bottom: 10),
-                child: Row(
-                  children: [
-                    Text(
-                      "Documents",
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(bottom: 200),
-                child: ExpansionPanelList(
-                  animationDuration: 1.seconds,
-                  dividerColor: HexColor.fromHex("#000"),
-                  expandedHeaderPadding: EdgeInsets.all(0),
-                  elevation: 0,
-                  children: [
-                    ...controller.list
-                        .mapIndexed((i, e) => ExpansionPanel(
-                              isExpanded: e["isExpanded"],
-                              backgroundColor: Color.fromARGB(255, 1, 48, 105),
-                              body: Actions(context, e),
-                              headerBuilder: (ctx, bool isExpanded) => ListTile(
-                                tileColor: isExpanded
-                                    ? Color.fromARGB(255, 1, 67, 148)
-                                    : Color.fromARGB(255, 1, 48, 105),
-                                onTap: () {
-                                  setState(() {
-                                    e["isExpanded"] = !e["isExpanded"];
-                                  });
-                                },
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                    expansionCallback: (int item, bool status) {
+                      // Get.snackbar("Title $item", "Message $status");
+                      showAnimatedDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        axis: Axis.vertical,
+                        alignment: Alignment.center,
+                        builder: (BuildContext context) {
+                          return Container(
+                            width: Get.width,
+                            color: AppColors.backgroundDark,
+                            child: FractionallySizedBox(
+                              heightFactor: 0.5,
+                              widthFactor: .8,
+                              alignment: Alignment.center,
+                              child: Material(
+                                borderRadius: BorderRadius.circular(10),
+                                child: ListView(
                                   children: [
-                                    Text(
-                                      "${(e["doc_name"] as String).capitalizeFirst}",
-                                      style: Get.textTheme.headline4!
-                                          .copyWith(color: AppColors.accent),
-                                    ),
-                                    Text(
-                                      'Expire dans ${20 + Random().nextInt(30)} jours',
-                                      style: Get.textTheme.bodyText2,
-                                    ),
+                                    ...actionsDialog
+                                        .map((e) => ListTile(
+                                              onTap: () {
+                                                print('Le ');
+                                              },
+                                              title: Text(e['text']),
+                                            ))
+                                        .toList()
                                   ],
                                 ),
                               ),
-                            ))
-                        .toList(),
-                  ],
-                  expansionCallback: (int item, bool status) {
-                    // Get.snackbar("Title $item", "Message $status");
-                    showAnimatedDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      axis: Axis.vertical,
-                      alignment: Alignment.center,
-                      builder: (BuildContext context) {
-                        return Container(
-                          width: Get.width,
-                          color: AppColors.backgroundDark,
-                          child: FractionallySizedBox(
-                            heightFactor: 0.5,
-                            widthFactor: .8,
-                            alignment: Alignment.center,
-                            child: Material(
-                              borderRadius: BorderRadius.circular(10),
-                              child: ListView(
-                                children: [
-                                  ...actionsDialog
-                                      .map((e) => ListTile(
-                                            onTap: () {
-                                              print('Le ');
-                                            },
-                                            title: Text(e['text']),
-                                          ))
-                                      .toList()
-                                ],
-                              ),
                             ),
-                          ),
-                        );
-                      },
-                      animationType: DialogTransitionType.size,
-                      curve: Curves.fastOutSlowIn,
-                      duration: Duration(seconds: 1),
-                    );
-                  },
+                          );
+                        },
+                        animationType: DialogTransitionType.size,
+                        curve: Curves.fastOutSlowIn,
+                        duration: Duration(seconds: 1),
+                      );
+                    },
+                  ),
                 ),
               )
             ],

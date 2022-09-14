@@ -3,8 +3,10 @@
   "bracketPairColorizer.showVerticalScopeLine": false,
   "terminal.integrated.fontFamily": "Cascadia Code",
   "window.autoDetectColorScheme": true,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 250,
   "workbench.preferredLightColorTheme": "GitHub Light Default",
   "workbench.preferredDarkColorTheme": "Dracula",
   "editor.fontFamily": "'Cascadia Code', 'Courier New', monospace",
-  "workbench.colorTheme": "Dracula",
+  "workbench.colorTheme": "Dracula"
 }
