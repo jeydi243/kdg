@@ -1,36 +1,37 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:kdg/models/car.dart';
-import 'package:kdg/models/document.dart';
-import 'package:palette_generator/palette_generator.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../models/maison.dart';
 import 'package:uuid/uuid.dart';
+import 'package:kdg/models/car.dart';
+import 'package:flutter/material.dart';
+import 'package:kdg/models/document.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:palette_generator/palette_generator.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class CarService extends GetxController {
-  late FirebaseAuth _auth;
   late FirebaseFirestore firestore;
   late CollectionReference<Document> docsRef;
   late CollectionReference<Car> carsRef;
   late CollectionReference<Maison> housesRef;
-
+  Box? carBox;
   final start_date = TextEditingController().obs;
   final end_date = TextEditingController().obs;
-  final file_upload_progress = 0.0.obs;
-  final file_upload_state = false.obs;
+  final uploadProgress = 0.0.obs;
+  final uploadState = false.obs;
   final downloadurl = "".obs;
   final file = Rx<File>;
   final storageRef = FirebaseStorage.instance.ref();
   RxBool filepicked = RxBool(false);
   RxBool isLoadingDocument = RxBool(true);
   Rx<Car?> currentCar = Rx<Car?>(null);
-  Rx<DocumentReference?> currentCarRef = Rx<DocumentReference?>(null);
+  Rx<TaskSnapshot?> tasksnap = Rx(null);
+  Rx<DocumentReference<Car>?> currentCarRef = Rx<DocumentReference<Car>?>(null);
   Rx<String> currentCarId = Rx<String>("");
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
@@ -53,22 +54,16 @@ class CarService extends GetxController {
   void onReady() {
     super.onReady();
     uuid = Uuid();
+    ever(tasksnap, onUploadTask);
     ever(qsnapcars, onCarsChange);
     ever(exception, onFirebaseException);
     ever(currentCar, onCarChange);
-    ever(downloadurl, onDownloadUrl);
+    ever(downloadurl, updateCarStep2);
     ever(currentCarId, watchme);
     ever(connectionStatus, onConnectionChange);
-    ever(file_upload_state, (bool value) {
+    ever(uploadState, (bool value) {
       if (value && Get.isDialogOpen == true) Get.back();
     });
-  }
-
-  onDownloadUrl(String? value) {
-    if (value != null) {
-      updateCarStep2(ref_ref.value!.id, value);
-      print('File downloaded at: $value');
-    }
   }
 
   onConnectionChange(InternetConnectionStatus value) {
@@ -90,13 +85,13 @@ class CarService extends GetxController {
 
   onCarChange(Car? car) async {
     if (car != null) {
-      print("Car changed...${car.assurances}");
       list = [
         {"doc_name": 'assurance', "isExpanded": false},
         {"doc_name": 'controle_technique', "isExpanded": false},
         {"doc_name": 'vignette', "isExpanded": false},
         {"doc_name": 'stationnement', "isExpanded": false},
       ];
+      update();
     }
   }
 
@@ -105,7 +100,6 @@ class CarService extends GetxController {
       print("${qs.docChanges.length} docs changed");
       qs.docChanges.forEach((el) {
         if (el.type == DocumentChangeType.modified && el.doc.exists) {
-          print("Must go to change for doc id ${el.doc.id}");
           changeCardAt(el.doc.id, el.doc.data());
         } else if (el.type == DocumentChangeType.added && el.doc.exists) {
           _cars.value.addAll([el.doc.data()].whereType<Car>().toList());
@@ -119,9 +113,9 @@ class CarService extends GetxController {
 
   @override
   void onInit() async {
-    _auth = FirebaseAuth.instance;
+    // _auth = FirebaseAuth.instance;
     firestore = FirebaseFirestore.instance;
-
+    carBox = await Hive.openBox('Car');
     docsRef = firestore.collection('documents').withConverter<Document>(
           fromFirestore: Document.fromFirestore,
           toFirestore: (Document doc, _) => doc.toFirestore(),
@@ -141,7 +135,7 @@ class CarService extends GetxController {
   }
 
   List<Car> get cars => _cars.value;
-  double get progress => file_upload_progress.value;
+  double get progress => uploadProgress.value;
   bool get isFilePicked => filepicked.value;
 
   set setCurrentCarId(String id) {
@@ -165,14 +159,14 @@ class CarService extends GetxController {
     update();
   }
 
-  void prepareUpdateCar() {
-    updatedCar.value['start_date'] = start_date.value.text;
-    updatedCar.value['end_date'] = end_date.value.text;
-    if (fileg.value != null) {
-      updatedCar.value['file'] = File(fileg.value!.path ?? "");
-    }
-    update();
-  }
+  // void prepareUpdateCar() {
+  //   updatedCar.value['start_date'] = start_date.value.text;
+  //   updatedCar.value['end_date'] = end_date.value.text;
+  //   if (fileg.value != null) {
+  //     updatedCar.value['file'] = File(fileg.value!.path ?? "");
+  //   }
+  //   update();
+  // }
 
   void onLoadFailed(String description) {
     Get.snackbar("File failed to load", description);
@@ -193,49 +187,56 @@ class CarService extends GetxController {
     update();
   }
 
-  void storefile(String namedoc, String carid, File file) async {
-    Reference cardoc = storageRef.child('cars').child(carid).child('documents');
+  void storefile(Map<String, dynamic> updatedDoc) async {
+    String carid = currentCarId.value;
+    File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
+    updatedDoc.remove("file");
+    carBox!.put("car", updatedDoc);
+    Reference cardoc =
+        storageRef.child('cars').child(currentCarId.value).child('documents');
     try {
-      UploadTask uptask = cardoc
+      UploadTask upta = cardoc
           .child("${carid.substring(1, 4)}${file.path.split('/').last}")
           .putFile(File(file.path));
 
-      uptask.snapshotEvents.listen((snapshot) {
-        switch (snapshot.state) {
-          case TaskState.running:
-            file_upload_progress.value =
-                (100 * (snapshot.bytesTransferred / snapshot.totalBytes));
-            print("Upload is ${file_upload_progress.value} % complete.");
-            update();
-            break;
-          case TaskState.paused:
-            Get.snackbar('Misa à jour $namedoc', "Mise à jour en pause");
-            update();
-            break;
-          case TaskState.success:
-            file_upload_state.value = true;
-            snapshot.ref.getDownloadURL().then((value) {
-              print('File downloaded at: $value');
-              downloadurl.value = value;
-            });
-            update();
-            break;
-          case TaskState.canceled:
-            Get.snackbar('Misa à jour $namedoc',
-                "La mise à jour de la vignette a été annulé");
-            update();
-            break;
-          case TaskState.error:
-            Get.snackbar('Misa à jour $namedoc',
-                "Erreur lors de la mise à jour de la vignette");
-            update();
-            break;
-        }
-      });
-      ;
+      tasksnap.bindStream(upta.snapshotEvents);
     } on FirebaseException catch (e) {
       exception.value = e;
     }
+  }
+
+  // Stream<Map<String, dynamic>> changeStream(
+  //     Stream<TaskSnapshot> st, Map<String, dynamic> map) {
+  //   return st.map((event) => {'event': event, ...map});
+  // }
+
+  onUploadTask(TaskSnapshot? snapshot) async {
+    String errorMessage = "Erreur lors de la mise à jour de la vignette";
+    String cancelMessage = "La mise à jour de la vignette a été annulé";
+    // String successMessage = "Erreur lors de la mise à jour de la vignette";
+
+    switch (snapshot!.state) {
+      case TaskState.running:
+        uploadProgress.value =
+            (100 * (snapshot.bytesTransferred / snapshot.totalBytes));
+        print("Upload is ${uploadProgress.value} % complete.");
+        break;
+      case TaskState.paused:
+        Get.snackbar('Mise à jour', "Mise à jour en pause");
+
+        break;
+      case TaskState.success:
+        uploadState.value = true;
+        downloadurl.value = await snapshot.ref.getDownloadURL();
+        break;
+      case TaskState.canceled:
+        Get.snackbar('Misa à jour', cancelMessage);
+        break;
+      case TaskState.error:
+        Get.snackbar('Misa à jour ', errorMessage);
+        break;
+    }
+    update();
   }
 
   onRefresh() async {
@@ -361,32 +362,46 @@ class CarService extends GetxController {
     }
   }
 
-  Future<void> updateCarStep1(String idcard, String namedoc) async {
+  Future<void> updateCarStep1(Map<String, dynamic> updatedDoc) async {
     try {
-      prepareUpdateCar();
-      var gf = await currentCarRef.value!.get();
-      List<Map<String, dynamic>> gh =
-          List<Map<String, dynamic>>.from(gf.get(namedoc));
-      // await currentCarRef.value!.update({'$namedoc': FieldValue.arrayRemove(elements)});
-
-      int index = gh.indexWhere((el) => el['id'] == "idofdoc");
-      // gh[index] = updatedDoc;
-      update();
-      if (updatedCar.value['file'] != null) {
-        storefile(namedoc, idcard, updatedCar.value['file'] as File);
+      if (updatedDoc.containsKey("file")) {
+        storefile(updatedDoc);
       }
+
+      DocumentSnapshot<Car> gf = await currentCarRef.value!.get();
+      List<Map<String, dynamic>> currentDocList =
+          List<Map<String, dynamic>>.from(gf.get(updatedDoc['doc_name']));
+      carBox!.put("currentDocList", currentDocList);
+      int i = currentDocList.indexWhere((el) => el['id'] == updatedDoc['id']);
+      if (i != -1) {
+        currentDocList[i] = updatedDoc;
+      }
+      //Si il y a un fichier on l'enregistre d'abord dans le bucket
+
+      await currentCarRef.value!
+          .update({"${updatedDoc['doc_name']}": currentDocList});
+
+      update();
     } on FirebaseException catch (e) {
       exception.value = e;
       return;
     }
   }
 
-  Future<bool> updateCarStep2(String? iddoc, String linktofile) async {
+  Future<bool> updateCarStep2(String? downloadURL) async {
+    Get.snackbar(
+        "Download", "Le telechargement est terminé, tu peux now continuer");
     try {
-      updatedCar.value['file'] = linktofile;
-      await ref_ref.value!.set(updatedCar.value);
-
-      Get.snackbar("Update Car", "Car document at id $iddoc");
+      dynamic box = await carBox!.get("car");
+      dynamic box2 = await carBox!.get("currentDocList");
+      List<Map<String, dynamic>> docList =
+          List<Map<String, dynamic>>.from(box2);
+      Map<String, dynamic> updatedDoc = Map<String, dynamic>.from(box);
+      updatedDoc['file'] = downloadURL;
+      int indexw = docList.indexWhere((el) => el['id'] = updatedDoc['id']);
+      docList[indexw] = updatedDoc;
+      await currentCarRef.value!.update({"${updatedDoc['doc_name']}": docList});
+      Get.snackbar("Update Car", "Car document at id ${currentCarId.value}");
       resetForm();
       return true;
     } catch (e) {

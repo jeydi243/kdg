@@ -85,7 +85,7 @@ class _CustomGridState extends State<CustomGrid> {
             columnCount: list.length,
             child: SlideAnimation(
               verticalOffset: 10,
-              curve: Curves.easeInOutBack,
+              curve: Curves.easeInOutExpo,
               child: FadeInAnimation(
                   duration: 1.seconds,
                   child: Stack(

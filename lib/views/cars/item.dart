@@ -44,14 +44,15 @@ class _CarItemState extends State<CarItem> {
         },
         closedBuilder: (ctx, action) => ListTile(
           onLongPress: () async {
-            await HapticFeedback.heavyImpact();
+            await HapticFeedback.selectionClick();
           },
           enableFeedback: true,
           contentPadding: EdgeInsets.only(left: 10),
           style: ListTileStyle.list,
           tileColor: widget.color,
-          onTap: () {
+          onTap: () async {
             carservice.setCurrentCarId = car.id;
+            await HapticFeedback.selectionClick();
             action();
           },
           title: Hero(

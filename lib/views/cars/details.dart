@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -46,9 +45,6 @@ class _DetailsCarState extends State<DetailsCar> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
                 children: [
-                  TextButton(
-                      onPressed: () {},
-                      child: Text("Activer les notifications d'echéance")),
                   TextButton(
                       onPressed: () async {
                         var link =
