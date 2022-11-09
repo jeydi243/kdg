@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:collection';
 import 'package:get/get.dart';
 import '../models/maison.dart';
 import 'package:uuid/uuid.dart';
@@ -205,6 +206,18 @@ class CarService extends GetxController {
     }
   }
 
+  Map<K, V> mergeMaps<K, V>(Map<K, V> map1, Map<K, V> map2,
+      {V Function(V, V)? value}) {
+    var result = Map<K, V>.of(map1);
+    if (value == null) return result..addAll(map2);
+
+    map2.forEach((key, mapValue) {
+      result[key] = result.containsKey(key)
+          ? value(result[key] as V, mapValue)
+          : mapValue;
+    });
+    return result;
+  }
   // Stream<Map<String, dynamic>> changeStream(
   //     Stream<TaskSnapshot> st, Map<String, dynamic> map) {
   //   return st.map((event) => {'event': event, ...map});
@@ -368,18 +381,8 @@ class CarService extends GetxController {
         storefile(updatedDoc);
       }
 
-      DocumentSnapshot<Car> gf = await currentCarRef.value!.get();
-      List<Map<String, dynamic>> currentDocList =
-          List<Map<String, dynamic>>.from(gf.get(updatedDoc['doc_name']));
-      carBox!.put("currentDocList", currentDocList);
-      int i = currentDocList.indexWhere((el) => el['id'] == updatedDoc['id']);
-      if (i != -1) {
-        currentDocList[i] = updatedDoc;
-      }
-      //Si il y a un fichier on l'enregistre d'abord dans le bucket
-
       await currentCarRef.value!
-          .update({"${updatedDoc['doc_name']}": currentDocList});
+          .update({"${updatedDoc['doc_name']}": updatedDoc});
 
       update();
     } on FirebaseException catch (e) {
