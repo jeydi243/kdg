@@ -1,13 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:kdg/animations/fadein.dart';
-import 'package:kdg/views/sections1.dart';
-import 'package:kdg/services/user_service.dart';
-import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'bdd/details.dart';
 import 'cars/details.dart';
 import 'famille/details.dart';
@@ -79,7 +72,7 @@ class _HomeState extends State<Home> {
                       value: value,
                       child: Text(value),
                     );
-                  }).toList()),
+                  }).toList(), onChanged: (String value) {  },),
                 ),
               ),
             )
