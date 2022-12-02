@@ -35,14 +35,21 @@ class _AddDocumentState extends State<AddDocument> {
   void initState() {
     super.initState();
 
-    debut = DateTime.fromMillisecondsSinceEpoch((controller.currentCar.value!
-            .documents[widget.item['doc_name']]!['debut'] as Timestamp)
-        .millisecondsSinceEpoch);
-    fin = DateTime.fromMillisecondsSinceEpoch((controller.currentCar.value!
-            .documents[widget.item['doc_name']]!['fin'] as Timestamp)
-        .millisecondsSinceEpoch);
+    debut = ff("debut");
+
+    fin = ff("fin");
     start_date.text = debut.toIso8601String();
     end_date.text = fin.toIso8601String();
+  }
+
+  DateTime ff(String when) {
+    return controller.currentCar.value!
+            .documents[widget.item['doc_name']]![when] is Timestamp
+        ? DateTime.fromMillisecondsSinceEpoch((controller
+                .currentCar.value!.documents[widget.item['doc_name']]![when])
+            .millisecondsSinceEpoch)
+        : DateTime.parse(controller
+            .currentCar.value!.documents[widget.item['doc_name']]![when]);
   }
 
   void submitForm() async {
@@ -54,8 +61,8 @@ class _AddDocumentState extends State<AddDocument> {
         form['id'] = controller
             .currentCar.value!.documents[widget.item['doc_name']]!['id'];
         print('The form is not empty $form');
-        await controller.updateCarStep1(form);
-        await Get.dialog(StatefulBuilder(
+
+        Get.dialog(StatefulBuilder(
             builder: (context, setState) => Center(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -85,15 +92,23 @@ class _AddDocumentState extends State<AddDocument> {
                                   )
                                 : Container(),
                             thereIsFile()
-                                ? Text('${controller.progress}% Uploading')
+                                ? Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Text('${controller.progress}% Uploading'),
+                                )
                                 : Container(),
-                            Text('Mise à jour')
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text('Mise à jour'),
+                            )
                           ],
                         ),
                       ),
                     ),
                   ),
                 )));
+
+        await controller.updateCarStep1(form);
       }
 
       if (1 == 1) {

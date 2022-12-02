@@ -378,12 +378,20 @@ class CarService extends GetxController {
   Future<void> updateCarStep1(Map<String, dynamic> updatedDoc) async {
     try {
       if (updatedDoc.containsKey("file")) {
+        print('il y a un fichier...');
+        await carBox!.put("doc_name", updatedDoc['doc_name']);
         storefile(updatedDoc);
       }
 
-      await currentCarRef.value!
-          .update({"${updatedDoc['doc_name']}": updatedDoc});
+      updatedDoc.remove('file');
 
+      for (var el in updatedDoc.entries) {
+        await currentCarRef.value!
+            .update({"${updatedDoc['doc_name']}.${el.key}": el.value});
+      }
+      Get.back();
+      Get.back();
+      Get.snackbar("Mise à jour", "Opération success !");
       update();
     } on FirebaseException catch (e) {
       exception.value = e;
@@ -392,20 +400,14 @@ class CarService extends GetxController {
   }
 
   Future<bool> updateCarStep2(String? downloadURL) async {
-    Get.snackbar(
-        "Download", "Le telechargement est terminé, tu peux now continuer");
+    Get.snackbar("Download", "Le telechargement est terminé");
     try {
-      dynamic box = await carBox!.get("car");
-      dynamic box2 = await carBox!.get("currentDocList");
-      List<Map<String, dynamic>> docList =
-          List<Map<String, dynamic>>.from(box2);
-      Map<String, dynamic> updatedDoc = Map<String, dynamic>.from(box);
-      updatedDoc['file'] = downloadURL;
-      int indexw = docList.indexWhere((el) => el['id'] = updatedDoc['id']);
-      docList[indexw] = updatedDoc;
-      await currentCarRef.value!.update({"${updatedDoc['doc_name']}": docList});
+      String doc_name = carBox!.get("doc_name");
+
+      await currentCarRef.value!.update({"${doc_name}.file": downloadURL});
       Get.snackbar("Update Car", "Car document at id ${currentCarId.value}");
       resetForm();
+      if (Get.isDialogOpen == true) Get.back();
       return true;
     } catch (e) {
       print(e);

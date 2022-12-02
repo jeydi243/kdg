@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
 import '../../components/viewerpdf.dart';
 import 'add_document.dart';
+import 'package:vibration/vibration.dart';
 
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.action, {Key? key}) : super(key: key);
@@ -249,82 +251,135 @@ class _DetailsCarState extends State<DetailsCar> {
             FadeInLeft(
               Container(
                 padding: EdgeInsets.only(bottom: 200),
-                child: ExpansionPanelList(
-                  animationDuration: 1.seconds,
-                  dividerColor: HexColor.fromHex("#000"),
-                  expandedHeaderPadding: EdgeInsets.all(0),
-                  elevation: 0,
-                  children: [
-                    ...controller.list
-                        .mapIndexed((i, e) => ExpansionPanel(
-                              isExpanded: e["isExpanded"],
-                              backgroundColor: AppColors.dark2,
-                              body: Actions(context, e),
-                              headerBuilder: (ctx, isExp) {
-                                print(e);
-                                var dayLeft = carservice.currentCar.value!
-                                    .dayLeft(e['doc_name']);
-                                return ListTile(
-                                  tileColor:
-                                      isExp ? AppColors.dark1 : AppColors.dark2,
-                                  onTap: () async {
-                                    setState(() {
-                                      e["isExpanded"] = !isExp;
-                                    });
-                                  },
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${(e["doc_name"] as String).capitalizeFirst}",
-                                        style: Get.textTheme.headline4!
-                                            .copyWith(color: AppColors.accent),
-                                      ),
-                                      Text(
-                                        'Expire dans ${dayLeft} jours',
-                                        style: Get.textTheme.bodyText2,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ))
-                        .toList(),
-                  ],
-                  expansionCallback: (int item, bool status) async {
+                child: GestureDetector(
+                  onLongPressEnd: (details) async {
+                    try {
+                      await HapticFeedback.lightImpact();
+                      // if (await Vibration.hasVibrator()) {
+                      await Vibration.vibrate(
+                        amplitude: 0,
+                        intensities: [200, 300],
+                      );
+                      // }
+                    } on PlatformException catch (e) {
+                      print(e);
+                    } catch (e) {
+                      print('Une exception a été levé: $e');
+                    }
+
                     await showAnimatedDialog(
                       context: context,
                       barrierDismissible: true,
                       axis: Axis.vertical,
-                      alignment: Alignment.centerRight,
+                      alignment: Alignment.center,
                       builder: (BuildContext context) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.4,
-                          widthFactor: .8,
-                          alignment: Alignment.centerRight,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10),
-                            child: ListView(
-                              children: [
-                                ...actionsDialog
-                                    .map((e) => ListTile(
-                                          onTap: () {
-                                            print('Le ');
-                                          },
-                                          title: Text(e['text']),
-                                        ))
-                                    .toList()
-                              ],
+                        return Container(
+                          child: FractionallySizedBox(
+                            heightFactor: 0.4,
+                            widthFactor: .8,
+                            alignment: Alignment.center,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(10),
+                              child: ListView(
+                                children: [
+                                  ...actionsDialog
+                                      .map((e) => ListTile(
+                                            onTap: () {
+                                              print('Le ');
+                                            },
+                                            title: Text(e['text']),
+                                          ))
+                                      .toList()
+                                ],
+                              ),
                             ),
                           ),
                         );
                       },
                       animationType: DialogTransitionType.size,
                       curve: Curves.fastOutSlowIn,
-                      duration: Duration(seconds: 1),
+                      duration: 1.seconds,
                     );
                   },
+                  child: ExpansionPanelList(
+                    animationDuration: 1.seconds,
+                    dividerColor: HexColor.fromHex("#000"),
+                    expandedHeaderPadding: EdgeInsets.all(0),
+                    elevation: 0,
+                    children: [
+                      ...controller.list
+                          .mapIndexed((i, e) => ExpansionPanel(
+                                isExpanded: e["isExpanded"],
+                                backgroundColor: AppColors.dark2,
+                                body: Actions(context, e),
+                                headerBuilder: (ctx, isExp) {
+                                  print(e);
+                                  var dayLeft = carservice.currentCar.value!
+                                      .dayLeft(e['doc_name']);
+                                  return ListTile(
+                                    tileColor: isExp
+                                        ? AppColors.dark1
+                                        : AppColors.dark2,
+                                    onTap: () async {
+                                      setState(() {
+                                        e["isExpanded"] = !isExp;
+                                      });
+                                    },
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${(e["doc_name"] as String).capitalizeFirst}",
+                                          style: Get.textTheme.headline4!
+                                              .copyWith(
+                                                  color: AppColors.accent),
+                                        ),
+                                        Text(
+                                          'Expire dans ${dayLeft} jours',
+                                          style: Get.textTheme.bodyText2,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ))
+                          .toList(),
+                    ],
+                    expansionCallback: (int item, bool status) async {
+                      await showAnimatedDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        axis: Axis.vertical,
+                        alignment: Alignment.centerRight,
+                        builder: (BuildContext context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.4,
+                            widthFactor: .8,
+                            alignment: Alignment.centerRight,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(10),
+                              child: ListView(
+                                children: [
+                                  ...actionsDialog
+                                      .map((e) => ListTile(
+                                            onTap: () {
+                                              print('Le ');
+                                            },
+                                            title: Text(e['text']),
+                                          ))
+                                      .toList()
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        animationType: DialogTransitionType.size,
+                        curve: Curves.fastOutSlowIn,
+                        duration: 1.seconds,
+                      );
+                    },
+                  ),
                 ),
               ),
             )

@@ -146,7 +146,6 @@ class _LoginState extends State<Login> {
                           MaterialButton(
                               minWidth: Get.width * .9,
                               color: HexColor.fromHex("#1CBFE2"),
-                              
                               highlightElevation: 5,
                               elevation: 10,
                               onPressed: () async {
@@ -192,7 +191,9 @@ class _LoginState extends State<Login> {
                                           ),
                                         )
                                       : Container(),
-                                  Text('Se connecter'),
+                                  Text('Se connecter',
+                                      style: Get.textTheme.bodyText1!.copyWith(
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               )),
                         ),
