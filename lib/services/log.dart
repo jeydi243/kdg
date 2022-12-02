@@ -1,11 +1,11 @@
 import 'package:logger/logger.dart';
 
 class Log {
-  Logger logger;
+  late Logger logger;
   Log() {
     logger = Logger(
       printer: PrettyPrinter(
-          methodCount: 3, // number of method calls to be displayed
+          methodCount: 4, // number of method calls to be displayed
           errorMethodCount: 8,
           lineLength: 130, // width of the output
           colors: true, // Colorful log messages

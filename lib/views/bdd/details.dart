@@ -1,28 +1,18 @@
-import 'package:animations/animations.dart';
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
+import 'package:animated_clipper/animated_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/custom_image.dart';
-import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/services/user_service.dart';
-import 'package:kdg/services/vehicule_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:kdg/views/cars/item.dart';
-import 'package:pigment/pigment.dart';
-import 'package:provider/provider.dart';
 
-class DetailsBdd extends StatefulWidget {
-  DetailsBdd({Key key, this.item}) : super(key: key);
+class IndexBdd extends StatefulWidget {
+  IndexBdd({Key? key, required this.item}) : super(key: key);
   final Map<String, dynamic> item;
   @override
-  _DetailsBddState createState() => _DetailsBddState();
+  _IndexBddState createState() => _IndexBddState();
 }
 
-class _DetailsBddState extends State<DetailsBdd> {
+class _IndexBddState extends State<IndexBdd> {
   @override
   Widget build(BuildContext context) {
-    List<Map> listBdd = Provider.of<List<Map>>(context);
-
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
       body: CustomScrollView(
@@ -36,15 +26,26 @@ class _DetailsBddState extends State<DetailsBdd> {
             backgroundColor: HexColor.fromHex("FDF8F8"),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(widget.item['collection']),
+              title: Text(
+                  "${(widget.item['collection'] as String).capitalizeFirst}"),
               stretchModes: [StretchMode.blurBackground, StretchMode.fadeTitle],
               background: GestureDetector(
                 onVerticalDragEnd: (gf) {
                   Navigator.pop(context);
                 },
                 child: Stack(children: [
-                  CustomImage(
-                    imgsrc: widget.item['imgsrc'],
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(20)),
+                    child: Hero(
+                      tag: widget.item['imgsrc'],
+                      child: Image.asset(
+                        widget.item['imgsrc'],
+                        fit: BoxFit.cover,
+                        height: Get.height * .45,
+                        width: double.infinity,
+                      ),
+                    ),
                   ),
                   Align(
                     alignment: Alignment(0, 1),
@@ -68,9 +69,12 @@ class _DetailsBddState extends State<DetailsBdd> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (ctx, index) {
-                return Text('Details bdd');
+                return AnimatedClipReveal(
+                  child: Text('Details bdd'),
+                  pathBuilder: PathBuilders.slideDown,
+                );
               },
-              childCount: listBdd.length,
+              childCount: 10,
             ),
           )
         ],

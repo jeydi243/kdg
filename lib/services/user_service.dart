@@ -1,183 +1,181 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
-import 'package:kdg/views/login.dart';
-import 'package:kdg/models/user.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:kdg/services/log.dart';
+import 'package:kdg/views/user/login.dart';
+import 'package:palette_generator/palette_generator.dart';
+import '../models/rapport.dart';
+import '../views/home.dart';
 
-class UserService extends ChangeNotifier {
-  FirebaseAuth _auth;
-  GoogleSignIn gsign;
-  FacebookAuth fbAuth;
-  firebase_storage.FirebaseStorage storage;
-  FirebaseFirestore firestore;
-  Log log;
-  String token = "";
-  FirebaseMessaging _fcm;
-  User user;
-  UserKDG _user;
-  FirebaseFunctions functions;
+class UserService extends GetxController {
+  static UserService userservice = Get.find();
 
-  Auth() {
-    functions = FirebaseFunctions.instance;
-    _auth = FirebaseAuth.instance;
-    storage = firebase_storage.FirebaseStorage.instance;
-    _fcm = FirebaseMessaging.instance;
-    _fcm.setForegroundNotificationPresentationOptions(
-        alert: true, badge: true, sound: true);
+  late Log log;
+  late FirebaseAuth _auth;
+  late FirebaseMessaging _fcm;
+  late FirebaseFirestore firestore;
+  GoogleSignIn? gsign;
+  FirebaseStorage? storage;
+  FirebaseFunctions? functions;
 
-    firestore = FirebaseFirestore.instance;
-    gsign = GoogleSignIn();
-    fbAuth = FacebookAuth.instance;
-    log = Log();
-    _auth = FirebaseAuth.instance;
-    if (_auth.currentUser != null) {
-      setUserMadia();
-      getDeviceToken();
-    }
-  }
+  Rx<String?> token = "".obs;
+  Rx<User?> firebaseUser = Rx<User?>(null);
+  Rx<List<Rapport>> _rapports = Rx<List<Rapport>>(<Rapport>[]);
+  Rx<DocumentReference?> userDocRef = Rx<DocumentReference?>(null);
+  Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
+  Rx<PlatformException?> pl_exception = Rx<PlatformException?>(null);
+  late CollectionReference usersRef;
 
-  Future<Map<String, dynamic>> signup(
-      String email, String password, String nom) async {
-    try {
-      var usercredential = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      await usercredential.user.sendEmailVerification();
-      await addUserToFirestore(provider: "emailpassword");
-      await setUserMadia();
-      await getDeviceToken();
-      return {"message": "L'utilisateur a bien été enregistré", "state": true};
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "email-already-in-use") {
-        log.w("Un compte existe déja avec cette email");
-        return {
-          "state": false,
-          "message": "Un compte existe déja avec cette email"
-        };
-      } else if (e.code == "invalid-email") {
-        log.w("L'email est invalide");
-        return {"state": false, "message": "L'email est invalide"};
-      } else if (e.code == "operation-not-allowed") {
-        log.w("La méthode de connexion n'est pas permise");
-        return {
-          "state": false,
-          "message": "La méthode de connexion n'est pas permise"
-        };
-      } else if (e.code == "weak-password") {
-        log.w("Le mot de passe n'est pas suffisament fort");
-        return {
-          "state": false,
-          "message": "Le mot de passe n'est pas suffisament fort"
-        };
-      } else {
-        log.w("Une erreur s'est produite ${e.message}");
-        return {
-          "state": false,
-          "message":
-              "Un probleme réseau est survenue. Vérifier l'état de votre connexion."
-        };
-      }
-    }
-  }
-
-  Future<void> signOut() async {
-    try {
-      await gsign.signOut();
-      await _auth.signOut();
-    } on FirebaseException catch (e) {
-      log.w("$e");
-    }
-    Get.to(Login());
-  }
-
-  User get currentUser => _auth.currentUser;
+  UserKDG? _user;
+  User? get currentUser => firebaseUser.value;
+  UserKDG? get userKDG => _user;
   FirebaseAuth get auth => _auth;
-  UserKDG get userKDG => _user;
+  List<Rapport> get rapports => _rapports.value;
 
-  Future<void> setUserMadia() async {
-    try {
-      var userRef = firestore.collection("users").doc(auth.currentUser.uid);
-      var user = await userRef.get();
-      _user = UserKDG.fromMap({"id": user.id, ...user.data()});
-      notifyListeners();
-    } catch (e) {
-      log.i('Erreur dans user: $e');
-    }
+  @override
+  void onInit() {
+    super.onInit();
+    _fcm = FirebaseMessaging.instance;
+    _auth = FirebaseAuth.instance;
+    gsign = GoogleSignIn();
+    storage = FirebaseStorage.instance;
+    functions = FirebaseFunctions.instance;
+    firestore = FirebaseFirestore.instance;
+    log = Log();
+    firebaseUser.bindStream(_auth.authStateChanges());
   }
 
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
-    try {
-      var usercredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+  @override
+  void onReady() {
+    userDocRef.value = firestore.collection('users').doc(currentUser?.uid);
+    usersRef = firestore.collection('users');
+    ever(firebaseUser, onUserChange);
+    ever(exception, onFirebaseException);
+    ever(pl_exception, onPlatformException);
+  }
 
-      await addUserToFirestore(provider: "emailpassword");
-      await setUserMadia();
-      notifyListeners();
-      return usercredential.user;
-    } on FirebaseAuthException catch (e) {
-      log.e("${e.code} : ${e.message}");
-      switch (e.code) {
-        case "invalid-email":
-          showSnackBar(title: "Erreur", message: "L'email est incorrect");
-          break;
-        case "user-not-found":
-          showSnackBar(
-              title: "Erreur",
-              message: "L'utilisateur n'existe pas ou a été supprimé");
-          break;
-        case "wrong-password":
-          showSnackBar(
-              title: "Erreur", message: "Le mot de passe est incorrect");
-          break;
-        case "invalid-email":
-          break;
-        default:
-      }
+  onFirebaseException(FirebaseException? e) {
+    Map<String, String> map = {
+      "storage/unknown": "Une erreur inconnue est survenue.",
+      "storage/object-not-found":
+          "	Aucun objet n'existe à la référence souhaitée",
+      "storage/bucket-not-found":
+          "Aucun bucket n'est configuré pour Cloud Storage",
+      "storage/project-not-found":
+          "Aucun projet n'est configuré pour Cloud Storage",
+      "storage/quota-exceeded":
+          "Le quota de votre bucket Cloud Storage a été dépassé. ,Si vous êtes sur le niveau gratuit, passez à un plan payant. Si vous avez un forfait payant, contactez l'assistance Firebase.",
+      "storage/unauthenticated":
+          "L'utilisateur n'est pas authentifié, veuillez vous authentifier et réessayer.",
+      "storage/unauthorized":
+          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
+      "firebase_storage/unauthorized":
+          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
+      "storage/retry-limit-exceeded":
+          "Le délai maximum d'une opération (téléchargement, téléchargement, suppression, etc.) a été dépassé. Essayez de télécharger à nouveau.",
+      "storage/invalid-checksum":
+          "Le fichier sur le client ne correspond pas à la somme de contrôle du fichier reçu par le serveur. Essayez de télécharger à nouveau.",
+      "storage/canceled": "L'utilisateur a annulé l'opération",
+      "storage/invalid-event-name":
+          "Nom d'événement fourni non valide. Doit être l'un des [ running , progress , pause ]",
+      "storage/invalid-url":
+          "URL non valide fournie à refFromURL() . Doit être au format : gs://bucket/object ou https://firebasestorage.googleapis.com/v0/b/bucket/o/object?token=<TOKEN>",
+      "storage/invalid-argument":
+          "L'argument passé à put() doit être File , Blob ou UInt8 Array. L'argument passé à putString() doit être une chaîne raw, Base64 ou Base64URL .",
+      "storage/no-default-bucket":
+          "Aucun compartiment n'a été défini dans la propriété storageBucket de votre configuration.",
+      "storage/cannot-slice-blob":
+          "Se produit généralement lorsque le fichier local a été modifié (supprimé, enregistré à nouveau, etc.). Réessayez de télécharger après avoir vérifié que le fichier n'a pas changé.",
+      "storage/server-file-wrong-size":
+          "Le fichier sur le client ne correspond pas à la taille du fichier reçu par le serveur. Essayez de télécharger à nouveau.",
+      "user-not-found": "L'utilisateur n'existe pas ou a été supprimé",
+      "wrong-password": "Le mot de passe est incorrect",
+      "requires-recent-login": "L'utilisateur doit se connecter récemment",
+      "user-disabled": "L'utilisateur a été désactivé",
+      "invalid-email": "L'adresse email est invalide",
+      "email-already-in-use": "L'adresse email est déjà utilisée",
+      "weak-password": "Le mot de passe est trop faible",
+      "too-many-requests":
+          "Trop de requêtes ont été envoyées. Essayez de nouveau dans quelques minutes.",
+      "operation-not-allowed": "L'opération n'est pas autorisée pour ce compte",
+    };
+    Get.snackbar("Firebase", "${map[e!.code]}");
+  }
+
+  onPlatformException(PlatformException? e) {
+    Get.snackbar("Erreur", "${e!.message}");
+  }
+
+  Future<Map<String, dynamic>?> signup(String email, String password) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return {'message': "L'utilisateur a bien été enregistré", "state": true};
+    } on FirebaseException catch (e) {
+      exception.value = e;
       return null;
     }
   }
 
-  Future<bool> signInWithCredential(AuthCredential credential) async {
-    try {
-      UserCredential userCred = await _auth.signInWithCredential(credential);
-      user = userCred.user;
-      await addUserToFirestore(provider: userCred.credential.providerId);
-      await setUserMadia();
-      // Get.to(Home(), transition: Transition.size, duration: 3.seconds);
-      return true;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "user-disabled") {
-        showSnackBar(message: "L'utilisateur est désactivée");
-      } else if (e.code == "account-exists-with-different-credential") {
-        showSnackBar(message: "Cet utilisateur existe avec different login");
-      } else if (e.code == "invalid-credential") {
-        showSnackBar(message: "Peut pas se connecter avec cette application!");
-      } else if (e.code == "user-not-found") {
-        showSnackBar(message: "Cet utilisateur n'existe pas!");
-      } else if (e.code == "wrong-password") {
-        showSnackBar(message: "Le mot de passe est incorrect!");
-      } else if (e.code == "invalid-verification-code") {
-        showSnackBar(message: "Code de vérification invalid!");
-      } else if (e.code == "invalid-verification-id") {
-        showSnackBar(message: "L'id de vérification invalid!");
-      }
-    } on FirebaseException catch (e, r) {
-      log.w("${e.code}: ${e.message} \n $r");
+  onUserChange(User? user) async {
+    if (user != null) {
+      DocumentSnapshot v = await usersRef.doc(user.uid).get();
+      if (v.exists) {
+        await setUserKDG();
+        Get.snackbar("Authentication", "Successfull login");
+        await getDeviceToken();
+      } else {}
+      Get.offAll(Home());
+    } else {
+      log.i("No user, redirect to Login");
+      Get.offAll(Login());
     }
-    return false;
   }
 
-  void showSnackBar({String title = "Authentification", String message}) {
+  Future<Map<String, dynamic>?> signOut() async {
+    try {
+      await gsign?.signOut();
+      await _auth.signOut();
+    } on FirebaseException catch (e) {
+      exception.value = e;
+    } finally {
+      update();
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> setUserKDG() async {
+    try {
+      DocumentSnapshot snap = await usersRef.doc(currentUser?.uid).get();
+      _user = UserKDG.fromFirebase2(snap, snap.id);
+    } on FirebaseException catch (e) {
+      exception.value = e;
+    } finally {
+      update();
+    }
+  }
+
+  Future<Map<String, dynamic>?> signInWithEmailAndPassword(Map info) async {
+    try {
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: info['email'], password: info['password']);
+    } on FirebaseException catch (e) {
+      exception.value = e;
+    } on PlatformException catch (e) {
+      pl_exception.value = e;
+    } finally {
+      update();
+    }
+  }
+
+  void showSnackBar(String title, {required String message}) {
     Get.snackbar(
       title,
       message,
@@ -186,79 +184,60 @@ class UserService extends ChangeNotifier {
     log.w(message);
   }
 
-  Future<bool> signInWithGoogle() async {
+  Future<Map<String, dynamic>?> signInWithGoogle() async {
     try {
-      GoogleSignInAccount googleSignInAccount = await gsign.signIn();
-      GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
+      GoogleSignInAccount? googleSignInAccount = await gsign!.signIn();
+      GoogleSignInAuthentication googleAuth =
+          await googleSignInAccount!.authentication;
 
-      AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
 
-      return signInWithCredential(credential);
-    } catch (e, r) {
-      log.w('${e.message}: $r');
-    }
-    return false;
-  }
-
-  Future<bool> signInWithFacebook() async {
-    try {
-      LoginResult result =
-          await fbAuth.login(permissions: ['email', 'public_profile']);
-      FacebookAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(result.accessToken.token);
-      return signInWithCredential(facebookAuthCredential);
-    } catch (e, stack) {
-      log.w('$e: $stack');
-    }
-    return false;
-  }
-
-  Future<void> deleteMe() async {
-    try {
-      await _auth.currentUser.delete();
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'requires-recent-login') {
-        log.w(
-            "L'utilisateur doit se ré-authentifier avant que cette opération puisse être exécutée.");
-      } else {
-        log.w(e.message);
-      }
+      await _auth.signInWithCredential(credential);
+    } on PlatformException catch (e) {
+      pl_exception.value = e;
+    } on FirebaseException catch (e) {
+      exception.value = e;
     }
   }
 
-  Future<void> getDeviceToken() async {
+  Future<Map<String, dynamic>?> deleteMe() async {
     try {
-      token = await _fcm.getToken();
-      await firestore
-          .collection("users")
-          .doc(_auth.currentUser.uid)
-          .update({'token': token});
-    } catch (e) {
-      log.e('$e');
+      await currentUser?.delete();
+      return {"state": true, "message": "L'utilisateur a bien été supprimé"};
+    } on FirebaseException catch (e, r) {
+      exception.value = e;
+    } finally {
+      update();
     }
   }
 
-  Future<void> addUserToFirestore({@required String provider}) async {
-    User user = _auth.currentUser;
+  Future<Map<String, dynamic>?> getDeviceToken() async {
     try {
-      var snap = await firestore.collection('users').doc(user.uid).get();
+      token.value = await _fcm.getToken();
+      await userDocRef.value!.update({'token': token});
+    } on FirebaseException catch (e) {
+      exception.value = e;
+    } finally {
+      update();
+    }
+  }
+
+  Future<Map<String, dynamic>?> addUserToFirestore(String provider) async {
+    User? user = currentUser;
+    try {
+      var snap = await userDocRef.value!.get();
       if (snap.exists == false) {
-        return await firestore.collection('users').doc(user.uid).set({
+        await firestore.collection('users').doc(user!.uid).set({
           'name': user.displayName,
           'email': user.email,
-          'creation': user.metadata.creationTime,
-          'emailverified': user.emailVerified,
+          'creationTimestamp': user.metadata.creationTime,
+          'isEmailVerified': user.emailVerified,
           'imgsrc': user.photoURL,
           'uid': user.uid,
           'telephone': user.phoneNumber,
-          'panier': [],
-          "restoFavs": [],
-          "menuFavs": [],
-          "provider": provider,
           "adresse": {
             "numero": "0",
             "avenue": "",
@@ -269,128 +248,88 @@ class UserService extends ChangeNotifier {
           'token': token
         });
       }
-    } catch (e, r) {
-      log.w('${e.message} : $r');
+    } on FirebaseException catch (e) {
+      exception.value = e;
+    } finally {
+      update();
     }
   }
 
-  Stream<Map<String, dynamic>> getPanier() {
-    return firestore
-        .collection('users')
-        .doc(_auth.currentUser.uid)
-        .snapshots()
-        .map((e) {
-      return e.data();
-    });
-  }
-
-  Future<void> sendEmailPassReinitialisation({String email}) async {
-    _auth.sendPasswordResetEmail(email: email).catchError((err) {
-      print("**************$err");
-      log.w(err);
-    });
-  }
-
-  Future<Map<String, dynamic>> updatePassword({String newPassword}) async {
+  Future<bool?> resetPassByEmail(String email) async {
     try {
-      await _auth.currentUser.updatePassword(newPassword);
+      await _auth.sendPasswordResetEmail(email: email);
+      return true;
+    } on FirebaseException catch (e) {
+      exception.value = e;
+      return false;
+    } finally {
+      update();
+    }
+  }
+
+  Future<Map<String, dynamic>?> updatePassword(String newPassword) async {
+    try {
+      await currentUser?.updatePassword(newPassword);
       return {
         'state': true,
         'message': "Le mot de passe a été modifié avec succes!",
         'shouldBack': true
       };
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "requires-recent-login") {
-        return {
-          "state": false,
-          'shouldBack': false,
-          "message":
-              "Vous devez vous reconnecter avant de changer le mot de passe"
-        };
-      } else if (e.code == "weak-password") {
-        return {
-          'shouldBack': false,
-          "state": false,
-          "message": "Le mot de passe n'est pas suffisament fort"
-        };
-      } else {
-        log.w("Une erreur s'est produite ${e.message}");
-        return {
-          'shouldBack': false,
-          "state": false,
-          "message":
-              "Un probleme réseau est survenue. Vérifier l'état de votre connexion."
-        };
-      }
+    } on FirebaseException catch (e) {
+      exception.value = e;
     }
   }
 
-  Future<Map<String, dynamic>> updateProfile(
-      {File img, Map<String, dynamic> form}) async {
+  Future<Color> domColor(String path) async {
+    var paletteGenerator = await PaletteGenerator.fromImageProvider(
+      Image.asset(path).image,
+    );
+    return paletteGenerator.dominantColor!.color;
+  }
+
+  Future<Map<String, dynamic>?> updateProfile(Map<String, dynamic> form) async {
     try {
-      var userRef = firestore.collection("users").doc(_auth.currentUser.uid);
+      var userRef = firestore.collection("users").doc(currentUser!.uid);
       var user = await userRef.get();
       String email = user.get('email').toString();
       String displayName = user.get('name').toString();
       String phoneNumber = user.get('telephone').toString();
 
       if (form['email'].isEmail && form['email'] != email) {
-        await _auth.currentUser.updateEmail(form['email']);
+        await currentUser?.updateEmail(email);
       }
       if (displayName != form['nom'] && form['nom'] != "") {
-        await _auth.currentUser.updateProfile(displayName: form['nom']);
+        // await _auth.currentUser.updateProfile(displayName: form['nom']);
         await userRef.update({'name': form['nom']});
-        _user.nom = form['nom'];
+        // _user.nom = form['nom'];
       }
       if (phoneNumber != form['telephone'] && form['telephone'] != null) {
         await userRef.update({'telephone': form['telephone']});
-        _user.telephone = form['telephone'];
+        // _user.telephone = form['telephone'];
       }
 
-      List<String> list = await _auth.fetchSignInMethodsForEmail(email);
-      print(list);
-
-      if (img != null) {
-        final ref = storage.ref();
-        var extension = img.path.split('/').last.split('.').last;
-        Reference imgref = ref
+      if (form['img'] != null) {
+        final ref = storage?.ref();
+        var extension = form['img']!.path.split('/').last.split('.').last;
+        Reference imgref = ref!
             .child("users")
-            .child(_auth.currentUser.uid)
-            .child("${_auth.currentUser.uid}.$extension");
-        UploadTask task = imgref.putFile(img);
+            .child(currentUser!.uid)
+            .child("${currentUser?.uid}.$extension");
+        UploadTask task = imgref.putFile(form['img']);
         task
             .then((val) => val.ref.getDownloadURL())
             .then((value) => userRef.update({'imgsrc': value}));
-        // await _auth.currentUser.updateProfile(photoURL: imgsrc);
+        // await currentUser!.updatePhotoURL(imgsrc);
       }
       return {
         'state': true,
         'message': 'Votre profil a été mis à jour',
         'shouldBack': true
       };
-    } on FirebaseAuthException catch (e, stack) {
-      log.w('Une erreur est survenue: ${e.message} :: $stack');
-      if (e.code == "requires-recent-login") {
-        return {
-          "state": false,
-          "message":
-              "Vous devez vous reconnecter avant de changer le mot de passe"
-        };
-      } else if (e.code == "invalid-email") {
-        return {
-          "state": false,
-          "message": "Le mot de passe n'est pas suffisament fort"
-        };
-      } else if (e.code == "email-already-in-use") {
-        return {"state": false, "message": "Cette email est deja utilisé"};
-      } else {
-        log.w("Une erreur s'est produite ${e.message}");
-        return {
-          "state": false,
-          "message":
-              "Un probleme réseau est survenue. Vérifier l'état de votre connexion."
-        };
-      }
+    } on FirebaseException catch (e) {
+      exception.value = e;
+    } finally {
+      update();
     }
   }
 }

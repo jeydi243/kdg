@@ -1,61 +1,79 @@
 import 'package:animations/animations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/utils/utils.dart';
-import 'package:logger/logger.dart';
+import 'package:kdg/models/car.dart';
+import 'package:kdg/services/car_service.dart';
+import 'package:kdg/views/cars/details.dart';
 
 class CarItem extends StatefulWidget {
-  CarItem({Key key, this.item}) : super(key: key);
-  final Vehicule item;
+  CarItem(
+      {Key? key,
+      required this.index,
+      this.color = const Color.fromARGB(255, 1, 48, 105)})
+      : super(key: key);
+  final int index;
+  Color color;
   @override
   _CarItemState createState() => _CarItemState();
 }
 
 class _CarItemState extends State<CarItem> {
+  CarService carservice = Get.find();
   @override
   void initState() {
-    Logger().i('${widget.item.toString()}');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Vehicule car = widget.item;
+    Car car = carservice.cars[widget.index];
+    // carservice.cars.firstWhere((car) => car.id == widget.car_id);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Container(
-        height: Get.height * .15,
-        width: Get.width * .8,
-        child: Column(
-          children: [
-            Text(
-              "${(car.Nom)}",
-              style: TextStyle(fontSize: 22, color: Colors.black),
+      child: OpenContainer(
+        transitionDuration: 2.seconds,
+        closedElevation: 0,
+        transitionType: ContainerTransitionType.fade,
+        middleColor: Color.fromARGB(255, 1, 48, 105),
+        closedColor: Color.fromARGB(255, 1, 48, 105),
+        openBuilder: (context, action) {
+          return DetailsCar(action);
+        },
+        closedBuilder: (ctx, action) => ListTile(
+          onLongPress: () async {
+            await HapticFeedback.selectionClick();
+          },
+          enableFeedback: true,
+          contentPadding: EdgeInsets.only(left: 10),
+          style: ListTileStyle.list,
+          tileColor: widget.color,
+          onTap: () async {
+            carservice.setCurrentCarId = car.id;
+            await HapticFeedback.selectionClick();
+            action();
+          },
+          title: Hero(
+            tag: car.id,
+            child: Text(
+              car.Nom.capitalizeFirst!,
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
             ),
-            DottedBorder(
-              borderType: BorderType.RRect,
-              radius: Radius.circular(12),
-              color: Colors.blue[900],
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                child: Container(
-                  height: Get.height * .03,
-                  width: Get.width * .3,
-                  color: Colors.white,
-                  child: Center(child: Text('Stationnement')),
-                ),
-              ),
-            )
-          ],
+          ),
+          subtitle: Text("Type carburant: ${car.type_carburant}"),
+          trailing: Column(
+            children: [
+              IconButton(
+                  onPressed: () => 1,
+                  icon: Icon(
+                    FontAwesomeIcons.check,
+                    color: Colors.green,
+                  )),
+            ],
+          ),
         ),
-        padding: EdgeInsets.only(left: 10, top: 10),
-        decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.white,
-            border: Border(left: BorderSide(color: Colors.amber, width: 2))),
       ),
     );
   }

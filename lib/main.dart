@@ -1,111 +1,131 @@
-import 'package:bot_toast/bot_toast.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// Import the generated file
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kdg/utils/circle_trans.dart';
+import 'package:kdg/views/user/login.dart';
+import 'package:kdg/views/user/profile.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:secure_application/secure_application.dart';
+import 'constantes/values.dart';
+import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:kdg/models/maison.dart';
-import 'package:kdg/models/rapport.dart';
-import 'package:kdg/models/vehicule.dart';
-import 'package:kdg/services/vehicule_service.dart';
-import 'package:logger/logger.dart';
+import 'package:kdg/services/car_service.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
-import 'package:kdg/views/home.dart';
-import 'package:kdg/utils/circle_trans.dart';
-import 'package:kdg/views/login.dart';
-import 'package:provider/provider.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_ios/local_auth_ios.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 void main() async {
+  ErrorWidget.builder = (FlutterErrorDetails details) => Material(
+        child: Container(
+            child: Center(
+                child: Text('Error: ${details.exceptionAsString}',
+                    style: GoogleFonts.k2d(fontSize: 25)))),
+      );
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await Hive.initFlutter();
+    FirebaseMessaging.instance.setAutoInitEnabled(true);
+    Get.put<CarService>(CarService());
+    Get.put<UserService>(UserService());
     runApp(Kdg());
-  } on FirebaseException catch (e) {
-    Logger().w(e.toString());
+  } on FirebaseException catch (e, stack) {
+    FirebaseCrashlytics.instance.recordError(e, stack);
   }
 }
 
 class Kdg extends StatelessWidget {
+  final LocalAuthentication auth = LocalAuthentication();
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UserService>(
-          create: (_) => UserService(),
-          lazy: false,
-        ),
-        // ChangeNotifierProvider<VehiculeService>(
-        //   create: (_) => VehiculeService(),
-        //   lazy: false,
-        // ),
-        StreamProvider<List<Vehicule>>(
-          create: (_) => VehiculeService().listenCar,
-          initialData: <Vehicule>[],
-          lazy: false,
-          // value: VehiculeService().listenCar,
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error ");
-            return <Vehicule>[];
-          },
-        ),
-        StreamProvider<List<Maison>>.value(
-          value: VehiculeService().listenHouse,
-          initialData: <Maison>[],
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error ");
-            return <Maison>[];
-          },
-          lazy: false,
-        ),
-        StreamProvider<List<Rapport>>.value(
-          value: VehiculeService().listenRapports,
-          initialData: <Rapport>[],
-          lazy: false,
-          catchError: (context, error) {
-            Logger().e("Error lors du retrieve: $error");
-            return <Rapport>[];
-          },
-        ),
-        // StreamProvider<List<Map<String, dynamic>>>.value(
-        //   value: VehiculeService().listenBdd,
-        //   initialData: <Map<String, dynamic>>[],
-        //   lazy: false,
-        //   catchError: (context, error) {
-        //     Logger().e("Error lors du retrieve: $error");
-        //     return <Map<String, dynamic>>[];
-        //   },
-        // ),
-      ],
-      child: GetMaterialApp(
-          title: 'Kdg',
-          debugShowCheckedModeBanner: false,
-          // customTransition: CircleTrans(),
-          builder: BotToastInit(),
-          home: LayoutBuilder(
-            builder: (context, constraints) {
-              if (constraints.maxHeight == Get.height) {
-                return StreamBuilder<User>(
-                  stream: FirebaseAuth.instance.authStateChanges(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Home();
-                    } else {
-                      return Home();
-                    }
-                  },
-                );
+    SystemChrome.setSystemUIOverlayStyle(Get.isDarkMode
+        ? SystemUiOverlayStyle.dark
+        : SystemUiOverlayStyle.light);
+
+    return GetMaterialApp(
+      title: 'Kdg',
+      routes: {
+        '/profile': (context) => Profile(),
+      },
+      darkTheme: KDGTheme.dark(context),
+      theme: KDGTheme.light(context),
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      builder: (context, child) => SecureApplication(
+          nativeRemoveDelay: 800,
+          onNeedUnlock: (secure) async {
+            try {
+              final bool didAuth = await auth.authenticate(
+                  localizedReason: 'Please authenticate to ',
+                  options: const AuthenticationOptions(
+                    useErrorDialogs: false,
+                  ),
+                  authMessages: <AuthMessages>[
+                    AndroidAuthMessages(
+                      signInTitle: 'Oops! Biometric authentication required!',
+                      cancelButton: 'No thanks',
+                    ),
+                    IOSAuthMessages(
+                      cancelButton: 'No thanks',
+                    ),
+                  ]);
+              if (didAuth) {
+                secure?.authSuccess(unlock: true);
+              } else {
+                secure?.authFailed(unlock: true);
+                secure?.open();
               }
-              return StreamBuilder<User>(
-                stream: FirebaseAuth.instance.authStateChanges(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Home();
-                  } else {
-                    return Login();
-                  }
-                },
-              );
-            },
-          )),
+            } on PlatformException catch (e) {
+              print('$e');
+              if (e.code == auth_error.notEnrolled) {
+                // Add handling of no hardware here.
+              } else if (e.code == auth_error.lockedOut ||
+                  e.code == auth_error.permanentlyLockedOut) {
+                // ...
+              } else {
+                // ...
+              }
+            }
+
+            return null;
+          },
+          onAuthenticationFailed: () async {
+            print('auth failed');
+          },
+          onAuthenticationSucceed: () async {
+            print('auth success');
+          },
+          child: child ??
+              Container(
+                child: Center(child: Text('Did you bind Widget ?')),
+              )),
+      home: Login(),
+      customTransition: CircleTrans(),
     );
   }
 }
+
+/*
+Je VIENS DE TROUVER UNE IDEE GENIALISSIME CARREMENT JE VAIS GARDER LES ANCIENS documents dans une sous collection et
+a chaque fois garder le current doc
+
+ex:
+ Assurance: {
+		debut:...
+		fin:...
+		dile:...
+}
+
+Sous collection oldDocument qui contiendras les anciennes entrées.
+
+ */
