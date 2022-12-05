@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,24 +28,26 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.windows:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBHNo-hvZs6mMbQQ73_VyYPSMk0QGPYLHg',
-    appId: '1:464753026338:web:cac5bd16e3cab23faf317b',
-    messagingSenderId: '464753026338',
-    projectId: 'kdg3-6f07f',
-    authDomain: 'kdg3-6f07f.firebaseapp.com',
-    databaseURL: 'https://kdg3-6f07f.firebaseio.com',
-    storageBucket: 'kdg3-6f07f.appspot.com',
-    measurementId: 'G-S41WQZSC57',
-  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyC4HITE_9esXxrTc4YSmIjg7yzP4LgSXw0',
@@ -54,18 +59,6 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDYtPIupA14pU1S90InnI9WC9cuBQbqwAM',
-    appId: '1:464753026338:ios:7fec333029e57218af317b',
-    messagingSenderId: '464753026338',
-    projectId: 'kdg3-6f07f',
-    databaseURL: 'https://kdg3-6f07f.firebaseio.com',
-    storageBucket: 'kdg3-6f07f.appspot.com',
-    androidClientId: '464753026338-4k0gfc81m0hh1kktrg2bke86vcl9cru7.apps.googleusercontent.com',
-    iosClientId: '464753026338-95iuj4lp42olpa6ceqgvneloe2u8dlf4.apps.googleusercontent.com',
-    iosBundleId: 'com.jeydi.kdg',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDYtPIupA14pU1S90InnI9WC9cuBQbqwAM',
     appId: '1:464753026338:ios:7fec333029e57218af317b',
     messagingSenderId: '464753026338',

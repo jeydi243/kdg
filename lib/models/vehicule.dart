@@ -1,6 +1,6 @@
 class Vehicule {
   String model;
-  String id;
+  late String id;
   String nom;
   Map<String, dynamic> assurance;
   Map<String, dynamic> controle;
@@ -10,12 +10,12 @@ class Vehicule {
       [assurance, controle, stationnement, vignette];
   String get Nom => nom;
   Vehicule({
-    this.model,
-    this.nom,
-    this.assurance,
-    this.controle,
-    this.stationnement,
-    this.vignette,
+    required this.model,
+   required this.nom,
+   required this.assurance,
+   required this.controle,
+   required this.stationnement,
+   required this.vignette,
   });
   Vehicule.fromMap(Map<String, dynamic> snapshot)
       : id = snapshot['id'] ?? '',

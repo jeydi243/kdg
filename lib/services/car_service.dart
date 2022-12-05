@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:collection';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
 import '../models/maison.dart';
 import 'package:uuid/uuid.dart';
@@ -160,15 +161,6 @@ class CarService extends GetxController {
     update();
   }
 
-  // void prepareUpdateCar() {
-  //   updatedCar.value['start_date'] = start_date.value.text;
-  //   updatedCar.value['end_date'] = end_date.value.text;
-  //   if (fileg.value != null) {
-  //     updatedCar.value['file'] = File(fileg.value!.path ?? "");
-  //   }
-  //   update();
-  // }
-
   void onLoadFailed(String description) {
     Get.snackbar("File failed to load", description);
     update();
@@ -188,21 +180,27 @@ class CarService extends GetxController {
     update();
   }
 
-  void storefile(Map<String, dynamic> updatedDoc) async {
-    String carid = currentCarId.value;
-    File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
-    updatedDoc.remove("file");
-    carBox!.put("car", updatedDoc);
-    Reference cardoc =
-        storageRef.child('cars').child(currentCarId.value).child('documents');
+  void storefile(Map<String, dynamic> updatedDoc) {
     try {
+      String carid = currentCarId.value;
+      File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
+      updatedDoc.remove("file");
+      carBox!.put("car", updatedDoc);
+      print(firestore.collection("cars").id);
+      Reference cardoc =
+          storageRef.child('cars').child(currentCarId.value).child('documents');
       UploadTask upta = cardoc
-          .child("${carid.substring(1, 4)}${file.path.split('/').last}")
+          // .child("${carid.substring(1, 4)}${file.path.split('/').last}")
+          .child(
+              "${(updatedDoc['doc_name'] as String).capitalizeFirst}, ${updatedDoc['debut']} to ${updatedDoc['fin']}")
           .putFile(File(file.path));
 
       tasksnap.bindStream(upta.snapshotEvents);
-    } on FirebaseException catch (e) {
+    } on FirebaseException catch (e, s) {
+      print("C'est quoi encore l'erreur $e");
       exception.value = e;
+      FirebaseCrashlytics.instance
+          .recordError(e, s, reason: 'a fatal error', fatal: true);
     }
   }
 
@@ -227,29 +225,32 @@ class CarService extends GetxController {
     String errorMessage = "Erreur lors de la mise à jour de la vignette";
     String cancelMessage = "La mise à jour de la vignette a été annulé";
     // String successMessage = "Erreur lors de la mise à jour de la vignette";
+    try {
+      switch (snapshot!.state) {
+        case TaskState.running:
+          uploadProgress.value =
+              (100 * (snapshot.bytesTransferred / snapshot.totalBytes));
+          print("Upload is ${uploadProgress.value} % complete.");
+          break;
+        case TaskState.paused:
+          Get.snackbar('Mise à jour', "Mise à jour en pause");
 
-    switch (snapshot!.state) {
-      case TaskState.running:
-        uploadProgress.value =
-            (100 * (snapshot.bytesTransferred / snapshot.totalBytes));
-        print("Upload is ${uploadProgress.value} % complete.");
-        break;
-      case TaskState.paused:
-        Get.snackbar('Mise à jour', "Mise à jour en pause");
-
-        break;
-      case TaskState.success:
-        uploadState.value = true;
-        downloadurl.value = await snapshot.ref.getDownloadURL();
-        break;
-      case TaskState.canceled:
-        Get.snackbar('Misa à jour', cancelMessage);
-        break;
-      case TaskState.error:
-        Get.snackbar('Misa à jour ', errorMessage);
-        break;
+          break;
+        case TaskState.success:
+          uploadState.value = true;
+          downloadurl.value = await snapshot.ref.getDownloadURL();
+          break;
+        case TaskState.canceled:
+          Get.snackbar('Misa à jour', cancelMessage);
+          break;
+        case TaskState.error:
+          Get.snackbar('Misa à jour ', errorMessage);
+          break;
+      }
+      update();
+    } catch (e) {
+      print("NOJDFIEIJFIEJOKODEJGJIJF: $e");
     }
-    update();
   }
 
   onRefresh() async {
@@ -375,7 +376,7 @@ class CarService extends GetxController {
     }
   }
 
-  Future<void> updateCarStep1(Map<String, dynamic> updatedDoc) async {
+  updateCarStep1(Map<String, dynamic> updatedDoc) async {
     try {
       if (updatedDoc.containsKey("file")) {
         print('il y a un fichier...');
@@ -394,8 +395,11 @@ class CarService extends GetxController {
       Get.snackbar("Mise à jour", "Opération success !");
       update();
     } on FirebaseException catch (e) {
+      print("'Erreuer EPPPPEPEPEPEPEPEPE: $e");
       exception.value = e;
       return;
+    } catch (e) {
+      print("BANDUKKKKUI $e");
     }
   }
 

@@ -204,7 +204,11 @@ class _LoginState extends State<Login> {
                             children: [
                               GFIconButton(
                                 onPressed: () async {
-                                  await userService.signInWithGoogle();
+                                  try {
+                                    await userService.signInWithGoogle();
+                                  } catch (e) {
+                                    print(e);
+                                  }
                                 },
                                 color: Colors.red,
                                 focusColor: Colors.red,

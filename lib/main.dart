@@ -1,13 +1,16 @@
 // Import the generated file
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kdg/components/custom_grid.dart';
 import 'package:kdg/utils/circle_trans.dart';
+import 'package:kdg/views/home.dart';
 import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:secure_application/secure_application.dart';
 import 'constantes/values.dart';
@@ -35,8 +38,8 @@ void main() async {
     );
     await Hive.initFlutter();
     FirebaseMessaging.instance.setAutoInitEnabled(true);
-    Get.put<CarService>(CarService());
     Get.put<UserService>(UserService());
+    Get.put<CarService>(CarService());
     runApp(Kdg());
   } on FirebaseException catch (e, stack) {
     FirebaseCrashlytics.instance.recordError(e, stack);
@@ -109,7 +112,21 @@ class Kdg extends StatelessWidget {
               Container(
                 child: Center(child: Text('Did you bind Widget ?')),
               )),
-      home: Login(),
+      // home: Login(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Home();
+          } else if (snapshot.hasError) {
+            return Container(
+              child: Text("${snapshot.error}"),
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
       customTransition: CircleTrans(),
     );
   }

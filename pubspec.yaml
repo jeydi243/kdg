@@ -62,11 +62,14 @@ dependencies:
   swipe_deck: ^1.1.0
   syncfusion_flutter_datepicker: ^20.2.36
   syncfusion_flutter_pdfviewer: ^20.1.56-beta
+  uuid: ^3.0.7
   vibration: ^1.7.6
   video_player: ^2.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
+dependency_overrides:
+  firebase_core_platform_interface: 4.5.1
 flutter:
   uses-material-design: true
 
