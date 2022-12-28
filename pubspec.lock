@@ -22,6 +22,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0+2"
+  animated_loading_border:
+    dependency: "direct main"
+    description:
+      name: animated_loading_border
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   animations:
     dependency: "direct main"
     description:
@@ -57,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  capped_progress_indicator:
+    dependency: "direct main"
+    description:
+      name: capped_progress_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   characters:
     dependency: transitive
     description:
@@ -1268,5 +1282,5 @@ packages:
     source: hosted
     version: "6.1.0"
 sdks:
-  dart: ">=2.18.0 <3.0.0"
+  dart: ">=2.18.2 <3.0.0"
   flutter: ">=3.3.0"

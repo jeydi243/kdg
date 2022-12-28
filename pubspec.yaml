@@ -9,8 +9,10 @@ environment:
 dependencies:
   animate_do: ^2.1.0
   animated_clipper: ^0.2.0+2
+  animated_loading_border: ^0.0.1
   animations: ^2.0.1
   badges: ^2.0.1
+  capped_progress_indicator: ^0.0.2
   circular_reveal_animation: ^2.0.0
   cloud_firestore: ^3.1.13
   cloud_functions: ^3.2.13
