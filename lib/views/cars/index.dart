@@ -112,15 +112,15 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
               ),
               completeDuration: 2.seconds),
           controller: controller.refreshc,
-          onRefresh: controller.onRefresh,
-          onLoading: controller.onLoading,
+          onRefresh: controller.onRefreshListCar,
+          onLoading: controller.onLoadingListCar(),
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
                 expandedHeight: Get.height * .3,
                 toolbarHeight: Get.height * .04,
                 actions: [
-                  IconButton(onPressed: () => 1, icon: Icon(Icons.more_vert))
+                  IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))
                 ],
                 stretch: true,
                 collapsedHeight: Get.height * .05,
@@ -176,6 +176,24 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+              // SliverToBoxAdapter(
+              //     child: controller.refreshc.isLoading
+              //         ? Text("Is loading")
+              //         : Container(
+              //             color: Colors.transparent,
+              //             height: Get.height * .7,
+              //             child: Center(
+              //                 child: MaterialButton(
+              //               onPressed: () {},
+              //               minWidth: 120,
+              //               child: Row(
+              //                 mainAxisAlignment: MainAxisAlignment.center,
+              //                 children: [
+              //                   Icon(Icons.refresh),
+              //                   Text('Recharger'),
+              //                 ],
+              //               ),
+              //             )))),
               SliverAnimatedList(
                 initialItemCount: controller.cars.length,
                 itemBuilder: (ctx, int i, Animation<double> an) {

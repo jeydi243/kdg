@@ -43,7 +43,7 @@ class CarService extends GetxController {
   Rx<QuerySnapshot<Car>?> qsnapcars = Rx<QuerySnapshot<Car>?>(null);
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
-  RefreshController refreshc = RefreshController(initialRefresh: false);
+  late RefreshController refreshc;
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
   Rx<DocumentReference<Car>?> currentCarRef = Rx<DocumentReference<Car>?>(null);
   Rx<InternetConnectionStatus> connectionStatus =
@@ -56,6 +56,7 @@ class CarService extends GetxController {
     // _auth = FirebaseAuth.instance;
     try {
       carBox = await Hive.openBox('Car');
+      refreshc = RefreshController(initialRefresh: false);
     } catch (e) {
       print(e);
     }
@@ -184,17 +185,17 @@ class CarService extends GetxController {
   }
 
   void storefile(Map<String, dynamic> updatedDoc) async {
-    String carid = currentCarId.value;
-    File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
-    updatedDoc.remove("file");
-    carBox.put("car", updatedDoc);
-    Reference cardoc =
-        storageRef.child('cars').child(currentCarId.value).child('documents');
+    // String carid = currentCarId.value;
+    // File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
+    // updatedDoc.remove("file");
+    // carBox.put("car", updatedDoc);
+    // Reference cardoc =
+    //     storageRef.child('cars').child(currentCarId.value).child('documents');
     try {
       String carid = currentCarId.value;
       File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
       updatedDoc.remove("file");
-      carBox!.put("car", updatedDoc);
+      carBox.put("car", updatedDoc);
       print(firestore.collection("car").id);
       Reference cardoc =
           storageRef.child('cars').child(currentCarId.value).child('documents');
@@ -262,7 +263,7 @@ class CarService extends GetxController {
     }
   }
 
-  onRefresh() async {
+  void onRefreshListCar() async {
     await Future.delayed(1.seconds);
     // getCars();
     if (connectionStatus.value == InternetConnectionStatus.disconnected) {
@@ -327,7 +328,7 @@ class CarService extends GetxController {
     update();
   }
 
-  onLoading() {
+  onLoadingListCar() {
     print('On loading');
   }
 

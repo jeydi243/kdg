@@ -4,14 +4,13 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:get/get.dart';
-import 'package:kdg/components/viewerpdf.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 class AddDocument extends StatefulWidget {
-  AddDocument(this.id_car, this.item, {Key? key});
-  String id_car;
+  AddDocument({this.id_car, required this.item, Key? key});
+  String? id_car;
   Map<String, dynamic> item;
 
   @override
@@ -93,9 +92,10 @@ class _AddDocumentState extends State<AddDocument> {
                                 : Container(),
                             thereIsFile()
                                 ? Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Text('${controller.progress}% Uploading'),
-                                )
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(
+                                        '${controller.progress}% Uploading'),
+                                  )
                                 : Container(),
                             Padding(
                               padding: const EdgeInsets.only(left: 10),

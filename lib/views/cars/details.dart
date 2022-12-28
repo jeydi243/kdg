@@ -1,4 +1,3 @@
-import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_loading_border/animated_loading_border.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +15,6 @@ import 'package:vibration/vibration.dart';
 import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
 import '../../components/viewerpdf.dart';
-import '../../utils/utils.dart';
 import 'add_document.dart';
 
 class DetailsCar extends StatefulWidget {
@@ -32,7 +30,7 @@ class _DetailsCarState extends State<DetailsCar> {
   late ScrollController _sc;
   late PdfViewerController _pdfcontroller;
   PanelController _pc = new PanelController();
-  List<Map> actionsDialog = [
+  List<Map<String, dynamic>> actionsDialog = [
     {'text': "Voir le document", 'icon': Icons.edit, "code": 'code1'},
     {'text': "Modifier le document", 'icon': Icons.edit, "code": 'code2'},
     {'text': "Supprimer le document", 'icon': Icons.delete, "code": 'code3'},
@@ -59,8 +57,7 @@ class _DetailsCarState extends State<DetailsCar> {
                       child: Container(child: Text('Voir le document'))),
                   TextButton(
                       onPressed: () async {
-                        Get.to(() =>
-                            AddDocument(carservice.currentCar.value!.id, e));
+                        Get.to(() => AddDocument(item: e));
                         // await showGeneralDialog(
                         //     context: context,
                         //     barrierDismissible: false,
@@ -284,7 +281,7 @@ class _DetailsCarState extends State<DetailsCar> {
                         print('Une exception a été levé: $e');
                       }
 
-                      showanimated();
+                      // showanimated();
                     },
                     child: ListView(
                       children: [
@@ -293,14 +290,15 @@ class _DetailsCarState extends State<DetailsCar> {
                                   focusColor: Colors.amber,
                                   trailing: IconButton(
                                       onPressed: () {
-                                        showanimated();
+                                        showanimated(e);
                                       },
                                       icon: Icon(
                                         MdiIcons.dotsVertical,
                                         color: Colors.white,
                                         size: 16,
                                       )),
-                                  title: Text('$i $e'),
+                                  title: Text(
+                                      "${((e['doc_name'] as String).replaceFirst("_", " ")).capitalizeFirst}"),
                                 ))
                       ],
                     )
@@ -393,7 +391,7 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
-  void showanimated() async {
+  void showanimated(Map<String, dynamic> e) async {
     await showAnimatedDialog(
       context: context,
       barrierDismissible: true,
@@ -402,7 +400,6 @@ class _DetailsCarState extends State<DetailsCar> {
       builder: (BuildContext context) {
         return Container(
           alignment: Alignment.center,
-          decoration: BoxDecoration(),
           child: FractionallySizedBox(
             heightFactor: 0.4,
             widthFactor: .7,
@@ -427,6 +424,8 @@ class _DetailsCarState extends State<DetailsCar> {
                                 print('Le ');
                                 if (e['code'] == "code1") {
                                   Get.to(() => ViewerPDF());
+                                } else if (e['code'] == "code2") {
+                                  Get.to(() => AddDocument(item: e));
                                 }
                               },
                               title: e['code'] == 'code3'
