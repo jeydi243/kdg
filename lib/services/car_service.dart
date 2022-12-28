@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:collection';
 import 'package:get/get.dart';
 import '../models/maison.dart';
 import 'package:uuid/uuid.dart';
@@ -20,36 +19,63 @@ class CarService extends GetxController {
   late CollectionReference<Document> docsRef;
   late CollectionReference<Car> carsRef;
   late CollectionReference<Maison> housesRef;
-  Box? carBox;
-  final start_date = TextEditingController().obs;
+  late Box carBox;
+  final file = Rx<File>;
   final end_date = TextEditingController().obs;
-  final uploadProgress = 0.0.obs;
+  final start_date = TextEditingController().obs;
+  final storageRef = FirebaseStorage.instance.ref();
   final uploadState = false.obs;
   final downloadurl = "".obs;
-  final file = Rx<File>;
-  final storageRef = FirebaseStorage.instance.ref();
+  final uploadProgress = 0.0.obs;
   RxBool filepicked = RxBool(false);
-  RxBool isLoadingDocument = RxBool(true);
   Rx<Car?> currentCar = Rx<Car?>(null);
   Rx<TaskSnapshot?> tasksnap = Rx(null);
-  Rx<DocumentReference<Car>?> currentCarRef = Rx<DocumentReference<Car>?>(null);
+  RxBool isLoadingDocument = RxBool(true);
   Rx<String> currentCarId = Rx<String>("");
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
-  Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
-  Rx<QuerySnapshot<Car>?> qsnapcars = Rx<QuerySnapshot<Car>?>(null);
+  Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
+  List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
   Rx<QuerySnapshot?> documentsSnapshot = Rx<QuerySnapshot?>(null);
   Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
-  Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
-  Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
   Rx<Map<String, dynamic>> ADD_CAR = Rx<Map<String, dynamic>>({});
-  List<Map<String, dynamic>> listBdd = <Map<String, dynamic>>[];
+  Rx<QuerySnapshot<Car>?> qsnapcars = Rx<QuerySnapshot<Car>?>(null);
+  Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
+  Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
   RefreshController refreshc = RefreshController(initialRefresh: false);
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
+  Rx<DocumentReference<Car>?> currentCarRef = Rx<DocumentReference<Car>?>(null);
   Rx<InternetConnectionStatus> connectionStatus =
       Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
   List<Map<String, dynamic>> list = [];
   var uuid;
+
+  @override
+  void onInit() async {
+    // _auth = FirebaseAuth.instance;
+    try {
+      carBox = await Hive.openBox('Car');
+    } catch (e) {
+      print(e);
+    }
+    firestore = FirebaseFirestore.instance;
+    docsRef = firestore.collection('documents').withConverter<Document>(
+          fromFirestore: Document.fromFirestore,
+          toFirestore: (Document doc, _) => doc.toFirestore(),
+        );
+    carsRef = firestore.collection('cars').withConverter<Car>(
+          fromFirestore: Car.fromFirestore,
+          toFirestore: (Car car, _) => car.toFirestore(),
+        );
+    housesRef = firestore.collection('houses').withConverter<Maison>(
+          fromFirestore: Maison.fromFirestore,
+          toFirestore: (Maison house, _) => house.toFirestore(),
+        );
+    qsnapcars.bindStream(carsRef.snapshots());
+    connectionStatus.bindStream(InternetConnectionChecker().onStatusChange);
+    documentsSnapshot.bindStream(docsRef.snapshots());
+    super.onInit();
+  }
 
   @override
   void onReady() {
@@ -112,29 +138,6 @@ class CarService extends GetxController {
     }
   }
 
-  @override
-  void onInit() async {
-    // _auth = FirebaseAuth.instance;
-    firestore = FirebaseFirestore.instance;
-    carBox = await Hive.openBox('Car');
-    docsRef = firestore.collection('documents').withConverter<Document>(
-          fromFirestore: Document.fromFirestore,
-          toFirestore: (Document doc, _) => doc.toFirestore(),
-        );
-    carsRef = firestore.collection('cars').withConverter<Car>(
-          fromFirestore: Car.fromFirestore,
-          toFirestore: (Car car, _) => car.toFirestore(),
-        );
-    housesRef = firestore.collection('houses').withConverter<Maison>(
-          fromFirestore: Maison.fromFirestore,
-          toFirestore: (Maison house, _) => house.toFirestore(),
-        );
-    qsnapcars.bindStream(carsRef.snapshots());
-    connectionStatus.bindStream(InternetConnectionChecker().onStatusChange);
-    documentsSnapshot.bindStream(docsRef.snapshots());
-    super.onInit();
-  }
-
   List<Car> get cars => _cars.value;
   double get progress => uploadProgress.value;
   bool get isFilePicked => filepicked.value;
@@ -192,7 +195,7 @@ class CarService extends GetxController {
     String carid = currentCarId.value;
     File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
     updatedDoc.remove("file");
-    carBox!.put("car", updatedDoc);
+    carBox.put("car", updatedDoc);
     Reference cardoc =
         storageRef.child('cars').child(currentCarId.value).child('documents');
     try {
@@ -379,7 +382,7 @@ class CarService extends GetxController {
     try {
       if (updatedDoc.containsKey("file")) {
         print('il y a un fichier...');
-        await carBox!.put("doc_name", updatedDoc['doc_name']);
+        await carBox.put("doc_name", updatedDoc['doc_name']);
         storefile(updatedDoc);
       }
 
@@ -402,7 +405,7 @@ class CarService extends GetxController {
   Future<bool> updateCarStep2(String? downloadURL) async {
     Get.snackbar("Download", "Le telechargement est terminé");
     try {
-      String doc_name = carBox!.get("doc_name");
+      String doc_name = carBox.get("doc_name");
 
       await currentCarRef.value!.update({"${doc_name}.file": downloadURL});
       Get.snackbar("Update Car", "Car document at id ${currentCarId.value}");

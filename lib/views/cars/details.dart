@@ -1,4 +1,6 @@
+import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_loading_border/animated_loading_border.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,15 +8,16 @@ import 'package:get/get.dart';
 import 'package:kdg/components/pageV.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';
-import 'package:kdg/utils/utils.dart';
 import 'package:collection/collection.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:vibration/vibration.dart';
 import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
 import '../../components/viewerpdf.dart';
+import '../../utils/utils.dart';
 import 'add_document.dart';
-import 'package:vibration/vibration.dart';
 
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.action, {Key? key}) : super(key: key);
@@ -30,9 +33,9 @@ class _DetailsCarState extends State<DetailsCar> {
   late PdfViewerController _pdfcontroller;
   PanelController _pc = new PanelController();
   List<Map> actionsDialog = [
-    {'text': "Modifier", 'icon': Icons.edit},
-    {'text': "Voir le document", 'icon': Icons.edit},
-    {'text': "Supprimer", 'icon': Icons.delete},
+    {'text': "Voir le document", 'icon': Icons.edit, "code": 'code1'},
+    {'text': "Modifier le document", 'icon': Icons.edit, "code": 'code2'},
+    {'text': "Supprimer le document", 'icon': Icons.delete, "code": 'code3'},
   ];
 
   Widget Actions(BuildContext ctx, Map<String, dynamic> e) {
@@ -51,7 +54,7 @@ class _DetailsCarState extends State<DetailsCar> {
                       onPressed: () async {
                         var link =
                             carservice.currentCar.value!.linkDoc(e['doc_name']);
-                        Get.to(() => ViewerPDF(link));
+                        Get.to(() => ViewerPDF(link: link));
                       },
                       child: Container(child: Text('Voir le document'))),
                   TextButton(
@@ -232,6 +235,18 @@ class _DetailsCarState extends State<DetailsCar> {
                     ],
                   )),
             ),
+            AnimatedLoadingBorder(
+              child: Container(
+                width: 50,
+                height: 2,
+                child: LinearCappedProgressIndicator(minHeight: .5),
+              ),
+              borderColor: Colors.amber,
+              startWithRandomPosition: true,
+              controller: (animationController) {
+                // Here we get animationController
+              },
+            ),
             FadeInRight(
               Container(
                 padding: EdgeInsets.only(left: 10, bottom: 10),
@@ -250,142 +265,186 @@ class _DetailsCarState extends State<DetailsCar> {
             ),
             FadeInLeft(
               Container(
-                padding: EdgeInsets.only(bottom: 200),
+                height: Get.height / 2,
+                width: Get.width,
+                padding: EdgeInsets.only(bottom: 100),
                 child: GestureDetector(
-                  onLongPressEnd: (details) async {
-                    try {
-                      await HapticFeedback.lightImpact();
-                      // if (await Vibration.hasVibrator()) {
-                      await Vibration.vibrate(
-                        amplitude: 0,
-                        intensities: [200, 300],
-                      );
-                      // }
-                    } on PlatformException catch (e) {
-                      print(e);
-                    } catch (e) {
-                      print('Une exception a été levé: $e');
-                    }
-
-                    await showAnimatedDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      axis: Axis.vertical,
-                      alignment: Alignment.center,
-                      builder: (BuildContext context) {
-                        return Container(
-                          child: FractionallySizedBox(
-                            heightFactor: 0.4,
-                            widthFactor: .8,
-                            alignment: Alignment.center,
-                            child: Material(
-                              borderRadius: BorderRadius.circular(10),
-                              child: ListView(
-                                children: [
-                                  ...actionsDialog
-                                      .map((e) => ListTile(
-                                            onTap: () {
-                                              print('Le ');
-                                            },
-                                            title: Text(e['text']),
-                                          ))
-                                      .toList()
-                                ],
-                              ),
-                            ),
-                          ),
+                    onLongPressEnd: (details) async {
+                      try {
+                        await HapticFeedback.lightImpact();
+                        // if (await Vibration.hasVibrator()) {
+                        await Vibration.vibrate(
+                          amplitude: 0,
+                          intensities: [200, 300],
                         );
-                      },
-                      animationType: DialogTransitionType.size,
-                      curve: Curves.fastOutSlowIn,
-                      duration: 1.seconds,
-                    );
-                  },
-                  child: ExpansionPanelList(
-                    animationDuration: 1.seconds,
-                    dividerColor: HexColor.fromHex("#000"),
-                    expandedHeaderPadding: EdgeInsets.all(0),
-                    elevation: 0,
-                    children: [
-                      ...controller.list
-                          .mapIndexed((i, e) => ExpansionPanel(
-                                isExpanded: e["isExpanded"],
-                                backgroundColor: AppColors.dark2,
-                                body: Actions(context, e),
-                                headerBuilder: (ctx, isExp) {
-                                  print(e);
-                                  var dayLeft = carservice.currentCar.value!
-                                      .dayLeft(e['doc_name']);
-                                  return ListTile(
-                                    tileColor: isExp
-                                        ? AppColors.dark1
-                                        : AppColors.dark2,
-                                    onTap: () async {
-                                      setState(() {
-                                        e["isExpanded"] = !isExp;
-                                      });
-                                    },
-                                    title: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "${(e["doc_name"] as String).capitalizeFirst}",
-                                          style: Get.textTheme.headline4!
-                                              .copyWith(
-                                                  color: AppColors.accent),
-                                        ),
-                                        Text(
-                                          'Expire dans ${dayLeft} jours',
-                                          style: Get.textTheme.bodyText2,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ))
-                          .toList(),
-                    ],
-                    expansionCallback: (int item, bool status) async {
-                      await showAnimatedDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        axis: Axis.vertical,
-                        alignment: Alignment.centerRight,
-                        builder: (BuildContext context) {
-                          return FractionallySizedBox(
-                            heightFactor: 0.4,
-                            widthFactor: .8,
-                            alignment: Alignment.centerRight,
-                            child: Material(
-                              borderRadius: BorderRadius.circular(10),
-                              child: ListView(
-                                children: [
-                                  ...actionsDialog
-                                      .map((e) => ListTile(
-                                            onTap: () {
-                                              print('Le ');
-                                            },
-                                            title: Text(e['text']),
-                                          ))
-                                      .toList()
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        animationType: DialogTransitionType.size,
-                        curve: Curves.fastOutSlowIn,
-                        duration: 1.seconds,
-                      );
+                        // }
+                      } on PlatformException catch (e) {
+                        print(e);
+                      } catch (e) {
+                        print('Une exception a été levé: $e');
+                      }
+
+                      showanimated();
                     },
-                  ),
-                ),
+                    child: ListView(
+                      children: [
+                        ...controller.list
+                            .mapIndexed<Widget>((i, e) => ListTile(
+                                  focusColor: Colors.amber,
+                                  trailing: IconButton(
+                                      onPressed: () {
+                                        showanimated();
+                                      },
+                                      icon: Icon(
+                                        MdiIcons.dotsVertical,
+                                        color: Colors.white,
+                                        size: 16,
+                                      )),
+                                  title: Text('$i $e'),
+                                ))
+                      ],
+                    )
+
+// ExpansionPanelList(
+//                     animationDuration: 1.seconds,
+//                     dividerColor: HexColor.fromHex("#000"),
+//                     expandedHeaderPadding: EdgeInsets.all(0),
+//                     elevation: 0,
+//                     children: [
+//                       ...controller.list
+//                           .mapIndexed((i, e) => ExpansionPanel(
+//                                 isExpanded: e["isExpanded"],
+//                                 backgroundColor: AppColors.dark2,
+//                                 body: Actions(context, e),
+//                                 headerBuilder: (ctx, isExp) {
+//                                   print(e);
+//                                   var dayLeft = carservice.currentCar.value!
+//                                       .dayLeft(e['doc_name']);
+//                                   return ListTile(
+//                                     tileColor: isExp
+//                                         ? AppColors.dark1
+//                                         : AppColors.dark2,
+//                                     onTap: () async {
+//                                       setState(() {
+//                                         e["isExpanded"] = !isExp;
+//                                       });
+//                                     },
+//                                     title: Column(
+//                                       crossAxisAlignment:
+//                                           CrossAxisAlignment.start,
+//                                       children: [
+//                                         Text(
+//                                           "${(e["doc_name"] as String).capitalizeFirst}",
+//                                           style: Get.textTheme.headline4!
+//                                               .copyWith(
+//                                                   color: AppColors.accent),
+//                                         ),
+//                                         Text(
+//                                           'Expire dans ${dayLeft} jours',
+//                                           style: Get.textTheme.bodyText2,
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   );
+//                                 },
+//                               ))
+//                           .toList(),
+//                     ],
+//                     expansionCallback: (int item, bool status) async {
+//                       await showAnimatedDialog(
+//                         context: context,
+//                         barrierDismissible: true,
+//                         axis: Axis.vertical,
+//                         alignment: Alignment.centerRight,
+//                         builder: (BuildContext context) {
+//                           return FractionallySizedBox(
+//                             heightFactor: 0.4,
+//                             widthFactor: .8,
+//                             alignment: Alignment.centerRight,
+//                             child: Material(
+//                               borderRadius: BorderRadius.circular(10),
+//                               child: ListView(
+//                                 children: [
+//                                   ...actionsDialog
+//                                       .map((e) => ListTile(
+//                                             onTap: () {
+//                                               print('Le ');
+//                                             },
+//                                             title: Text(e['text']),
+//                                           ))
+//                                       .toList()
+//                                 ],
+//                               ),
+//                             ),
+//                           );
+//                         },
+//                         animationType: DialogTransitionType.size,
+//                         curve: Curves.fastOutSlowIn,
+//                         duration: 1.seconds,
+//                       );
+//                     },
+//                   ),
+                    ),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  void showanimated() async {
+    await showAnimatedDialog(
+      context: context,
+      barrierDismissible: true,
+      axis: Axis.horizontal,
+      alignment: Alignment.center,
+      builder: (BuildContext context) {
+        return Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(),
+          child: FractionallySizedBox(
+            heightFactor: 0.4,
+            widthFactor: .7,
+            alignment: Alignment.bottomCenter,
+            child: AnimatedLoadingBorder(
+              borderColor: Colors.amber,
+              startWithRandomPosition: true,
+              borderWidth: 3,
+              cornerRadius: 10,
+              isTrailingTransparent: false,
+              controller: (animationController) {
+                // Here we get animationController
+              },
+              child: Material(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.backgroundDark,
+                child: ListView(
+                  children: [
+                    ...actionsDialog
+                        .map((e) => ListTile(
+                              onTap: () {
+                                print('Le ');
+                                if (e['code'] == "code1") {
+                                  Get.to(() => ViewerPDF());
+                                }
+                              },
+                              title: e['code'] == 'code3'
+                                  ? Text(e['text'],
+                                      style: TextStyle(color: Colors.red))
+                                  : Text(e['text']),
+                            ))
+                        .toList()
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      animationType: DialogTransitionType.size,
+      curve: Curves.fastOutSlowIn,
+      duration: 1.seconds,
     );
   }
 }

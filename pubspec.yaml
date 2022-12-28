@@ -40,6 +40,8 @@ dependencies:
   hive_flutter: ^1.1.0
   image_picker: ^0.8.5+1
   image_stack: ^2.1.1
+  animated_loading_border: ^0.0.1
+  capped_progress_indicator: ^0.0.2
   internet_connection_checker: ^0.0.1+4
   loading: ^1.0.2
   loading_indicator: ^3.1.0

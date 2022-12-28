@@ -5,7 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ViewerPDF extends StatefulWidget {
-  ViewerPDF(this.link, {Key? key}) : super(key: key);
+  ViewerPDF({this.link, Key? key}) : super(key: key);
   String? link;
   @override
   State<ViewerPDF> createState() => _ViewerPDFState();
