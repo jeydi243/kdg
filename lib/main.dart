@@ -122,8 +122,14 @@ class Kdg extends StatelessWidget {
             return Container(
               child: Text("${snapshot.error}"),
             );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+                child: Center(
+                    child: CircularProgressIndicator(
+              value: 12,
+            )));
           } else {
-            return CircularProgressIndicator();
+            return Login();
           }
         },
       ),

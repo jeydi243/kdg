@@ -186,7 +186,7 @@ class CarService extends GetxController {
       File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
       updatedDoc.remove("file");
       carBox!.put("car", updatedDoc);
-      print(firestore.collection("cars").id);
+      print(firestore.collection("car").id);
       Reference cardoc =
           storageRef.child('cars').child(currentCarId.value).child('documents');
       UploadTask upta = cardoc
