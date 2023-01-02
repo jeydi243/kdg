@@ -117,6 +117,7 @@ class Kdg extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            print("On es connecté ${snapshot.data}");
             return Home();
           } else if (snapshot.hasError) {
             return Container(

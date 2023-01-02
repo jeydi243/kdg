@@ -28,7 +28,6 @@ class _DetailsCarState extends State<DetailsCar> {
   CarService carservice = Get.find();
   late List<Map<String, dynamic>> list;
   late ScrollController _sc;
-  late PdfViewerController _pdfcontroller;
   PanelController _pc = new PanelController();
   List<Map<String, dynamic>> actionsDialog = [
     {'text': "Voir le document", 'icon': Icons.edit, "code": 'code1'},
@@ -89,7 +88,7 @@ class _DetailsCarState extends State<DetailsCar> {
   void initState() {
     super.initState();
     _sc = ScrollController();
-    _pdfcontroller = PdfViewerController();
+    // _pdfcontroller = PdfViewerController();
   }
 
   @override
@@ -149,7 +148,10 @@ class _DetailsCarState extends State<DetailsCar> {
         backdropEnabled: true,
         panel: Column(
           children: [
-            Text("Ni mambo"),
+            Text(
+              "Ni mambo",
+              style: TextStyle(color: Colors.red),
+            ),
           ],
         ),
         body: ListView(
@@ -391,7 +393,7 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
-  void showanimated(Map<String, dynamic> e) async {
+  void showanimated(Map<String, dynamic> u) async {
     await showAnimatedDialog(
       context: context,
       barrierDismissible: true,
@@ -425,7 +427,8 @@ class _DetailsCarState extends State<DetailsCar> {
                                 if (e['code'] == "code1") {
                                   Get.to(() => ViewerPDF());
                                 } else if (e['code'] == "code2") {
-                                  Get.to(() => AddDocument(item: e));
+                                  print('e is $e');
+                                  Get.to(() => AddDocument(item: u));
                                 }
                               },
                               title: e['code'] == 'code3'

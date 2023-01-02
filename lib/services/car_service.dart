@@ -143,6 +143,7 @@ class CarService extends GetxController {
   List<Car> get cars => _cars.value;
   double get progress => uploadProgress.value;
   bool get isFilePicked => filepicked.value;
+  String get id => firestore.collection("test").doc().id;
 
   set setCurrentCarId(String id) {
     currentCarId.value = id;
@@ -154,11 +155,11 @@ class CarService extends GetxController {
     update();
   }
 
-  set setfile(PlatformFile file) {
-    fileg.value = file;
-    filepicked.value = true;
-    update();
-  }
+  // set setfile(PlatformFile file) {
+  //   fileg.value = file;
+  //   filepicked.value = true;
+  //   update();
+  // }
 
   set startDate(DateTime? value) {
     start_date.value.text = value!.toLocal().toIso8601String();
@@ -184,30 +185,20 @@ class CarService extends GetxController {
     update();
   }
 
-  void storefile(Map<String, dynamic> updatedDoc) async {
-    // String carid = currentCarId.value;
-    // File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
-    // updatedDoc.remove("file");
-    // carBox.put("car", updatedDoc);
-    // Reference cardoc =
-    //     storageRef.child('cars').child(currentCarId.value).child('documents');
+  void storefile(PlatformFile? pfile, SettableMetadata meta) async {
     try {
       String carid = currentCarId.value;
-      File file = File((updatedDoc['file'] as PlatformFile).path ?? '');
-      updatedDoc.remove("file");
-      carBox.put("car", updatedDoc);
-      print(firestore.collection("car").id);
-      Reference cardoc =
-          storageRef.child('cars').child(currentCarId.value).child('documents');
-      UploadTask upta = cardoc
-          // .child("${carid.substring(1, 4)}${file.path.split('/').last}")
-          .child(
-              "${(updatedDoc['doc_name'] as String).capitalizeFirst}, ${updatedDoc['debut']} to ${updatedDoc['fin']}")
-          .putFile(File(file.path));
+      File file = File(pfile!.path ?? '');
 
+      // Map progress_action = carBox.get("progress_action", defaultValue: {});
+      String child =
+          "${(meta.asMap()["doc_name"] as String).capitalizeFirst}-$id";
+      Reference cardoc =
+          storageRef.child('cars').child(carid).child('documents');
+      UploadTask upta = cardoc.child(child).putFile(file, meta);
       tasksnap.bindStream(upta.snapshotEvents);
     } on FirebaseException catch (e, s) {
-      print("C'est quoi encore l'erreur $e");
+      print("C'est quoi encore l'erreur $e ");
       exception.value = e;
       FirebaseCrashlytics.instance
           .recordError(e, s, reason: 'a fatal error', fatal: true);
@@ -235,6 +226,7 @@ class CarService extends GetxController {
     String errorMessage = "Erreur lors de la mise à jour de la vignette";
     String cancelMessage = "La mise à jour de la vignette a été annulé";
     // String successMessage = "Erreur lors de la mise à jour de la vignette";
+
     try {
       switch (snapshot!.state) {
         case TaskState.running:
@@ -258,9 +250,21 @@ class CarService extends GetxController {
           break;
       }
       update();
+      changeStateInBox(snapshot.state);
     } catch (e) {
       print("NOJDFIEIJFIEJOKODEJGJIJF: $e");
     }
+  }
+
+  void changeStateInBox(TaskState state) {
+    if (state == TaskState.success)
+      carBox.put("progress_action", null);
+    else {
+      Map progress_action = carBox.get("progress_action", defaultValue: {});
+      progress_action['state'] = state.name;
+      carBox.put(progress_action, progress_action);
+    }
+    update();
   }
 
   void onRefreshListCar() async {
@@ -283,8 +287,10 @@ class CarService extends GetxController {
     }
   }
 
-  onFirebaseException(FirebaseException? e) {
+  void onFirebaseException(FirebaseException? e) {
     Map<String, String> map = {
+      "unauthorized":
+          "L'utilisateur n'est pas autorisé à effectuer l'action souhaitée, vérifiez vos règles de sécurité pour vous assurer qu'elles sont correctes.",
       "storage/unknown": "Une erreur inconnue est survenue.",
       "storage/object-not-found":
           "	Aucun objet n'existe à la référence souhaitée",
@@ -321,18 +327,18 @@ class CarService extends GetxController {
     Get.snackbar("Firebase", "${map[e!.code]}");
   }
 
-  watchme(String idCar) {
+  void watchme(String idCar) {
     currentCarRef.value = carsRef.doc(idCar);
     currentCar.bindStream(
         carsRef.doc(idCar).snapshots().map((event) => event.data()));
     update();
   }
 
-  onLoadingListCar() {
+  void onLoadingListCar() {
     print('On loading');
   }
 
-  changeCardAt(String idcar, Car? newcar) {
+  void changeCardAt(String idcar, Car? newcar) {
     int index = _cars.value.indexWhere((car) => car.id == idcar);
     if (newcar != null) {
       print('Index for change is found: $index ${newcar.type_carburant}');
@@ -341,7 +347,7 @@ class CarService extends GetxController {
     }
   }
 
-  onLoadingDetails() {
+  void onLoadingDetails() {
     print('On loading details of car');
   }
 
@@ -374,7 +380,7 @@ class CarService extends GetxController {
     });
   }
 
-  getCars() async {
+  Future<void> getCars() async {
     try {
       QuerySnapshot f = await carsRef.get();
       _cars.value = [];
@@ -386,42 +392,58 @@ class CarService extends GetxController {
     }
   }
 
-  updateCarStep1(Map<String, dynamic> updatedDoc) async {
+  Future<void> updateCarStep1(Map<String, dynamic> updatedDoc) async {
     try {
       if (updatedDoc.containsKey("file")) {
-        print('il y a un fichier...');
-        await carBox.put("doc_name", updatedDoc['doc_name']);
-        storefile(updatedDoc);
+        await carBox.put("progress_action", {
+          "current_car_id": currentCarId.value,
+          "doc_name": updatedDoc['doc_name'],
+          "path_to_file": (updatedDoc['file'] as PlatformFile).path,
+          "state": "Upload start",
+          "percent": 0
+        });
+        // storefile(updatedDoc);
       }
-
-      updatedDoc.remove('file');
-
       for (var el in updatedDoc.entries) {
-        await currentCarRef.value!
-            .update({"${updatedDoc['doc_name']}.${el.key}": el.value});
+        await updateCar(
+            key: "${updatedDoc['doc_name']}.${el.key}", value: el.value);
       }
-      Get.back();
-      Get.back();
-      Get.snackbar("Mise à jour", "Opération success !");
       update();
     } on FirebaseException catch (e) {
-      print("'Erreuer EPPPPEPEPEPEPEPEPE: $e");
+      print("'FirebaseException:  $e");
       exception.value = e;
-      return;
     } catch (e) {
-      print("BANDUKKKKUI $e");
+      print("This is not Firebase Exception: $e");
+    }
+  }
+
+  Future<void> updateCar(
+      {String? key, dynamic value, Map<String, dynamic>? map}) async {
+    // assert(value != null);
+    assert((map == null && value != null) || (map != null && value == null));
+    try {
+      if (map == null) {
+        await currentCarRef.value!.update({"${key}": value});
+      } else {
+        for (var el in map.entries) {
+          await updateCar(key: el.key, value: el.value);
+        }
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
   Future<bool> updateCarStep2(String? downloadURL) async {
-    Get.snackbar("Download", "Le telechargement est terminé");
     try {
-      String doc_name = carBox.get("doc_name");
+      String doc_name = (carBox.get("progress_action") as Map)["doc_name"];
+      if (downloadURL != null) {
+        await updateCar(key: "${doc_name}.file", value: downloadURL);
+        Get.snackbar("Download", "Le telechargement est terminé");
+        Get.snackbar("Update Car", "Car document at id ${currentCarId.value}");
+        resetForm();
+      }
 
-      await currentCarRef.value!.update({"${doc_name}.file": downloadURL});
-      Get.snackbar("Update Car", "Car document at id ${currentCarId.value}");
-      resetForm();
-      if (Get.isDialogOpen == true) Get.back();
       return true;
     } catch (e) {
       print(e);

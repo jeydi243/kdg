@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:get/get.dart';
@@ -9,8 +10,7 @@ import 'package:kdg/services/car_service.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 class AddDocument extends StatefulWidget {
-  AddDocument({this.id_car, required this.item, Key? key});
-  String? id_car;
+  AddDocument({required this.item, Key? key});
   Map<String, dynamic> item;
 
   @override
@@ -33,12 +33,10 @@ class _AddDocumentState extends State<AddDocument> {
   @override
   void initState() {
     super.initState();
-
-    debut = ff("debut");
-
     fin = ff("fin");
-    start_date.text = debut.toIso8601String();
+    debut = ff("debut");
     end_date.text = fin.toIso8601String();
+    start_date.text = debut.toIso8601String();
   }
 
   DateTime ff(String when) {
@@ -54,61 +52,72 @@ class _AddDocumentState extends State<AddDocument> {
   void submitForm() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      print('After save: ${form}');
+
       if (form.isNotEmpty) {
         form['doc_name'] = widget.item['doc_name'];
         form['id'] = controller
             .currentCar.value!.documents[widget.item['doc_name']]!['id'];
-        print('The form is not empty $form');
 
-        Get.dialog(StatefulBuilder(
-            builder: (context, setState) => Center(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: FractionallySizedBox(
-                      heightFactor: .1,
-                      widthFactor: .9,
-                      child: Material(
-                        color: AppColors.backgroundDark,
-                        type: MaterialType.card,
-                        child: Row(
-                          children: [
-                            CircularProgressIndicator(
-                              value: controller.progress,
-                              color: AppColors.accent,
-                            ),
-                            !thereIsFile()
-                                ? SizedBox(
-                                    height: 30,
-                                    width: 35,
-                                    child: LoadingIndicator(
-                                        indicatorType:
-                                            Indicator.lineScalePulseOut,
-                                        colors: const [AppColors.accent],
-                                        strokeWidth: 1,
-                                        backgroundColor: Colors.transparent,
-                                        pathBackgroundColor: Colors.black),
-                                  )
-                                : Container(),
-                            thereIsFile()
-                                ? Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Text(
-                                        '${controller.progress}% Uploading'),
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text('Mise à jour'),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                )));
+        if (currentFile != null) {
+          final meta = SettableMetadata(
+            customMetadata: {
+              "doc_name": form['doc_name'] as String,
+              "debut": form['debut'] as String,
+              "fin": form['fin'] as String,
+            },
+          );
 
-        await controller.updateCarStep1(form);
+// 				Get.dialog(StatefulBuilder(
+//               builder: (context, setState) => Center(
+//                     child: BackdropFilter(
+//                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+//                       child: FractionallySizedBox(
+//                         heightFactor: .1,
+//                         widthFactor: .9,
+//                         child: Material(
+//                           color: AppColors.backgroundDark,
+//                           type: MaterialType.card,
+//                           child: Row(
+//                             children: [
+//                               CircularProgressIndicator(
+//                                 value: controller.progress,
+//                                 color: AppColors.accent,
+//                               ),
+//                               !thereIsFile()
+//                                   ? SizedBox(
+//                                       height: 30,
+//                                       width: 35,
+//                                       child: LoadingIndicator(
+//                                           indicatorType:
+//                                               Indicator.lineScalePulseOut,
+//                                           colors: const [AppColors.accent],
+//                                           strokeWidth: 1,
+//                                           backgroundColor: Colors.transparent,
+//                                           pathBackgroundColor: Colors.black),
+//                                     )
+//                                   : Container(),
+//                               thereIsFile()
+//                                   ? Padding(
+//                                       padding: const EdgeInsets.only(left: 10),
+//                                       child: Text(
+//                                           '${controller.progress}% Uploading'),
+//                                     )
+//                                   : Container(),
+//                               Padding(
+//                                 padding: const EdgeInsets.only(left: 10),
+//                                 child: Text('Mise à jour'),
+//                               )
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   )));
+          controller.storefile(currentFile, meta);
+        }
+
+        // await controller.updateCarStep1(form);
+        await controller.updateCar(map: form);
       }
 
       if (1 == 1) {
@@ -121,7 +130,7 @@ class _AddDocumentState extends State<AddDocument> {
   }
 
   bool thereIsFile() {
-    return form.containsKey('file');
+    return currentFile != null;
   }
 
   @override
@@ -198,6 +207,7 @@ class _AddDocumentState extends State<AddDocument> {
         ),
         body: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -280,8 +290,7 @@ class _AddDocumentState extends State<AddDocument> {
                                     allowedExtensions: allowExt);
                             if (result != null) {
                               setState(() {
-                                controller.setfile = currentFile =
-                                    form['file'] = result.files[0];
+                                currentFile = result.files[0];
                                 filePicked = true;
                               });
                             }
@@ -335,6 +344,10 @@ class _AddDocumentState extends State<AddDocument> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 250),
+                child: CircularProgressIndicator(),
+              )
             ],
           ),
         ),
