@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "464753026338-dha7l4ap9ehf2ifj7t7pa123ba5v3k37.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jeydi.kdg",
+            "certificate_hash": "a399be62d910cd7f5bc1aca4e3a8169fc3b0e1a2"
+          }
+        },
+        {
           "client_id": "464753026338-f5pl1aie160aqlg6mic6ed9k9chdur87.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:animations/animations.dart';
@@ -8,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'add_etude.dart';
 
 class IndexRapport extends StatefulWidget {
@@ -56,33 +57,8 @@ class _IndexRapportState extends State<IndexRapport> {
             ),
             IconButton(
                 icon: Icon(FontAwesomeIcons.book),
-                onPressed: () {
+                onPressed: () async {
                   fabKey.currentState!.close();
-                  if (Platform.isIOS) {
-                    showCupertinoModalBottomSheet(
-                      context: context,
-                      builder: (context) => Container(),
-                    );
-                  } else {
-                    showMaterialModalBottomSheet(
-                        context: context,
-                        builder: (context) => FractionallySizedBox(
-                              heightFactor: 0.8,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.red[50],
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child:
-                                      Center(child: Text("Le monde est beau"))),
-                            ),
-                        // animationCurve: Curves.decelerate,
-                        duration: 800.milliseconds,
-                        elevation: 15,
-                        backgroundColor: Colors.transparent,
-                        expand: false,
-                        enableDrag: true,
-                        bounce: true);
-                  }
                 })
           ]),
       body: CustomScrollView(

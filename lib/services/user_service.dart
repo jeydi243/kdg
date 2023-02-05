@@ -13,10 +13,11 @@ import 'package:kdg/views/user/login.dart';
 import 'package:palette_generator/palette_generator.dart';
 import '../models/rapport.dart';
 import '../views/home.dart';
+import 'package:local_auth/local_auth.dart';
 
 class UserService extends GetxController {
   static UserService userservice = Get.find();
-
+  final LocalAuthentication lauth = LocalAuthentication();
   late Log log;
   late FirebaseAuth _auth;
   late FirebaseMessaging _fcm;
@@ -151,7 +152,7 @@ class UserService extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>?> setUserKDG() async {
+  Future<void> setUserKDG() async {
     try {
       DocumentSnapshot snap = await usersRef.doc(currentUser?.uid).get();
       _user = UserKDG.fromFirebase2(snap, snap.id);
@@ -184,7 +185,7 @@ class UserService extends GetxController {
     log.w(message);
   }
 
-  Future<Map<String, dynamic>?> signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     try {
       GoogleSignInAccount? googleSignInAccount = await gsign!.signIn();
       GoogleSignInAuthentication googleAuth =
@@ -207,8 +208,12 @@ class UserService extends GetxController {
     try {
       await currentUser?.delete();
       return {"state": true, "message": "L'utilisateur a bien été supprimé"};
-    } on FirebaseException catch (e, r) {
+    } on FirebaseException catch (e) {
       exception.value = e;
+      return {
+        "state": false,
+        "message": "Impossible de supprimer cet utilisateur"
+      };
     } finally {
       update();
     }
@@ -285,6 +290,12 @@ class UserService extends GetxController {
       Image.asset(path).image,
     );
     return paletteGenerator.dominantColor!.color;
+  }
+
+  void fd() async {
+    final bool canUseBiometrics = await lauth.canCheckBiometrics;
+    final bool canAuthenticate =
+        canUseBiometrics || await lauth.isDeviceSupported();
   }
 
   Future<Map<String, dynamic>?> updateProfile(Map<String, dynamic> form) async {
