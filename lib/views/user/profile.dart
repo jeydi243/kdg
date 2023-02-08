@@ -63,14 +63,6 @@ class _ProfileState extends State<Profile> {
                     child: CircleAvatar(
                       backgroundImage: AssetImage("assets/epa.jpg"),
                       radius: 60,
-                      // child: DropdownButton(
-                      //     items: ['Modifier le Profil']
-                      //         .map<DropdownMenuItem<String>>((String value) {
-                      //   return DropdownMenuItem<String>(
-                      //     value: value,
-                      //     child: Text(value),
-                      //   );
-                      // }).toList()),
                     ),
                   ),
                   Text(
@@ -79,7 +71,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   Text(
                     '@_.jeydi',
-                    style: Get.textTheme.bodyText1,
+                    style: Get.textTheme.bodyMedium,
                   ),
                   Row(
                     children: [

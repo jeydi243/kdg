@@ -235,18 +235,18 @@ class _DetailsCarState extends State<DetailsCar> {
                     ],
                   )),
             ),
-            AnimatedLoadingBorder(
-              child: Container(
-                width: 50,
-                height: 2,
-                child: LinearCappedProgressIndicator(minHeight: .5),
-              ),
-              borderColor: Colors.amber,
-              startWithRandomPosition: true,
-              controller: (animationController) {
-                // Here we get animationController
-              },
-            ),
+            // AnimatedLoadingBorder(
+            //   child: Container(
+            //     width: 50,
+            //     height: 2,
+            //     child: LinearCappedProgressIndicator(minHeight: .5),
+            //   ),
+            //   borderColor: Colors.amber,
+            //   startWithRandomPosition: true,
+            //   controller: (animationController) {
+            //     // Here we get animationController
+            //   },
+            // ),
             FadeInRight(
               Container(
                 padding: EdgeInsets.only(left: 10, bottom: 10),
@@ -300,7 +300,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                         color: Colors.white,
                                         size: 16,
                                       )),
-                                  title: Text('$i $e'),
+                                  title: Text("$i ${e['title']}"),
                                 ))
                       ],
                     )
@@ -424,9 +424,8 @@ class _DetailsCarState extends State<DetailsCar> {
                     ...actionsDialog
                         .map((e) => ListTile(
                               onTap: () {
-                                print('Le ');
                                 if (e['code'] == "code1") {
-                                  Get.to(() => ViewerPDF());
+                                  Get.toNamed("/viewerPDF");
                                 }
                               },
                               title: e['code'] == 'code3'

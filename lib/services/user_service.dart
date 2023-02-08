@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
 import 'package:kdg/views/user/login.dart';
+import 'package:local_auth_android/types/auth_messages_android.dart';
+import 'package:local_auth_ios/types/auth_messages_ios.dart';
 import 'package:palette_generator/palette_generator.dart';
 import '../models/rapport.dart';
 import '../views/home.dart';
@@ -25,7 +27,7 @@ class UserService extends GetxController {
   GoogleSignIn? gsign;
   FirebaseStorage? storage;
   FirebaseFunctions? functions;
-
+  final wasAuthLocally = false.obs;
   Rx<String?> token = "".obs;
   Rx<User?> firebaseUser = Rx<User?>(null);
   Rx<List<Rapport>> _rapports = Rx<List<Rapport>>(<Rapport>[]);
@@ -292,10 +294,30 @@ class UserService extends GetxController {
     return paletteGenerator.dominantColor!.color;
   }
 
-  void fd() async {
-    final bool canUseBiometrics = await lauth.canCheckBiometrics;
-    final bool canAuthenticate =
-        canUseBiometrics || await lauth.isDeviceSupported();
+  void localAuthenticate() async {
+    try {
+      final bool canUseBiometrics = await lauth.canCheckBiometrics;
+      final bool canAuthenticate =
+          canUseBiometrics || await lauth.isDeviceSupported();
+      if (canAuthenticate) {
+        wasAuthLocally(await lauth.authenticate(
+            localizedReason: 'Please authenticate to ',
+            options: const AuthenticationOptions(
+              useErrorDialogs: false,
+            ),
+            authMessages: [
+              AndroidAuthMessages(
+                signInTitle: 'Oops! Biometric authentication required!',
+                cancelButton: 'No thanks',
+              ),
+              IOSAuthMessages(
+                cancelButton: 'No thanks',
+              ),
+            ]));
+      }
+    } on PlatformException catch (e) {
+      print(e.code);
+    }
   }
 
   Future<Map<String, dynamic>?> updateProfile(Map<String, dynamic> form) async {

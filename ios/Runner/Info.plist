@@ -45,5 +45,11 @@
 		<false/>
 		<key>NSFaceIDUsageDescription</key>
 		<string>KDG need Authentication because there is sensitive data</string>
+
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		</dict>
 	</dict>
 </plist>

@@ -113,10 +113,10 @@ class CarService extends GetxController {
   onCarChange(Car? car) async {
     if (car != null) {
       list = [
-        {"doc_name": 'assurance', "isExpanded": false},
-        {"doc_name": 'controle_technique', "isExpanded": false},
-        {"doc_name": 'vignette', "isExpanded": false},
-        {"doc_name": 'stationnement', "isExpanded": false},
+        {"name": 'assurance', "title": "Assurance"},
+        {"name": 'controle_technique', "title": "Controle technique"},
+        {"name": 'vignette', "title": "Vignette"},
+        {"name": 'stationnement', "title": "Stationnement"},
       ];
       update();
     }
