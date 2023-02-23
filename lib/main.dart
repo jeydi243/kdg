@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:kdg/services/car_service.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
+
 
 void main() async {
   ErrorWidget.builder = (FlutterErrorDetails details) => Material(

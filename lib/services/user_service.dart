@@ -218,7 +218,7 @@ class UserService extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>?> getDeviceToken() async {
+  Future<void> getDeviceToken() async {
     try {
       token.value = await _fcm.getToken();
       await userDocRef.value!.update({'token': token});
@@ -229,7 +229,7 @@ class UserService extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>?> addUserToFirestore(String provider) async {
+  Future<void> addUserToFirestore(String provider) async {
     User? user = currentUser;
     try {
       var snap = await userDocRef.value!.get();
@@ -281,6 +281,12 @@ class UserService extends GetxController {
       };
     } on FirebaseException catch (e) {
       exception.value = e;
+      return {
+        'state': false,
+        'message': "Le mot de passe n'a pas été modifié",
+        "error": e,
+        'shouldBack': false
+      };
     }
   }
 

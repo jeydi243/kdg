@@ -19,7 +19,7 @@ class HouseService extends GetxController {
 
   late Log log;
   Rx<String?> token = "".obs;
-  UserKDG? _user;
+  Rx<UserKDG?> _user = Rx<UserKDG?>(null);
 
   @override
   void onInit() {
@@ -29,7 +29,6 @@ class HouseService extends GetxController {
   }
 
   List<Maison> get houses => _houses.value;
-
 
   @override
   void onReady() {}

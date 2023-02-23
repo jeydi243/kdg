@@ -1,4 +1,3 @@
-import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_loading_border/animated_loading_border.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +15,6 @@ import 'package:vibration/vibration.dart';
 import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
 import '../../components/viewerpdf.dart';
-import '../../utils/utils.dart';
 import 'add_document.dart';
 
 class DetailsCar extends StatefulWidget {
@@ -30,7 +28,7 @@ class _DetailsCarState extends State<DetailsCar> {
   CarService carservice = Get.find();
   late List<Map<String, dynamic>> list;
   late ScrollController _sc;
-  late PdfViewerController _pdfcontroller;
+  // late PdfViewerController _pdfcontroller;
   PanelController _pc = new PanelController();
   List<Map> actionsDialog = [
     {'text': "Voir le document", 'icon': Icons.edit, "code": 'code1'},

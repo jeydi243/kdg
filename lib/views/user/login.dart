@@ -53,13 +53,13 @@ class _LoginState extends State<Login> {
                       FadeIn(
                         Text(
                           "Bienvenue",
-                          style: Get.textTheme.headline1!.copyWith(
+                          style: Get.textTheme.displayLarge!.copyWith(
                               fontSize: 40, fontWeight: FontWeight.bold),
                         ),
                       ),
                       FadeIn(
                         Text("Ravis de te revoir",
-                            style: Get.textTheme.headline2!
+                            style: Get.textTheme.displayLarge!
                                 .copyWith(fontWeight: FontWeight.w300)),
                       ),
                     ],
@@ -191,7 +191,7 @@ class _LoginState extends State<Login> {
                                         )
                                       : Container(),
                                   Text('Se connecter',
-                                      style: Get.textTheme.bodyText1!.copyWith(
+                                      style: Get.textTheme.bodyLarge!.copyWith(
                                           fontWeight: FontWeight.bold)),
                                 ],
                               )),

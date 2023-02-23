@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Section1 extends StatefulWidget {
-  Section1({Key key}) : super(key: key);
+  Section1({Key? key}) : super(key: key);
 
   @override
   _Section1State createState() => _Section1State();

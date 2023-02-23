@@ -6,7 +6,6 @@ class KDGTheme {
 
     return theme.copyWith(
       primaryColor: AppColors.primary,
-      errorColor: AppColors.error,
       platform: TargetPlatform.android,
       useMaterial3: false,
       colorScheme: ColorScheme.fromSwatch().copyWith(
@@ -59,36 +58,36 @@ class KDGTheme {
           dataRowColor: MaterialStateProperty.all(Colors.red),
           headingRowColor: MaterialStateProperty.all(AppColors.textDark)),
       textTheme: GoogleFonts.k2dTextTheme().copyWith(
-        bodyText1: TextStyle(
+        bodyLarge: TextStyle(
           color: AppColors.textDark,
         ),
-        bodyText2: TextStyle(
+        bodyMedium: TextStyle(
           color: AppColors.textDark,
         ),
-        subtitle1: TextStyle(
+        titleMedium: TextStyle(
           color: AppColors.textDark,
         ),
-        headline1: TextStyle(
+        displayLarge: TextStyle(
             fontWeight: FontWeight.w100,
             color: AppColors.textDark,
             fontSize: 30),
-        headline2: TextStyle(
+        displayMedium: TextStyle(
             fontWeight: FontWeight.w200,
             color: AppColors.textDark,
             fontSize: 26),
-        headline3: TextStyle(
+        displaySmall: TextStyle(
             fontWeight: FontWeight.w300,
             color: AppColors.textDark,
             fontSize: 24),
-        headline4: TextStyle(
+        headlineMedium: TextStyle(
             fontWeight: FontWeight.w400,
             color: AppColors.textDark,
             fontSize: 20),
-        headline5: TextStyle(
+        headlineSmall: TextStyle(
             fontWeight: FontWeight.w500,
             color: AppColors.textDark,
             fontSize: 18),
-        button: theme.textTheme.button?.copyWith(
+        labelLarge: theme.textTheme.labelLarge?.copyWith(
             fontSize: 14, color: AppColors.text, fontWeight: FontWeight.normal),
       ),
       buttonTheme: theme.buttonTheme.copyWith(
@@ -124,7 +123,6 @@ class KDGTheme {
 
     return theme.copyWith(
       scaffoldBackgroundColor: AppColors.backgroundDark,
-      errorColor: AppColors.error,
       dividerTheme: DividerThemeData(color: AppColors.accent),
       expansionTileTheme: ExpansionTileThemeData(
           tilePadding: EdgeInsets.all(0),
@@ -154,7 +152,9 @@ class KDGTheme {
               color: Get.theme.scaffoldBackgroundColor,
               fontWeight: FontWeight.bold),
           unselectedLabelStyle: GoogleFonts.k2d(color: Colors.teal[50])),
-      bottomAppBarColor: AppColors.primary[900],
+      bottomAppBarTheme: BottomAppBarTheme(
+        color: AppColors.primary[900],
+      ),
       dividerColor: AppColors.primary,
       inputDecorationTheme: InputDecorationTheme(
           filled: true,
@@ -184,33 +184,33 @@ class KDGTheme {
         ),
       ),
       textTheme: GoogleFonts.k2dTextTheme().copyWith(
-        bodyText1: TextStyle(
+        bodyLarge: TextStyle(
           color: AppColors.text,
         ),
-        bodyText2: TextStyle(
+        bodyMedium: TextStyle(
           color: AppColors.text,
         ),
-        subtitle1: TextStyle(
+        titleMedium: TextStyle(
           color: AppColors.text,
         ),
-        subtitle2: TextStyle(
+        titleSmall: TextStyle(
           color: AppColors.text,
         ),
-        headline1: GoogleFonts.k2d(
+        displayLarge: GoogleFonts.k2d(
             fontWeight: FontWeight.w100,
             color: AppColors.primary,
             fontSize: 30),
-        headline2: TextStyle(
+        displayMedium: TextStyle(
             fontWeight: FontWeight.w200, color: AppColors.text, fontSize: 26),
-        headline3: TextStyle(
+        displaySmall: TextStyle(
             fontWeight: FontWeight.w300, color: AppColors.text, fontSize: 24),
-        headline4: TextStyle(
+        headlineMedium: TextStyle(
             fontWeight: FontWeight.w400, color: AppColors.text, fontSize: 20),
-        headline5: TextStyle(
+        headlineSmall: TextStyle(
             fontWeight: FontWeight.w500, color: AppColors.text, fontSize: 18),
-        button: theme.textTheme.button?.copyWith(
+        labelLarge: theme.textTheme.labelLarge?.copyWith(
             fontSize: 14, color: AppColors.text, fontWeight: FontWeight.normal),
-        caption: theme.textTheme.caption?.copyWith(
+        bodySmall: theme.textTheme.bodySmall?.copyWith(
             fontSize: 34,
             color: AppColors.primary,
             fontWeight: FontWeight.normal),
@@ -249,6 +249,5 @@ class KDGTheme {
           selectedLabelStyle: GoogleFonts.k2d(),
           selectedItemColor: AppColors.accent),
     );
-  
-}
+  }
 }

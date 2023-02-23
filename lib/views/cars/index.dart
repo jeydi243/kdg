@@ -78,7 +78,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
                   children: [
                     Text(
                       'Ajouter un véhicule',
-                      style: Get.textTheme.headline3!
+                      style: Get.textTheme.displaySmall!
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
                     IconButton(
