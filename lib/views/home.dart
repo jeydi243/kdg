@@ -4,6 +4,7 @@ import 'package:kdg/animations/fadein_fromleft.dart';
 import 'package:kdg/components/custom_grid.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:secure_application/secure_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -13,6 +14,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     UserService us = Get.find();
@@ -48,7 +54,10 @@ class _HomeState extends State<Home> {
                     child: Hero(
                       tag: "Profil",
                       child: CircleAvatar(
-                        backgroundImage: AssetImage("assets/epa.jpg"),
+                        // backgroundImage: AssetImage("assets/epa.jpg"),
+                        backgroundImage: CachedNetworkImageProvider(
+                          us.firebaseUser.value!.photoURL ?? '',
+                        ),
                         radius: 20,
                         // child: DropdownButton(
                         //     items: ['Modifier le Profil']

@@ -53,6 +53,7 @@ class Kdg extends StatelessWidget {
 
     return GetMaterialApp(
       title: 'Kdg',
+      initialRoute: '/home',
       routes: {
         '/profile': (context) => Profile(),
         '/home': (context) => Home(),
@@ -86,7 +87,6 @@ class Kdg extends StatelessWidget {
               Container(
                 child: Center(child: Text('Did you bind Widget ?')),
               )),
-      home: Login(),
       customTransition: CircleTrans(),
     );
   }

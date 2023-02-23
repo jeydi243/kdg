@@ -20,6 +20,7 @@ import 'package:local_auth/local_auth.dart';
 class UserService extends GetxController {
   static UserService userservice = Get.find();
   final LocalAuthentication lauth = LocalAuthentication();
+  final wasAuthLocally = false.obs;
   late Log log;
   late FirebaseAuth _auth;
   late FirebaseMessaging _fcm;
@@ -27,7 +28,6 @@ class UserService extends GetxController {
   GoogleSignIn? gsign;
   FirebaseStorage? storage;
   FirebaseFunctions? functions;
-  final wasAuthLocally = false.obs;
   Rx<String?> token = "".obs;
   Rx<User?> firebaseUser = Rx<User?>(null);
   Rx<List<Rapport>> _rapports = Rx<List<Rapport>>(<Rapport>[]);
@@ -45,13 +45,13 @@ class UserService extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    log = Log();
     _fcm = FirebaseMessaging.instance;
     _auth = FirebaseAuth.instance;
     gsign = GoogleSignIn();
     storage = FirebaseStorage.instance;
     functions = FirebaseFunctions.instance;
     firestore = FirebaseFirestore.instance;
-    log = Log();
     firebaseUser.bindStream(_auth.authStateChanges());
   }
 
@@ -59,8 +59,8 @@ class UserService extends GetxController {
   void onReady() {
     userDocRef.value = firestore.collection('users').doc(currentUser?.uid);
     usersRef = firestore.collection('users');
-    ever(firebaseUser, onUserChange);
     ever(exception, onFirebaseException);
+    ever(firebaseUser, onUserChange);
     ever(pl_exception, onPlatformException);
   }
 
@@ -128,17 +128,16 @@ class UserService extends GetxController {
   }
 
   onUserChange(User? user) async {
-    if (user != null) {
+    if (user is User) {
       DocumentSnapshot v = await usersRef.doc(user.uid).get();
       if (v.exists) {
         await setUserKDG();
-        Get.snackbar("Authentication", "Successfull login");
         await getDeviceToken();
-      } else {}
-      Get.offAll(Home());
+        Get.snackbar("Authentication", "Successfull login");
+      }
+      Get.offAllNamed('/home');
     } else {
-      log.i("No user, redirect to Login");
-      Get.offAll(Login());
+      Get.offAllNamed("/login");
     }
   }
 
