@@ -6,7 +6,6 @@ import 'package:kdg/animations/fadein.dart';
 import 'package:kdg/constantes/helper.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:kdg/views/home.dart';
 import 'package:logger/logger.dart';
 
 class Login extends StatefulWidget {

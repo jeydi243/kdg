@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Details extends StatefulWidget {
-  Details({Key key, @required this.titre}) : super(key: key);
+  Details({required Key key, required this.titre}) : super(key: key);
   final String titre;
   @override
   _DetailsState createState() => _DetailsState();

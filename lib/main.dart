@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/home.dart';
-import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:secure_application/secure_application.dart';
