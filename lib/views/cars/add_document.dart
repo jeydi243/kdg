@@ -61,12 +61,9 @@ class _AddDocumentState extends State<AddDocument> {
         if (currentFile != null) {
           final meta = SettableMetadata(
             customMetadata: {
-              "doc_name": form['doc_name'] as String,
-              "debut": form['debut'] as String,
-              "fin": form['fin'] as String,
+              ...form,
             },
           );
-
 // 				Get.dialog(StatefulBuilder(
 //               builder: (context, setState) => Center(
 //                     child: BackdropFilter(
@@ -116,14 +113,7 @@ class _AddDocumentState extends State<AddDocument> {
           controller.storefile(currentFile, meta);
         }
 
-        // await controller.updateCarStep1(form);
         await controller.updateCar(map: form);
-      }
-
-      if (1 == 1) {
-        Get.snackbar("Update Card", "La mise à jour a reussi");
-      } else {
-        Get.snackbar("Update Card", "La mise à jour a échoué");
       }
       Get.back();
     }

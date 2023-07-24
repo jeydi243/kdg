@@ -192,7 +192,7 @@ class CarService extends GetxController {
 
       // Map progress_action = carBox.get("progress_action", defaultValue: {});
       String child =
-          "${(meta.asMap()["doc_name"] as String).capitalizeFirst}-$id";
+          "${(meta.customMetadata!["doc_name"] as String).capitalizeFirst} - $id";
       Reference cardoc =
           storageRef.child('cars').child(carid).child('documents');
       UploadTask upta = cardoc.child(child).putFile(file, meta);
@@ -236,11 +236,11 @@ class CarService extends GetxController {
           break;
         case TaskState.paused:
           Get.snackbar('Mise à jour', "Mise à jour en pause");
-
           break;
         case TaskState.success:
           uploadState.value = true;
           downloadurl.value = await snapshot.ref.getDownloadURL();
+          print("Successfully uploaded file to storage: ${downloadurl.value}");
           break;
         case TaskState.canceled:
           Get.snackbar('Misa à jour', cancelMessage);
@@ -277,7 +277,7 @@ class CarService extends GetxController {
     }
   }
 
-  onRefreshDetails() async {
+  Future<void> onRefreshDetails() async {
     await Future.delayed(1.seconds);
     // updateCar();
     if (connectionStatus.value == InternetConnectionStatus.disconnected) {
@@ -425,8 +425,9 @@ class CarService extends GetxController {
       if (map == null) {
         await currentCarRef.value!.update({"${key}": value});
       } else {
+        String doc_name = map.remove("doc_name");
         for (var el in map.entries) {
-          await updateCar(key: el.key, value: el.value);
+          await updateCar(key: "$doc_name.${el.key}", value: el.value);
         }
       }
     } catch (e) {
