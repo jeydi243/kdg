@@ -8,7 +8,7 @@ enum Props { opacity, offset }
 class FadeInRight extends StatefulWidget {
   FadeInRight(this.child, {Key? key, this.delay = 1.0}) : super(key: key);
   final Widget child;
-  double delay;
+  final double delay;
 
   @override
   _FadeInLeftState createState() => _FadeInLeftState();

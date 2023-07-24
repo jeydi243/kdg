@@ -159,6 +159,7 @@ class UserService extends GetxController {
       exception.value = e;
     } finally {
       update();
+      return null;
     }
   }
 
@@ -166,10 +167,13 @@ class UserService extends GetxController {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: info['email'], password: info['password']);
+      return {'user': result.user};
     } on FirebaseException catch (e) {
       exception.value = e;
+      return null;
     } on PlatformException catch (e) {
       pl_exception.value = e;
+      return null;
     } finally {
       update();
     }
@@ -196,10 +200,13 @@ class UserService extends GetxController {
       );
 
       await _auth.signInWithCredential(credential);
+      return {"message": "Authentication work well"};
     } on PlatformException catch (e) {
       pl_exception.value = e;
+      return {'error': e};
     } on FirebaseException catch (e) {
       exception.value = e;
+      return {'error': e};
     }
   }
 
@@ -207,8 +214,9 @@ class UserService extends GetxController {
     try {
       await currentUser?.delete();
       return {"state": true, "message": "L'utilisateur a bien été supprimé"};
-    } on FirebaseException catch (e, r) {
+    } on FirebaseException catch (e) {
       exception.value = e;
+      return null;
     } finally {
       update();
     }
@@ -223,6 +231,7 @@ class UserService extends GetxController {
     } finally {
       update();
     }
+    return null;
   }
 
   Future<Map<String, dynamic>?> addUserToFirestore(String provider) async {
@@ -253,6 +262,7 @@ class UserService extends GetxController {
     } finally {
       update();
     }
+    return null;
   }
 
   Future<bool?> resetPassByEmail(String email) async {
@@ -277,6 +287,7 @@ class UserService extends GetxController {
       };
     } on FirebaseException catch (e) {
       exception.value = e;
+      return null;
     }
   }
 
@@ -331,5 +342,6 @@ class UserService extends GetxController {
     } finally {
       update();
     }
+    return null;
   }
 }

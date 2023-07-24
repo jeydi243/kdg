@@ -7,7 +7,7 @@ enum AniProps { opacity, offset }
 class FadeIn extends StatefulWidget {
   FadeIn(this.child, {Key? key, this.delay = 1.0}) : super(key: key);
   final Widget child;
-  double delay;
+  final double delay;
 
   @override
   _FadeInState createState() => _FadeInState();

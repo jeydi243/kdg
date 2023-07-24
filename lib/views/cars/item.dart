@@ -14,7 +14,7 @@ class CarItem extends StatefulWidget {
       this.color = const Color.fromARGB(255, 1, 48, 105)})
       : super(key: key);
   final int index;
-  Color color;
+  final Color color;
   @override
   _CarItemState createState() => _CarItemState();
 }

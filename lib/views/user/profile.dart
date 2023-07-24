@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/services/user_service.dart';
-import 'package:pigment/pigment.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
@@ -83,7 +82,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   Text(
                     '@_.jeydi',
-                    style: Get.textTheme.bodyText1,
+                    style: Get.textTheme.bodyLarge,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

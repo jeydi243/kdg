@@ -10,7 +10,7 @@ import 'package:kdg/services/car_service.dart';
 import 'package:collection/collection.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
 import 'package:vibration/vibration.dart';
 import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
@@ -19,7 +19,7 @@ import 'add_document.dart';
 
 class DetailsCar extends StatefulWidget {
   DetailsCar(this.action, {Key? key}) : super(key: key);
-  VoidCallback action;
+  final VoidCallback action;
   @override
   _DetailsCarState createState() => _DetailsCarState();
 }

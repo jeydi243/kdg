@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SizeMe extends StatefulWidget {
   SizeMe({Key? key, required this.child}) : super(key: key);
-  Widget child;
+  final Widget child;
   @override
   State<SizeMe> createState() => _SizeMeState();
 }

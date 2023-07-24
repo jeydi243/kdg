@@ -7,8 +7,8 @@ import 'dart:math' as math;
 enum AniProps { opacity, deg, x }
 class FlipIn extends StatelessWidget {
   FlipIn({this.dur, required this.child});
-  double? dur;
-  Widget child;
+  final double? dur;
+  final Widget child;
 
   final _tween = TimelineTween<AniProps>() // <-- design tween
     ..addScene(begin: 0.milliseconds, duration: 1.seconds)
