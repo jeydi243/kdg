@@ -30,7 +30,7 @@ class KDGTheme {
                   BorderSide(style: BorderStyle.solid, color: AppColors.error)),
           errorStyle: TextStyle(color: AppColors.error, fontSize: 10)),
       appBarTheme: theme.appBarTheme.copyWith(
-        color: AppColors.text,
+        backgroundColor: AppColors.background,
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,
         titleTextStyle: GoogleFonts.k2d(
@@ -111,10 +111,13 @@ class KDGTheme {
           selectedIconTheme: IconThemeData(color: AppColors.accent),
           unselectedIconTheme: IconThemeData(color: Colors.black),
           selectedLabelStyle: GoogleFonts.k2d(),
-          selectedItemColor: AppColors.accent), colorScheme: ColorScheme.fromSwatch().copyWith(
-          error: AppColors.error,
-          primary: AppColors.primary,
-          brightness: Brightness.light).copyWith(error: AppColors.error),
+          selectedItemColor: AppColors.accent),
+      colorScheme: ColorScheme.fromSwatch()
+          .copyWith(
+              error: AppColors.error,
+              primary: AppColors.primary,
+              brightness: Brightness.light)
+          .copyWith(error: AppColors.error),
     );
   }
 
@@ -161,8 +164,8 @@ class KDGTheme {
                   BorderSide(style: BorderStyle.solid, color: AppColors.error)),
           errorStyle: TextStyle(color: AppColors.error, fontSize: 10)),
       appBarTheme: theme.appBarTheme.copyWith(
-        color: AppColors.backgroundDark,
-        // backgroundColor: AppColors.backgroundDark,
+        // color: AppColors.backgroundDark,
+        backgroundColor: AppColors.backgroundDark,
         iconTheme: IconThemeData(color: AppColors.accent),
         titleTextStyle: GoogleFonts.k2d(
           color: AppColors.primary,
@@ -233,17 +236,21 @@ class KDGTheme {
           selectedIconTheme: IconThemeData(color: AppColors.accent),
           unselectedIconTheme: IconThemeData(color: Colors.black),
           selectedLabelStyle: GoogleFonts.k2d(),
-          selectedItemColor: AppColors.accent), bottomAppBarTheme: BottomAppBarTheme(color: AppColors.primary[900]), colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: AppColors.accent,
-          error: AppColors.error,
-          primary: AppColors.primary,
-          surface: Colors.limeAccent,
-          onPrimary: Colors.white,
-          background: Colors.amber,
-          primaryContainer: AppColors.backgroundDark,
-          onSurface: Color.fromARGB(255, 0, 255, 47),
-          shadow: Color.fromARGB(255, 252, 252, 252),
-          brightness: Brightness.light).copyWith(error: AppColors.error),
+          selectedItemColor: AppColors.accent),
+      bottomAppBarTheme: BottomAppBarTheme(color: AppColors.primary[900]),
+      colorScheme: ColorScheme.fromSwatch()
+          .copyWith(
+              secondary: AppColors.accent,
+              error: AppColors.error,
+              primary: AppColors.primary,
+              surface: Colors.limeAccent,
+              onPrimary: Colors.white,
+              background: Colors.amber,
+              primaryContainer: AppColors.backgroundDark,
+              onSurface: Color.fromARGB(255, 0, 255, 47),
+              shadow: Color.fromARGB(255, 252, 252, 252),
+              brightness: Brightness.light)
+          .copyWith(error: AppColors.error),
     );
   }
 }

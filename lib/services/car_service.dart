@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
-import '../models/maison.dart';
+import '../models/house.dart';
 import 'package:uuid/uuid.dart';
 import 'package:kdg/models/car.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class CarService extends GetxController {
   late FirebaseFirestore firestore;
   late CollectionReference<Document> docsRef;
   late CollectionReference<Car> carsRef;
-  late CollectionReference<Maison> housesRef;
+  late CollectionReference<House> housesRef;
   late Box carBox;
   final file = Rx<File>;
   final end_date = TextEditingController().obs;
@@ -69,9 +69,9 @@ class CarService extends GetxController {
           fromFirestore: Car.fromFirestore,
           toFirestore: (Car car, _) => car.toFirestore(),
         );
-    housesRef = firestore.collection('houses').withConverter<Maison>(
-          fromFirestore: Maison.fromFirestore,
-          toFirestore: (Maison house, _) => house.toFirestore(),
+    housesRef = firestore.collection('houses').withConverter<House>(
+          fromFirestore: House.fromFirestore,
+          toFirestore: (House house, _) => house.toFirestore(),
         );
     qsnapcars.bindStream(carsRef.snapshots());
     connectionStatus.bindStream(InternetConnectionChecker().onStatusChange);

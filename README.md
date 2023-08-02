@@ -12,7 +12,7 @@ Family apps
   - [ ] Modifier la date de debut ou de fin
 
 #### Houses
-  - [ ] Ajouter un document (Coté firestore and coté Storage)
+  - [ ] Ajouter un document (Coté firestore et coté Storage)
   - [ ] Ajouter un rappel pour permettre une notification
   - [ ] Ajouter les obligations mensuelle, annuel
 
@@ -22,7 +22,7 @@ Family apps
 
 
 #### Projets
-  - [ ] Ajouter un projet (Location Maison, Construction Maison, etc...)
+  - [ ] Ajouter un projet (Location House, Construction House, etc...)
   - [ ]  Ajouter les documents liés ace projet(Contrat de bail, permis de construire)
 
 

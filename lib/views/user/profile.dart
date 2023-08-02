@@ -47,9 +47,7 @@ class _ProfileState extends State<Profile> {
             //     },
             //   ),
             // ),
-          
-
-],
+          ],
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),

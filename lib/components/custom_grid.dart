@@ -29,8 +29,7 @@ class _CustomGridState extends State<CustomGrid> {
     },
     {"imgsrc": "assets/vehicules.webp", "text": "Cars", "collection": "cars"},
     {
-      "imgsrc": "assets/maisons.webp",
-      "text": "Maisons",
+      "imgsrc": "assets/mouses.webp", "text": "Houses",
       "collection": "houses"
     },
     {

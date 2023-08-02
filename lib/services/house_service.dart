@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
-import '../models/maison.dart';
+import '../models/mouse.dart';
 
 class HouseService extends GetxController {
   static HouseService houseservice = Get.find();
@@ -15,7 +15,7 @@ class HouseService extends GetxController {
 
   Rx<User?> firebaseUser = Rx<User?>(null);
   Rx<DocumentReference?> userDoc = Rx<DocumentReference?>(null);
-  Rx<List<Maison>> _houses = Rx<List<Maison>>(<Maison>[]);
+  Rx<List<House>> _houses = Rx<List<House>>(<House>[]);
 
   late Log log;
   Rx<String?> token = "".obs;
@@ -28,7 +28,7 @@ class HouseService extends GetxController {
     firestore = FirebaseFirestore.instance;
   }
 
-  List<Maison> get houses => _houses.value;
+  List<House> get houses => _houses.value;
 
   @override
   void onReady() {}

@@ -127,6 +127,7 @@ class UserService extends GetxController {
   onUserChange(User? user) async {
     if (user != null) {
       DocumentSnapshot v = await usersRef.doc(user.uid).get();
+
       if (v.exists) {
         await setUserKDG();
         Get.snackbar("Authentication", "Successfull login");

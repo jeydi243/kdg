@@ -58,12 +58,13 @@ class UserKDG implements Type {
   }
   UserKDG.fromFirebase2(DocumentSnapshot map, String id) {
     _id = id;
-    _name = map.get("name");
-    _imgsrc = map.get("imgsrc");
-    _email = map.get("email");
-    _telephone = map.get("telephone");
-    _provider = map.get("provider");
-    _creation = map.get("creation");
+
+    _name = map.get("name") ?? '';
+    _imgsrc = map.get("imgsrc") ?? '';
+    _email = map.get("email") ?? '';
+    _telephone = map.get("telephone") ?? '';
+    _provider = map.get("provider") ?? '';
+    _creation = map.get("creation") ?? '';
   }
   Map<String, dynamic> toMap() {
     return {
