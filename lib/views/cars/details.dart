@@ -10,8 +10,6 @@ import 'package:kdg/services/car_service.dart';
 import 'package:collection/collection.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import 'package:vibration/vibration.dart';
 import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
 import '../../components/viewerpdf.dart';
@@ -271,12 +269,6 @@ class _DetailsCarState extends State<DetailsCar> {
                     onLongPressEnd: (details) async {
                       try {
                         await HapticFeedback.lightImpact();
-                        // if (await Vibration.hasVibrator()) {
-                        await Vibration.vibrate(
-                          amplitude: 0,
-                          intensities: [200, 300],
-                        );
-                        // }
                       } on PlatformException catch (e) {
                         print(e);
                       } catch (e) {

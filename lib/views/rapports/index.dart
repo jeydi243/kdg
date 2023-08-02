@@ -1,15 +1,11 @@
-import 'dart:io';
-
-import 'package:animations/animations.dart';
-import 'package:fab_circular_menu/fab_circular_menu.dart';
+// import 'package:animations/animations.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:kdg/constantes/values.dart';
+// import 'add_etude.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/user_service.dart';
 import 'package:kdg/utils/utils.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'add_etude.dart';
 
 class IndexRapport extends StatefulWidget {
   IndexRapport({Key? key, required this.item}) : super(key: key);
@@ -19,72 +15,47 @@ class IndexRapport extends StatefulWidget {
 }
 
 class _IndexRapportState extends State<IndexRapport> {
-  final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
+
 
   @override
   Widget build(BuildContext context) {
     UserService userservice = Get.find();
     return Scaffold(
       backgroundColor: HexColor.fromHex('#EEF2F6'),
-      floatingActionButton: FabCircularMenu(
-          key: fabKey,
-          fabChild: Icon(Icons.add),
-          ringWidth: 50,
-          fabCloseIcon: Icon(Icons.close),
-          fabColor: AppColors.backgroundDark,
-          ringColor: AppColors.backgroundDark,
-          ringDiameter: 250,
-          onDisplayChange: (v) {
-            print(v);
-          },
-          children: <Widget>[
-            OpenContainer(
-              transitionDuration: 900.milliseconds,
-              closedColor: Colors.transparent,
-              closedBuilder: (BuildContext context, void Function() action) {
-                return IconButton(
-                    icon: Icon(Icons.account_box),
-                    onPressed: () {
-                      fabKey.currentState!.close();
-                      Get.to(() => AddEtude());
-                    });
-              },
-              openBuilder: (BuildContext context,
-                  void Function({Object? returnValue}) action) {
-                return AddEtude();
-              },
-            ),
-            IconButton(
-                icon: Icon(FontAwesomeIcons.book),
-                onPressed: () {
-                  fabKey.currentState!.close();
-                  if (Platform.isIOS) {
-                    showCupertinoModalBottomSheet(
-                      context: context,
-                      builder: (context) => Container(),
-                    );
-                  } else {
-                    showMaterialModalBottomSheet(
-                        context: context,
-                        builder: (context) => FractionallySizedBox(
-                              heightFactor: 0.8,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.red[50],
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child:
-                                      Center(child: Text("Le monde est beau"))),
-                            ),
-                        // animationCurve: Curves.decelerate,
-                        duration: 800.milliseconds,
-                        elevation: 15,
-                        backgroundColor: Colors.transparent,
-                        expand: false,
-                        enableDrag: true,
-                        bounce: true);
-                  }
-                })
-          ]),
+      // floatingActionButton: FabCircularMenu(
+      //     key: fabKey,
+      //     fabChild: Icon(Icons.add),
+      //     ringWidth: 50,
+      //     fabCloseIcon: Icon(Icons.close),
+      //     fabColor: AppColors.backgroundDark,
+      //     ringColor: AppColors.backgroundDark,
+      //     ringDiameter: 250,
+      //     onDisplayChange: (v) {
+      //       print(v);
+      //     },
+      //     children: <Widget>[
+      //       OpenContainer(
+      //         transitionDuration: 900.milliseconds,
+      //         closedColor: Colors.transparent,
+      //         closedBuilder: (BuildContext context, void Function() action) {
+      //           return IconButton(
+      //               icon: Icon(Icons.account_box),
+      //               onPressed: () {
+      //                 fabKey.currentState!.close();
+      //                 Get.to(() => AddEtude());
+      //               });
+      //         },
+      //         openBuilder: (BuildContext context,
+      //             void Function({Object? returnValue}) action) {
+      //           return AddEtude();
+      //         },
+      //       ),
+      //       IconButton(
+      //           icon: Icon(FontAwesomeIcons.book),
+      //           onPressed: () async {
+      //             fabKey.currentState!.close();
+      //           })
+      //     ]),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(

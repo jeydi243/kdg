@@ -1,9 +1,8 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:get/get.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/services/car_service.dart';

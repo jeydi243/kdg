@@ -164,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
       await _disposeVideoController();
       late VideoPlayerController controller;
       if (kIsWeb) {
-        controller = VideoPlayerController.network(file.path);
+        controller = VideoPlayerController.networkUrl(Uri.file(file.path));
       } else {
         controller = VideoPlayerController.file(File(file.path));
       }
