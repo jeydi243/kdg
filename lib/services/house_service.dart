@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kdg/models/user.dart';
 import 'package:kdg/services/log.dart';
-import '../models/mouse.dart';
+import '../models/house.dart';
 
 class HouseService extends GetxController {
   static HouseService houseservice = Get.find();

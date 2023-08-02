@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
-import 'package:swipe_deck/swipe_deck.dart';
+
 
 class DetailsHouse extends StatefulWidget {
   DetailsHouse(
