@@ -1,19 +1,24 @@
-# kdg
+# KDG
 
-A new Flutter project.
+Family apps
 
-### TO-DO list
-    - [ ] Mettre un color picker pour prendre la couleur de la voiture
-    - [ ] Authentifier un utilisateur par son email
-    - [ ] 
+#### Authentification
 
-This project is a starting point for a Flutter application.
+  - [x] Authentifier un utilisateur par son email
+  - [ ] Authentifier un utilisateur par son gmail or apple
+#### Cars
+  - [ ] Mettre un **color picker** pour prendre la couleur de la voiture
+  - [ ] Ajouter un document de vehicule
+  - [ ] Modifier la date de debut ou de fin
 
-A few resources to get you started if this is your first Flutter project:
+#### Houses
+  - [ ] Ajouter un document (Coté firestore and coté Storage)
+  - [ ] Ajouter un rappel pour permettre une notification
+  - [ ] Ajouter les obligations mensuelle, annuel
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.##
+#### Memoires
+  - [ ] Ajouter **un memoire** (Video, Audio)
+  - [ ]  
+
+
