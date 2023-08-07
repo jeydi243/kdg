@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/home.dart';
+import 'package:kdg/views/user/budgetView.dart';
 import 'package:kdg/views/user/login.dart';
 import 'package:kdg/views/user/profile.dart';
 import 'package:local_auth/local_auth.dart';
@@ -53,6 +54,7 @@ class Kdg extends StatelessWidget {
       title: 'Kdg',
       routes: {
         '/profile': (context) => Profile(),
+        '/budget': (context) => BudgetView(),
       },
       darkTheme: KDGTheme.dark(context),
       theme: KDGTheme.light(context),

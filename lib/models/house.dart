@@ -8,21 +8,23 @@ class House {
   late String location_gps;
   late UserKDG owner;
   late List<Document> documents;
-  late Map<String, dynamic> locataire;
 
-  House(this.nom);
+  House(this.nom, this.id, this.location_gps, this.owner);
 
   House.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
     id = snapshot.id;
-    nom = snapshot.get('name') ?? '';
+    this.nom = snapshot.get('nom') ?? '';
+    this.location_gps = snapshot.get('location_gps') ?? '';
+    this.owner = snapshot.get('owner') ?? '';
   }
   Map<String, dynamic> get print {
     Map<String, dynamic> map = {};
     map['id'] = this.id;
     map['owner'] = this.owner.nom;
+    map['nom'] = this.nom;
     map['location_gps'] = this.id;
     return map;
   }

@@ -92,7 +92,12 @@ class _ProfileState extends State<Profile> {
                           onPressed: () {},
                           child: Text('Modifier le Profil'))
                     ],
-                  )
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Get.toNamed('/budget');
+                      },
+                      child: Text('Click'))
                 ],
               ),
             ),
