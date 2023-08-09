@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kdg/components/viewerpdf.dart';
 import 'package:kdg/utils/circle_trans.dart';
 import 'package:kdg/views/home.dart';
 import 'package:kdg/views/user/budgetView.dart';
@@ -23,7 +24,7 @@ void main() async {
   ErrorWidget.builder = (FlutterErrorDetails details) => Material(
         child: Container(
             child: Center(
-                child: Text('Error: ${details.exceptionAsString}',
+                child: Text('Error: ${details}',
                     style: GoogleFonts.k2d(fontSize: 25)))),
       );
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,10 +53,16 @@ class Kdg extends StatelessWidget {
 
     return GetMaterialApp(
       title: 'Kdg',
-      routes: {
-        '/profile': (context) => Profile(),
-        '/budget': (context) => BudgetView(),
-      },
+      // routes: {
+      //   '/profile': (context) => Profile(),
+      //   '/budget': (context) => BudgetView(),
+      //   '/pdfViewer': (context) => ViewerPDF(),
+      // },
+      getPages: [
+        GetPage(name: '/profile', page: () => Profile()),
+        GetPage(name: '/budget', page: () => BudgetView()),
+        GetPage(name: '/pdfViewer', page: () => ViewerPDF()),
+      ],
       darkTheme: KDGTheme.dark(context),
       theme: KDGTheme.light(context),
       themeMode: ThemeMode.system,

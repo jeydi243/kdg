@@ -16,23 +16,26 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class CarService extends GetxController {
+  var uuid;
+  late RefreshController refreshc;
   late FirebaseFirestore firestore;
-  late CollectionReference<Document> docsRef;
   late CollectionReference<Car> carsRef;
   late CollectionReference<House> housesRef;
+  late CollectionReference<Document> docsRef;
+  late List<Map<String, dynamic>> actionsDialog;
   late Box carBox;
   final file = Rx<File>;
+  final downloadurl = "".obs;
+  final uploadState = false.obs;
+  final uploadProgress = 0.0.obs;
   final end_date = TextEditingController().obs;
   final start_date = TextEditingController().obs;
   final storageRef = FirebaseStorage.instance.ref();
-  final uploadState = false.obs;
-  final downloadurl = "".obs;
-  final uploadProgress = 0.0.obs;
   RxBool filepicked = RxBool(false);
-  Rx<Car?> currentCar = Rx<Car?>(null);
+  Rx<Car?> _currentCar = Rx<Car?>(null);
   Rx<TaskSnapshot?> tasksnap = Rx(null);
   RxBool isLoadingDocument = RxBool(true);
-  Rx<String> currentCarId = Rx<String>("");
+  Rx<String?> currentCarId = Rx<String>("");
   Rx<List<Car>> _cars = Rx<List<Car>>(<Car>[]);
   Rx<PlatformFile?> fileg = Rx<PlatformFile?>(null);
   Rx<DocumentReference?> ref_ref = Rx<DocumentReference?>(null);
@@ -43,13 +46,31 @@ class CarService extends GetxController {
   Rx<QuerySnapshot<Car>?> qsnapcars = Rx<QuerySnapshot<Car>?>(null);
   Rx<Map<String, Object?>> updatedCar = Rx<Map<String, Object?>>({});
   Rx<List<Document>> listDocuments = Rx<List<Document>>(<Document>[]);
-  late RefreshController refreshc;
   RefreshController refreshc2 = RefreshController(initialRefresh: false);
   Rx<DocumentReference<Car>?> currentCarRef = Rx<DocumentReference<Car>?>(null);
   Rx<InternetConnectionStatus> connectionStatus =
       Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
   List<Map<String, dynamic>> list = [];
-  var uuid;
+  List<Car> get cars => _cars.value;
+  double get progress => uploadProgress.value;
+  bool get isFilePicked => filepicked.value;
+  String get id => firestore.collection("test").doc().id;
+  Car? get currentCar => _currentCar.value;
+
+  set setCurrentCarId(String id) {
+    currentCarId.value = id;
+    update();
+  }
+
+  set endDate(DateTime? value) {
+    end_date.value.text = value!.toLocal().toIso8601String();
+    update();
+  }
+
+  set startDate(DateTime? value) {
+    start_date.value.text = value!.toLocal().toIso8601String();
+    update();
+  }
 
   @override
   void onInit() async {
@@ -86,7 +107,7 @@ class CarService extends GetxController {
     ever(tasksnap, onUploadTask);
     ever(qsnapcars, onCarsChange);
     ever(exception, onFirebaseException);
-    ever(currentCar, onCarChange);
+    ever(_currentCar, onCarChange);
     ever(downloadurl, updateCarStep2);
     ever(currentCarId, watchme);
     ever(connectionStatus, onConnectionChange);
@@ -103,10 +124,11 @@ class CarService extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
-        borderRadius: 10,
+        borderRadius: 8,
         borderColor: Colors.red,
         borderWidth: .5,
         margin: EdgeInsets.all(10),
+        overlayBlur: 1,
         duration: 2.seconds,
       );
     }
@@ -119,6 +141,15 @@ class CarService extends GetxController {
         {"doc_name": 'controle_technique', "isExpanded": false},
         {"doc_name": 'vignette', "isExpanded": false},
         {"doc_name": 'stationnement', "isExpanded": false},
+      ];
+      actionsDialog = [
+        {'text': "Voir le document", 'icon': Icons.edit, "code": 'code1'},
+        {'text': "Modifier le document", 'icon': Icons.edit, "code": 'code2'},
+        {
+          'text': "Supprimer le document",
+          'icon': Icons.delete,
+          "code": 'code3'
+        },
       ];
       update();
     }
@@ -138,32 +169,6 @@ class CarService extends GetxController {
         update();
       });
     }
-  }
-
-  List<Car> get cars => _cars.value;
-  double get progress => uploadProgress.value;
-  bool get isFilePicked => filepicked.value;
-  String get id => firestore.collection("test").doc().id;
-
-  set setCurrentCarId(String id) {
-    currentCarId.value = id;
-    update();
-  }
-
-  set endDate(DateTime? value) {
-    end_date.value.text = value!.toLocal().toIso8601String();
-    update();
-  }
-
-  // set setfile(PlatformFile file) {
-  //   fileg.value = file;
-  //   filepicked.value = true;
-  //   update();
-  // }
-
-  set startDate(DateTime? value) {
-    start_date.value.text = value!.toLocal().toIso8601String();
-    update();
   }
 
   void onLoadFailed(String description) {
@@ -187,16 +192,18 @@ class CarService extends GetxController {
 
   void storefile(PlatformFile? pfile, SettableMetadata meta) async {
     try {
-      String carid = currentCarId.value;
+      String? carid = currentCarId.value;
       File file = File(pfile!.path ?? '');
 
       // Map progress_action = carBox.get("progress_action", defaultValue: {});
       String child =
           "${(meta.customMetadata!["doc_name"] as String).capitalizeFirst} - $id";
-      Reference cardoc =
-          storageRef.child('cars').child(carid).child('documents');
-      UploadTask upta = cardoc.child(child).putFile(file, meta);
-      tasksnap.bindStream(upta.snapshotEvents);
+      if (carid != null) {
+        Reference cardoc =
+            storageRef.child('cars').child(carid).child('documents');
+        UploadTask upta = cardoc.child(child).putFile(file, meta);
+        tasksnap.bindStream(upta.snapshotEvents);
+      }
     } on FirebaseException catch (e, s) {
       print("C'est quoi encore l'erreur $e ");
       exception.value = e;
@@ -217,12 +224,8 @@ class CarService extends GetxController {
     });
     return result;
   }
-  // Stream<Map<String, dynamic>> changeStream(
-  //     Stream<TaskSnapshot> st, Map<String, dynamic> map) {
-  //   return st.map((event) => {'event': event, ...map});
-  // }
 
-  onUploadTask(TaskSnapshot? snapshot) async {
+  void onUploadTask(TaskSnapshot? snapshot) async {
     String errorMessage = "Erreur lors de la mise à jour de la vignette";
     String cancelMessage = "La mise à jour de la vignette a été annulé";
     // String successMessage = "Erreur lors de la mise à jour de la vignette";
@@ -277,16 +280,6 @@ class CarService extends GetxController {
     }
   }
 
-  Future<void> onRefreshDetails() async {
-    await Future.delayed(1.seconds);
-    // updateCar();
-    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
-      refreshc2.refreshFailed();
-    } else {
-      refreshc2.refreshCompleted();
-    }
-  }
-
   void onFirebaseException(FirebaseException? e) {
     Map<String, String> map = {
       "unauthorized":
@@ -327,10 +320,11 @@ class CarService extends GetxController {
     Get.snackbar("Firebase", "${map[e!.code]}");
   }
 
-  void watchme(String idCar) {
+  void watchme(String? idCar) {
     currentCarRef.value = carsRef.doc(idCar);
-    currentCar.bindStream(
+    _currentCar.bindStream(
         carsRef.doc(idCar).snapshots().map((event) => event.data()));
+    print('The car id changed so swathcme');
     update();
   }
 
@@ -350,6 +344,16 @@ class CarService extends GetxController {
 
   void onLoadingDetails() {
     print('On loading details of car');
+  }
+
+  Future<void> onRefreshDetails() async {
+    await Future.delayed(1.seconds);
+    // updateCar();
+    if (connectionStatus.value == InternetConnectionStatus.disconnected) {
+      refreshc2.refreshFailed();
+    } else {
+      refreshc2.refreshCompleted();
+    }
   }
 
   Future<List<Document>?> getCarDocs({required String id}) async {

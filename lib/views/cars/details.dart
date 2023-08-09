@@ -12,8 +12,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
-import '../../components/viewerpdf.dart';
-import '../../models/car.dart';
 import 'add_document.dart';
 
 class DetailsCar extends StatefulWidget {
@@ -28,60 +26,6 @@ class _DetailsCarState extends State<DetailsCar> {
   late List<Map<String, dynamic>> list;
   late ScrollController _sc;
   PanelController _pc = new PanelController();
-  List<Map<String, dynamic>> actionsDialog = [
-    {'text': "Voir le document", 'icon': Icons.edit, "code": 'code1'},
-    {'text': "Modifier le document", 'icon': Icons.edit, "code": 'code2'},
-    {'text': "Supprimer le document", 'icon': Icons.delete, "code": 'code3'},
-  ];
-
-  Widget Actions(BuildContext ctx, Map<String, dynamic> e) {
-    return Container(
-        height: Get.height * .3,
-        width: Get.width * .9,
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Column(
-                children: [
-                  TextButton(
-                      onPressed: () async {
-                        var link =
-                            carservice.currentCar.value!.linkDoc(e['doc_name']);
-                        Get.to(() => ViewerPDF(link: link));
-                      },
-                      child: Container(child: Text('Voir le document'))),
-                  TextButton(
-                      onPressed: () async {
-                        Get.to(() => AddDocument(item: e));
-                        // await showGeneralDialog(
-                        //     context: context,
-                        //     barrierDismissible: false,
-                        //     transitionDuration: 500.milliseconds,
-                        //     transitionBuilder: (ctx, anim1, anim2, child) =>
-                        //         BackdropFilter(
-                        //           filter: ImageFilter.blur(
-                        //               sigmaX: 4 * anim1.value,
-                        //               sigmaY: 4 * anim1.value),
-                        //           child: FadeTransition(
-                        //             child: child,
-                        //             opacity: anim1,
-                        //           ),
-                        //         ),
-                        //     pageBuilder: (g, n, j) {
-                        //       return AddDocument(
-                        //           carservice.currentCar.value!.id, e);
-                        //     });
-                      },
-                      child: Text('Mettre à jour le document')),
-                ],
-              ),
-            ),
-          ],
-        ));
-  }
 
   @override
   void initState() {
@@ -92,8 +36,7 @@ class _DetailsCarState extends State<DetailsCar> {
 
   @override
   Widget build(BuildContext context) {
-    CarService controller = Get.find();
-    Car? car = controller.currentCar.value;
+    // CarService carservice = Get.find();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -113,9 +56,9 @@ class _DetailsCarState extends State<DetailsCar> {
         ],
         title: Obx(
           () => Hero(
-            tag: carservice.currentCarId.value,
+            tag: carservice.currentCarId,
             child: Text(
-              '${controller.currentCar.value?.Nom.capitalizeFirst}',
+              '${carservice.currentCar!.Nom.capitalizeFirst}',
               style: TextStyle(fontSize: 25),
             ),
           ),
@@ -187,9 +130,9 @@ class _DetailsCarState extends State<DetailsCar> {
                   child: Column(
                     children: [
                       Builder(builder: (context) {
-                        if (controller.currentCar.value != null) {
+                        if (carservice.currentCar != null) {
                           return Column(children: <Widget>[
-                            ...controller.currentCar.value!.infos.entries
+                            ...carservice.currentCar!.infos.entries
                                 .toList()
                                 // .mapIndexed((index, element) => null)
                                 .mapIndexed<Widget>((index, entry) {
@@ -282,12 +225,12 @@ class _DetailsCarState extends State<DetailsCar> {
                     },
                     child: ListView(
                       children: [
-                        ...controller.list
+                        ...carservice.list
                             .mapIndexed<Widget>((i, e) => ListTile(
                                   focusColor: Colors.amber,
                                   trailing: IconButton(
                                       onPressed: () {
-                                        showanimated(e);
+                                        showActionsDialog(e, carservice);
                                       },
                                       icon: Icon(
                                         MdiIcons.dotsVertical,
@@ -307,7 +250,7 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
-  void showanimated(Map<String, dynamic> u) async {
+  void showActionsDialog(Map<String, dynamic> u, CarService carservice) async {
     await showAnimatedDialog(
       context: context,
       barrierDismissible: true,
@@ -334,17 +277,19 @@ class _DetailsCarState extends State<DetailsCar> {
                 color: AppColors.backgroundDark,
                 child: ListView(
                   children: [
-                    ...actionsDialog
+                    ...carservice.actionsDialog
                         .map((e) => ListTile(
+
                               onTap: () {
-                                print(e);
-                                if (e['code'] == "code1") {
-                                  Get.to(() => ViewerPDF(
-                                        link: e['doc_name'],
-                                      ));
-                                } else if (e['code'] == "code2") {
-                                  print('e is $e');
-                                  Get.to(() => AddDocument(item: u));
+                                print(u);
+                                switch (e['code']) {
+                                  case "code1":
+                                    Get.toNamed('/pdfViewer', parameters: {
+                                      "link": carservice.currentCar!
+                                          .documents[u['doc_name']]!['file']
+                                    },);
+                                  case "code2":
+                                    Get.to(() => AddDocument(item: u));
                                 }
                               },
                               title: e['code'] == 'code3'

@@ -5,8 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ViewerPDF extends StatefulWidget {
-  ViewerPDF({required this.link, Key? key}) : super(key: key);
-  final String link;
+  ViewerPDF({Key? key}) : super(key: key);
   @override
   State<ViewerPDF> createState() => _ViewerPDFState();
 }
@@ -25,6 +24,7 @@ class _ViewerPDFState extends State<ViewerPDF> {
 
   @override
   Widget build(BuildContext context) {
+    Get.parameters['link'];
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -34,13 +34,13 @@ class _ViewerPDFState extends State<ViewerPDF> {
         // extendBody: true,
         floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Share.share(widget.link);
+              Share.share(Get.parameters['link'] ?? "");
             },
             child: Icon(Icons.share)),
         extendBodyBehindAppBar: true,
         body: SafeArea(
           child: SfPdfViewer.network(
-            widget.link ??
+            Get.parameters['link'] ??
                 'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
             canShowScrollStatus: true,
             currentSearchTextHighlightColor: Color.fromARGB(255, 252, 248, 249),

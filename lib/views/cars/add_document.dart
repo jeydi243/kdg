@@ -38,13 +38,13 @@ class _AddDocumentState extends State<AddDocument> {
   }
 
   DateTime ff(String when) {
-    return controller.currentCar.value!
+    return controller.currentCar!
             .documents[widget.item['doc_name']]![when] is Timestamp
         ? DateTime.fromMillisecondsSinceEpoch((controller
-                .currentCar.value!.documents[widget.item['doc_name']]![when])
+                .currentCar!.documents[widget.item['doc_name']]![when])
             .millisecondsSinceEpoch)
         : DateTime.parse(controller
-            .currentCar.value!.documents[widget.item['doc_name']]![when]);
+            .currentCar!.documents[widget.item['doc_name']]![when]);
   }
 
   void submitForm() async {
@@ -54,7 +54,7 @@ class _AddDocumentState extends State<AddDocument> {
       if (form.isNotEmpty) {
         form['doc_name'] = widget.item['doc_name'];
         form['id'] = controller
-            .currentCar.value!.documents[widget.item['doc_name']]!['id'];
+            .currentCar!.documents[widget.item['doc_name']]!['id'];
 
         if (currentFile != null) {
           final meta = SettableMetadata(
@@ -159,7 +159,7 @@ class _AddDocumentState extends State<AddDocument> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         appBar: AppBar(
           title: Text(
-            "${(widget.item["doc_name"] as String).capitalizeFirst} - ${controller.currentCar.value!.Nom}",
+            "${(widget.item["doc_name"] as String).capitalizeFirst} - ${controller.currentCar!.Nom}",
             style: Get.textTheme.displayMedium!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
