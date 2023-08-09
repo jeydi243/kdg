@@ -62,7 +62,7 @@ class _CarItemState extends State<CarItem> {
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
             ),
           ),
-          subtitle: Text("Type carburant: ${car.type_carburant}"),
+          subtitle: Text("Type carburant: ${car.carburant}"),
           trailing: Column(
             children: [
               IconButton(

@@ -49,7 +49,7 @@ class UserService extends GetxController {
     functions = FirebaseFunctions.instance;
     firestore = FirebaseFirestore.instance;
     log = Log();
-    firebaseUser.bindStream(_auth.authStateChanges());
+    firebaseUser.bindStream(_auth.userChanges());
   }
 
   @override
@@ -168,6 +168,9 @@ class UserService extends GetxController {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: info['email'], password: info['password']);
+      if (result.additionalUserInfo!.isNewUser) {
+        await addUserToFirestore();
+      }
       return {'user': result.user};
     } on FirebaseException catch (e) {
       exception.value = e;
@@ -200,7 +203,10 @@ class UserService extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      await _auth.signInWithCredential(credential);
+      UserCredential result = await _auth.signInWithCredential(credential);
+      if (result.additionalUserInfo!.isNewUser) {
+        await addUserToFirestore();
+      }
       return {"message": "Authentication work well"};
     } on PlatformException catch (e) {
       pl_exception.value = e;
@@ -235,7 +241,8 @@ class UserService extends GetxController {
     return null;
   }
 
-  Future<Map<String, dynamic>?> addUserToFirestore(String provider) async {
+  Future<Map<String, dynamic>?> addUserToFirestore(
+      {String provider = "email"}) async {
     User? user = currentUser;
     try {
       var snap = await userDocRef.value!.get();

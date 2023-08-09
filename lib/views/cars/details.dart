@@ -13,6 +13,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../animations/fadein_fromleft.dart';
 import '../../animations/fadein_fromright.dart';
 import '../../components/viewerpdf.dart';
+import '../../models/car.dart';
 import 'add_document.dart';
 
 class DetailsCar extends StatefulWidget {
@@ -92,6 +93,7 @@ class _DetailsCarState extends State<DetailsCar> {
   @override
   Widget build(BuildContext context) {
     CarService controller = Get.find();
+    Car? car = controller.currentCar.value;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -189,6 +191,7 @@ class _DetailsCarState extends State<DetailsCar> {
                           return Column(children: <Widget>[
                             ...controller.currentCar.value!.infos.entries
                                 .toList()
+                                // .mapIndexed((index, element) => null)
                                 .mapIndexed<Widget>((index, entry) {
                               return Container(
                                 height: 35,
@@ -203,7 +206,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Text(
-                                        "${entry.key.capitalizeFirst}",
+                                        "${entry.key}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: index % 2 != 0
@@ -212,7 +215,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                             fontSize: 15),
                                       ),
                                       Text(
-                                        "${entry.value.capitalizeFirst}",
+                                        "${entry.value}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: index % 2 != 0
@@ -295,88 +298,7 @@ class _DetailsCarState extends State<DetailsCar> {
                                       "${((e['doc_name'] as String).replaceFirst("_", " ")).capitalizeFirst}"),
                                 ))
                       ],
-                    )
-
-// ExpansionPanelList(
-//                     animationDuration: 1.seconds,
-//                     dividerColor: HexColor.fromHex("#000"),
-//                     expandedHeaderPadding: EdgeInsets.all(0),
-//                     elevation: 0,
-//                     children: [
-//                       ...controller.list
-//                           .mapIndexed((i, e) => ExpansionPanel(
-//                                 isExpanded: e["isExpanded"],
-//                                 backgroundColor: AppColors.dark2,
-//                                 body: Actions(context, e),
-//                                 headerBuilder: (ctx, isExp) {
-//                                   print(e);
-//                                   var dayLeft = carservice.currentCar.value!
-//                                       .dayLeft(e['doc_name']);
-//                                   return ListTile(
-//                                     tileColor: isExp
-//                                         ? AppColors.dark1
-//                                         : AppColors.dark2,
-//                                     onTap: () async {
-//                                       setState(() {
-//                                         e["isExpanded"] = !isExp;
-//                                       });
-//                                     },
-//                                     title: Column(
-//                                       crossAxisAlignment:
-//                                           CrossAxisAlignment.start,
-//                                       children: [
-//                                         Text(
-//                                           "${(e["doc_name"] as String).capitalizeFirst}",
-//                                           style: Get.textTheme.headline4!
-//                                               .copyWith(
-//                                                   color: AppColors.accent),
-//                                         ),
-//                                         Text(
-//                                           'Expire dans ${dayLeft} jours',
-//                                           style: Get.textTheme.bodyText2,
-//                                         ),
-//                                       ],
-//                                     ),
-//                                   );
-//                                 },
-//                               ))
-//                           .toList(),
-//                     ],
-//                     expansionCallback: (int item, bool status) async {
-//                       await showAnimatedDialog(
-//                         context: context,
-//                         barrierDismissible: true,
-//                         axis: Axis.vertical,
-//                         alignment: Alignment.centerRight,
-//                         builder: (BuildContext context) {
-//                           return FractionallySizedBox(
-//                             heightFactor: 0.4,
-//                             widthFactor: .8,
-//                             alignment: Alignment.centerRight,
-//                             child: Material(
-//                               borderRadius: BorderRadius.circular(10),
-//                               child: ListView(
-//                                 children: [
-//                                   ...actionsDialog
-//                                       .map((e) => ListTile(
-//                                             onTap: () {
-//                                               print('Le ');
-//                                             },
-//                                             title: Text(e['text']),
-//                                           ))
-//                                       .toList()
-//                                 ],
-//                               ),
-//                             ),
-//                           );
-//                         },
-//                         animationType: DialogTransitionType.size,
-//                         curve: Curves.fastOutSlowIn,
-//                         duration: 1.seconds,
-//                       );
-//                     },
-//                   ),
-                    ),
+                    )),
               ),
             )
           ],
@@ -415,9 +337,11 @@ class _DetailsCarState extends State<DetailsCar> {
                     ...actionsDialog
                         .map((e) => ListTile(
                               onTap: () {
-                                print('Le ');
+                                print(e);
                                 if (e['code'] == "code1") {
-                                  Get.to(() => ViewerPDF());
+                                  Get.to(() => ViewerPDF(
+                                        link: e['doc_name'],
+                                      ));
                                 } else if (e['code'] == "code2") {
                                   print('e is $e');
                                   Get.to(() => AddDocument(item: u));

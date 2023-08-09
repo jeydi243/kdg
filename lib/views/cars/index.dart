@@ -114,6 +114,7 @@ class _IndexCarState extends State<IndexCar> with TickerProviderStateMixin {
           controller: controller.refreshc,
           onRefresh: controller.onRefreshListCar,
           onLoading: controller.onLoadingListCar,
+
           child: CustomScrollView(
             slivers: [
               SliverAppBar(

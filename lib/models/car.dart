@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Car {
   String model;
-  String nom;
-  String type_carburant;
+  String name;
+  String owner;
+  String carburant;
   String color;
-  String year;
+  int year;
   String brand;
   Map<String, dynamic> price;
 
@@ -15,12 +16,15 @@ class Car {
   late Map<String, dynamic> vignette;
   late Map<String, dynamic> controle;
 
-  String get typeCarburant => type_carburant;
-  String get Nom => nom;
+  String get typeCarburant => carburant;
+  String get Nom => name;
+  String get Owner => owner;
   int? dayLeft(String docname) {
     var now = DateTime.now();
     print("FIN: ${documents[docname]!['fin']}");
-    if (documents[docname]!['fin'] != null) {
+    if (documents[docname]!.containsKey('year')) {
+      return 1;
+    } else if (documents[docname]!['fin'] != null) {
       Timestamp fin = documents[docname]!['fin'] is Timestamp
           ? documents[docname]!['fin']
           : Timestamp.fromDate(DateTime.parse(documents[docname]!['fin']));
@@ -41,11 +45,11 @@ class Car {
         "stationnement": stationnement
       };
 
-  Map<String, String> get infos => {
+  Map<String, dynamic> get infos => {
         "model": model,
         "year": year,
         "color": color,
-        "type_carburant": type_carburant,
+        "carburant": carburant,
         "price": price['montant']
       };
 
@@ -54,14 +58,16 @@ class Car {
     required this.brand,
     required this.price,
     required this.year,
-    required this.nom,
+    required this.name,
+    required this.owner,
     required this.color,
     required this.id,
-    required this.type_carburant,
+    required this.carburant,
   });
   Car.fromMap(Map<String, dynamic> snapshot)
       : id = snapshot['id'] ?? '',
-        nom = snapshot['name'] ?? '',
+        name = snapshot['name'] ?? '',
+        owner = snapshot['owner'] ?? '',
         year = snapshot['year'],
         model = snapshot['model'],
         brand = snapshot['brand'],
@@ -71,19 +77,20 @@ class Car {
         vignette = Map<String, dynamic>.from(snapshot['vignette']),
         assurance = Map<String, dynamic>.from(snapshot['assurance']),
         stationnement = Map<String, dynamic>.from(snapshot['stationnement']),
-        type_carburant = snapshot['type_carburant'] ?? '';
+        carburant = snapshot['carburant'] ?? '';
 
   Car.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   )   : id = snapshot.id,
-        nom = snapshot.get('nom'),
+        name = snapshot.get('name'),
+        owner = snapshot.get('owner'),
         year = snapshot.get('year'),
         model = snapshot.get("model"),
         color = snapshot.get('color'),
         price = snapshot.get('price'),
         brand = snapshot.get('brand'),
-        type_carburant = snapshot.get("type_carburant"),
+        carburant = snapshot.get("carburant"),
         controle =
             Map<String, dynamic>.from(snapshot.get("controle_technique")),
         vignette = Map<String, dynamic>.from(snapshot.get('vignette')),
@@ -93,9 +100,10 @@ class Car {
 
   toFirestore() {
     return {
-      'name': model,
+      'name': name,
+      'owner': owner,
       'model': model,
-      'typeCarburant': type_carburant,
+      'typeCarburant': carburant,
       'assurance': assurance,
       'controle_technique': controle,
       'stationnement': stationnement,

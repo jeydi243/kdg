@@ -336,12 +336,13 @@ class CarService extends GetxController {
 
   void onLoadingListCar() {
     print('On loading');
+    refreshc.loadComplete();
   }
 
   void changeCardAt(String idcar, Car? newcar) {
     int index = _cars.value.indexWhere((car) => car.id == idcar);
     if (newcar != null) {
-      print('Index for change is found: $index ${newcar.type_carburant}');
+      print('Index for change is found: $index ${newcar.carburant}');
       _cars.value[index] = newcar;
       update();
     }
