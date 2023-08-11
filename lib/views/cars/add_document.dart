@@ -25,7 +25,7 @@ class _AddDocumentState extends State<AddDocument> {
   final start_date = TextEditingController();
   late DateTime debut;
   late DateTime fin;
-  List<String> allowExt = ['pdf', "docx", "doc"];
+  List<String> allowExt = ['pdf'];
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
@@ -38,13 +38,13 @@ class _AddDocumentState extends State<AddDocument> {
   }
 
   DateTime ff(String when) {
-    return controller.currentCar!
-            .documents[widget.item['doc_name']]![when] is Timestamp
-        ? DateTime.fromMillisecondsSinceEpoch((controller
-                .currentCar!.documents[widget.item['doc_name']]![when])
-            .millisecondsSinceEpoch)
-        : DateTime.parse(controller
-            .currentCar!.documents[widget.item['doc_name']]![when]);
+    return controller.currentCar!.documents[widget.item['name']]![when]
+            is Timestamp
+        ? DateTime.fromMillisecondsSinceEpoch(
+            (controller.currentCar!.documents[widget.item['name']]![when])
+                .millisecondsSinceEpoch)
+        : DateTime.parse(
+            controller.currentCar!.documents[widget.item['name']]![when]);
   }
 
   void submitForm() async {
@@ -52,9 +52,9 @@ class _AddDocumentState extends State<AddDocument> {
       formKey.currentState!.save();
 
       if (form.isNotEmpty) {
-        form['doc_name'] = widget.item['doc_name'];
-        form['id'] = controller
-            .currentCar!.documents[widget.item['doc_name']]!['id'];
+        form['doc_name'] = widget.item['name'];
+        form['id'] =
+            controller.currentCar!.documents[widget.item['name']]!['id'];
 
         if (currentFile != null) {
           final meta = SettableMetadata(

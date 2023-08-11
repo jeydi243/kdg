@@ -21,6 +21,7 @@ class UserService extends GetxController {
   late FirebaseAuth _auth;
   late FirebaseMessaging _fcm;
   late FirebaseFirestore firestore;
+  late CollectionReference<Rapport> rapportREF;
   GoogleSignIn? gsign;
   FirebaseStorage? storage;
   FirebaseFunctions? functions;
@@ -28,6 +29,7 @@ class UserService extends GetxController {
   Rx<String?> token = "".obs;
   Rx<User?> firebaseUser = Rx<User?>(null);
   Rx<List<Rapport>> _rapports = Rx<List<Rapport>>(<Rapport>[]);
+  Rx<QuerySnapshot<Rapport>?> snapRapport = Rx<QuerySnapshot<Rapport>?>(null);
   Rx<DocumentReference?> userDocRef = Rx<DocumentReference?>(null);
   Rx<FirebaseException?> exception = Rx<FirebaseException?>(null);
   Rx<PlatformException?> pl_exception = Rx<PlatformException?>(null);
@@ -38,17 +40,27 @@ class UserService extends GetxController {
   UserKDG? get userKDG => _user;
   FirebaseAuth get auth => _auth;
   List<Rapport> get rapports => _rapports.value;
+  Rapport? monRapportDe(String month) {
+    return _rapports.value
+        .firstWhereOrNull((Rapport rapport) => rapport.mois == month);
+  }
 
   @override
   void onInit() {
     super.onInit();
+    log = Log();
     _fcm = FirebaseMessaging.instance;
     _auth = FirebaseAuth.instance;
     gsign = GoogleSignIn();
     storage = FirebaseStorage.instance;
     functions = FirebaseFunctions.instance;
     firestore = FirebaseFirestore.instance;
-    log = Log();
+
+    rapportREF = firestore.collection('rapports').withConverter<Rapport>(
+          fromFirestore: Rapport.fromFirestore,
+          toFirestore: (Rapport rapport, _) => rapport.toMap(),
+        );
+    snapRapport.bindStream(rapportREF.snapshots());
     firebaseUser.bindStream(_auth.userChanges());
   }
 
@@ -58,7 +70,33 @@ class UserService extends GetxController {
     usersRef = firestore.collection('users');
     ever(firebaseUser, onUserChange);
     ever(exception, onFirebaseException);
+    ever(snapRapport, onRapportsChange);
     ever(pl_exception, onPlatformException);
+  }
+
+  onRapportsChange(QuerySnapshot<Rapport>? qs) {
+    if (qs != null) {
+      print("${qs.docChanges.length} docs changed");
+      qs.docChanges.forEach((el) {
+        if (el.type == DocumentChangeType.modified && el.doc.exists) {
+          changeRapportAt(el.doc.id, el.doc.data());
+        } else if (el.type == DocumentChangeType.added && el.doc.exists) {
+          _rapports.value.addAll([el.doc.data()].whereType<Rapport>().toList());
+        } else if (el.type == DocumentChangeType.removed) {
+          _rapports.value.removeWhere((rapport) => rapport.id == el.doc.id);
+        }
+        update();
+      });
+    }
+  }
+
+  void changeRapportAt(String rapportID, Rapport? updatedRapport) {
+    int index =
+        _rapports.value.indexWhere((rapport) => rapport.id == rapportID);
+    if (updatedRapport != null) {
+      _rapports.value[index] = updatedRapport;
+      update();
+    }
   }
 
   onFirebaseException(FirebaseException? e) {

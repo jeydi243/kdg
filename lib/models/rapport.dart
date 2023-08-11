@@ -5,36 +5,36 @@ class Rapport implements Type {
   String _mois;
   int _heures;
   int _etudes;
+  int _annee;
   int _visites;
   int _publications;
+  String get mois => _mois;
+  String get id => _id;
+  int get annee => _annee;
 
-  Rapport(this._id, this._heures, this._mois, this._etudes, this._publications,
-      this._visites);
+  Rapport(this._id, this._heures, this._mois, this._etudes, this._annee,
+      this._publications, this._visites);
 
-  Rapport.fromMap(Map<String, dynamic> snapshot)
-      : _id = snapshot['id'] ?? '',
+  Rapport.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  )   : _id = snapshot.id,
         _mois = snapshot['mois'] ?? '',
         _heures = snapshot['heures'] ?? '',
-        _etudes = snapshot['etudes'] ?? '',
-        _publications = snapshot['publications'] ?? '',
-        _visites = snapshot['visites'] ?? '';
-
-  Rapport.fromFirebase(QueryDocumentSnapshot snapshot) 
-      : _id = snapshot['id'] ?? '',
-        _mois = snapshot['mois'] ?? '',
-        _heures = snapshot['heures'] ?? '',
+        _annee = snapshot['annee'] ?? '',
         _etudes = snapshot['etudes'] ?? '',
         _publications = snapshot['publications'] ?? '',
         _visites = snapshot['visites'] ?? '';
 
   Map<String, dynamic> toMap() {
     return {
-      'id': _id,
+      "annee": _annee,
+      "mois": _mois,
       "etudes": _etudes,
       "heures": _heures,
-      "mois": _mois,
-      "publications": _publications,
       "visites": _visites,
+      "publications": _publications,
+      'id': _id,
     };
   }
 }

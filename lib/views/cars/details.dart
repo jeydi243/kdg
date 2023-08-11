@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:animated_loading_border/animated_loading_border.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -58,7 +57,7 @@ class _DetailsCarState extends State<DetailsCar> {
           () => Hero(
             tag: carservice.currentCarId,
             child: Text(
-              '${carservice.currentCar!.Nom.capitalizeFirst}',
+              '${carservice.currentCar?.Nom.capitalizeFirst}',
               style: TextStyle(fontSize: 25),
             ),
           ),
@@ -100,15 +99,35 @@ class _DetailsCarState extends State<DetailsCar> {
         body: ListView(
           controller: _sc,
           physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.only(bottom: 20),
+          // padding: EdgeInsets.only(bottom: 20),
           children: [
+            // FadeInLeft(
+            //   Container(
+            //     padding: EdgeInsets.only(left: 10),
+            //     child: Row(
+            //       children: [
+            //         Text(
+            //           "Images",
+            //           style: TextStyle(
+            //               fontSize: 25,
+            //               fontStyle: FontStyle.italic,
+            //               fontWeight: FontWeight.bold),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // FadeInRight(
+            //   SizedBox(
+            //       width: Get.width, height: Get.height * .3, child: PageV()),
+            // ),
             FadeInLeft(
               Container(
                 padding: EdgeInsets.only(left: 10),
                 child: Row(
                   children: [
                     Text(
-                      "Gallerie",
+                      "Informations",
                       style: TextStyle(
                           fontSize: 25,
                           fontStyle: FontStyle.italic,
@@ -118,14 +137,11 @@ class _DetailsCarState extends State<DetailsCar> {
                 ),
               ),
             ),
-            FadeInRight(
-              SizedBox(
-                  width: Get.width, height: Get.height * .3, child: PageV()),
-            ),
             FadeInLeft(
               Container(
                   // color: Colors.blue,
                   height: 250,
+                  margin: EdgeInsets.symmetric(horizontal: 10),
                   width: 150,
                   child: Column(
                     children: [
@@ -178,18 +194,6 @@ class _DetailsCarState extends State<DetailsCar> {
                     ],
                   )),
             ),
-            // AnimatedLoadingBorder(
-            //   child: Container(
-            //     width: 50,
-            //     height: 2,
-            //     child: LinearCappedProgressIndicator(minHeight: .5),
-            //   ),
-            //   borderColor: Colors.amber,
-            //   startWithRandomPosition: true,
-            //   controller: (animationController) {
-            //     // Here we get animationController
-            //   },
-            // ),
             FadeInRight(
               Container(
                 padding: EdgeInsets.only(left: 10, bottom: 10),
@@ -208,40 +212,52 @@ class _DetailsCarState extends State<DetailsCar> {
             ),
             FadeInLeft(
               Container(
-                height: Get.height / 2,
+                height: Get.height / 2 + 40,
                 width: Get.width,
                 padding: EdgeInsets.only(bottom: 100),
-                child: GestureDetector(
-                    onLongPressEnd: (details) async {
-                      try {
-                        await HapticFeedback.lightImpact();
-                      } on PlatformException catch (e) {
-                        print(e);
-                      } catch (e) {
-                        print('Une exception a été levé: $e');
-                      }
+                child: ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    ...carservice.documents_name
+                        .mapIndexed<Widget>((i, e) => Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 5),
+                              child: ListTile(
+                                onLongPress: () {
+                                  showActionsDialog(e);
+                                },
+                                tileColor: Color.fromARGB(255, 1, 48, 105),
+                                focusColor: Colors.amber,
 
-                      // showanimated();
-                    },
-                    child: ListView(
-                      children: [
-                        ...carservice.list
-                            .mapIndexed<Widget>((i, e) => ListTile(
-                                  focusColor: Colors.amber,
-                                  trailing: IconButton(
-                                      onPressed: () {
-                                        showActionsDialog(e, carservice);
-                                      },
-                                      icon: Icon(
-                                        MdiIcons.dotsVertical,
-                                        color: Colors.white,
-                                        size: 16,
-                                      )),
-                                  title: Text(
-                                      "${((e['doc_name'] as String).replaceFirst("_", " ")).capitalizeFirst}"),
-                                ))
-                      ],
-                    )),
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(width: .5),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                trailing: IconButton(
+                                    onPressed: () {
+                                      showActionsDialog(e);
+                                    },
+                                    icon: Icon(
+                                      MdiIcons.dotsVertical,
+                                      color: Colors.white,
+                                      size: 16,
+                                    )),
+                                subtitle: Text(
+                                    '${carservice.currentCar?.dayLeft(e['name']).$1}'),
+                                subtitleTextStyle: TextStyle(
+                                    fontSize: 12,
+                                    color: carservice.currentCar!
+                                                .dayLeft(e['name'])
+                                                .$2 <
+                                            0
+                                        ? Colors.red
+                                        : Colors.green),
+                                title: Text(
+                                    "${((e['name'] as String).replaceFirst("_", " ")).capitalizeFirst}"),
+                              ),
+                            ))
+                  ],
+                ),
               ),
             )
           ],
@@ -250,7 +266,7 @@ class _DetailsCarState extends State<DetailsCar> {
     );
   }
 
-  void showActionsDialog(Map<String, dynamic> u, CarService carservice) async {
+  void showActionsDialog(Map<String, dynamic> u) async {
     await showAnimatedDialog(
       context: context,
       barrierDismissible: true,
@@ -269,9 +285,6 @@ class _DetailsCarState extends State<DetailsCar> {
               borderWidth: 3,
               cornerRadius: 10,
               isTrailingTransparent: false,
-              controller: (animationController) {
-                // Here we get animationController
-              },
               child: Material(
                 borderRadius: BorderRadius.circular(10),
                 color: AppColors.backgroundDark,
@@ -279,15 +292,17 @@ class _DetailsCarState extends State<DetailsCar> {
                   children: [
                     ...carservice.actionsDialog
                         .map((e) => ListTile(
-
                               onTap: () {
                                 print(u);
                                 switch (e['code']) {
                                   case "code1":
-                                    Get.toNamed('/pdfViewer', parameters: {
-                                      "link": carservice.currentCar!
-                                          .documents[u['doc_name']]!['file']
-                                    },);
+                                    Get.toNamed(
+                                      '/pdfViewer',
+                                      parameters: {
+                                        "link": carservice.currentCar!
+                                            .documents[u['name']]!['file']
+                                      },
+                                    );
                                   case "code2":
                                     Get.to(() => AddDocument(item: u));
                                 }

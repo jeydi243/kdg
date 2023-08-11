@@ -50,7 +50,7 @@ class CarService extends GetxController {
   Rx<DocumentReference<Car>?> currentCarRef = Rx<DocumentReference<Car>?>(null);
   Rx<InternetConnectionStatus> connectionStatus =
       Rx<InternetConnectionStatus>(InternetConnectionStatus.connected);
-  List<Map<String, dynamic>> list = [];
+  List<Map<String, dynamic>> documents_name = [];
   List<Car> get cars => _cars.value;
   double get progress => uploadProgress.value;
   bool get isFilePicked => filepicked.value;
@@ -136,11 +136,11 @@ class CarService extends GetxController {
 
   onCarChange(Car? car) async {
     if (car != null) {
-      list = [
-        {"doc_name": 'assurance', "isExpanded": false},
-        {"doc_name": 'controle_technique', "isExpanded": false},
-        {"doc_name": 'vignette', "isExpanded": false},
-        {"doc_name": 'stationnement', "isExpanded": false},
+      documents_name = [
+        {"name": 'assurance', "isExpanded": false},
+        {"name": 'controle_technique', "isExpanded": false},
+        {"name": 'vignette', "isExpanded": false},
+        {"name": 'stationnement', "isExpanded": false},
       ];
       actionsDialog = [
         {'text': "Voir le document", 'icon': Icons.edit, "code": 'code1'},

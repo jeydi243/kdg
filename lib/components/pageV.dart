@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class PageV extends StatefulWidget {
   PageV({
     Key? key,
@@ -48,9 +47,10 @@ class _PageVState extends State<PageV> {
         itemBuilder: (context, index) {
           return Container(
             height: double.infinity,
+            margin: EdgeInsets.only(top: 8),
             padding: EdgeInsets.only(right: 20.0, bottom: 20),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
+              borderRadius: BorderRadius.circular(5),
               child: SizedBox(
                 height: double.infinity,
                 child: GestureDetector(

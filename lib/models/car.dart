@@ -19,19 +19,21 @@ class Car {
   String get typeCarburant => carburant;
   String get Nom => name;
   String get Owner => owner;
-  int? dayLeft(String docname) {
+  (String, int) dayLeft(String docname) {
     var now = DateTime.now();
     print("FIN: ${documents[docname]!['fin']}");
     if (documents[docname]!.containsKey('year')) {
-      return 1;
+      return ("Valide", 1);
     } else if (documents[docname]!['fin'] != null) {
       Timestamp fin = documents[docname]!['fin'] is Timestamp
           ? documents[docname]!['fin']
           : Timestamp.fromDate(DateTime.parse(documents[docname]!['fin']));
       var diffDt = fin.toDate().difference(now);
-      return diffDt.inDays;
+      return diffDt.inDays > 0
+          ? ("Il reste ${diffDt.inDays} jours avant expiration", diffDt.inDays)
+          : ('Expiré depuis ${diffDt.inDays * -1} jours', diffDt.inDays);
     }
-    return 0;
+    return ("Expire Aujourd'hui", 0);
   }
 
   String linkDoc(String docname) {
