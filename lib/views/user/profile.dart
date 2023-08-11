@@ -5,9 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:kdg/constantes/values.dart';
 import 'package:kdg/models/rapport.dart';
-import 'package:kdg/services/car_service.dart';
 import 'package:kdg/services/user_service.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:supercharged/supercharged.dart';
 
